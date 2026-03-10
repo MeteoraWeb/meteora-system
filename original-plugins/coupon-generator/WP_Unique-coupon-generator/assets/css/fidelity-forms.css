@@ -1,0 +1,56 @@
+.ucg-fidelity-form, .ucg-points-form {
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+.ucg-fidelity-form p, .ucg-points-form p {
+    margin-bottom: 15px;
+}
+.ucg-fidelity-form input[type="text"],
+.ucg-fidelity-form input[type="number"],
+.ucg-points-form input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #dcdcdc;
+    border-radius: 4px;
+    background: #fafafa;
+}
+.ucg-fidelity-form button,
+.ucg-points-form button {
+    padding: 10px 14px;
+    background: #007aff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.ucg-fidelity-form button:hover,
+.ucg-points-form button:hover {
+    background: #005ecb;
+}
+#fid-qr-reader, #pts-qr-reader {
+    margin-top: 15px;
+}
+
+/* Visual feedback for fidelity messages */
+.ucg-fidelity-form .updated, .ucg-points-form .updated,
+.ucg-fidelity-form .error, .ucg-points-form .error {
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.ucg-fidelity-form .updated, .ucg-points-form .updated {
+    background-color: #d1e7dd;
+    border: 1px solid #badbcc;
+    color: #0f5132;
+}
+
+.ucg-fidelity-form .error, .ucg-points-form .error {
+    background-color: #f8d7da;
+    border: 1px solid #f5c2c7;
+    color: #842029;
+}

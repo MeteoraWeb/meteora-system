@@ -1,0 +1,2832 @@
+# Copyright (C) 2025 Meteora Web
+# This file is distributed under the GPL2.
+msgid ""
+msgstr ""
+"Project-Id-Version: Unique Coupon Generator 1.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/WP_Unique-coupon-generator\n"
+"POT-Creation-Date: 2025-09-20T12:20:13+00:00\n"
+"PO-Revision-Date: 2025-09-20T12:20:13+00:00\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Domain: unique-coupon-generator\n"
+"X-Generator: WP-CLI 2.12.0\n"
+
+#. Plugin Name of the plugin
+#: unique-coupon-generator.php
+msgid "Unique Coupon Generator"
+msgstr "Unique Coupon Generator"
+
+#. Plugin URI of the plugin
+#. Author URI of the plugin
+#: unique-coupon-generator.php
+msgid "https://meteoraweb.com"
+msgstr "https://meteoraweb.com"
+
+#. Description of the plugin
+#: unique-coupon-generator.php
+msgid ""
+"Genera coupon, ticket unici per ogni utente. fidelity points, invio email "
+"automatiche, integrazione con WooCommerce e tanto altro ancora."
+msgstr ""
+"Genera coupon, ticket unici per ogni utente. fidelity points, invio email "
+"automatiche, integrazione con WooCommerce e tanto altro ancora."
+
+#. Author of the plugin
+#: unique-coupon-generator.php
+msgid "Meteora Web"
+msgstr "Meteora Web"
+
+#: includes/classes/class-ucg-access-gate.php:89
+msgid "Una volta alla settimana"
+msgstr "Una volta alla settimana"
+
+#: includes/classes/class-ucg-access-gate.php:101
+#: includes/classes/class-ucg-access-gate.php:102
+msgid "Licenza UCG"
+msgstr "Licenza UCG"
+
+#: includes/classes/class-ucg-access-gate.php:110
+msgid "Gestione Licenza UCG"
+msgstr "Gestione Licenza UCG"
+
+#: includes/classes/class-ucg-access-gate.php:111
+msgid "Gestione Licenza"
+msgstr "Gestione Licenza"
+
+#: includes/classes/class-ucg-access-gate.php:130
+msgid "Licenza reimpostata correttamente."
+msgstr "Licenza reimpostata correttamente."
+
+#: includes/classes/class-ucg-access-gate.php:169
+msgid "Verifica della licenza in corso..."
+msgstr "Verifica della licenza in corso..."
+
+#: includes/classes/class-ucg-access-gate.php:170
+msgid "Impossibile completare la verifica della licenza."
+msgstr "Impossibile completare la verifica della licenza."
+
+#: includes/classes/class-ucg-access-gate.php:171
+#: includes/classes/class-ucg-access-gate.php:408
+#: includes/classes/class-ucg-access-gate.php:409
+#: includes/classes/coupon-options-settings.php:360
+#: includes/classes/coupon-view-display.php:129
+#: includes/classes/coupon-view-display.php:142
+#: includes/classes/coupon-view-display.php:160
+#: includes/classes/coupon-view-table.php:89
+#: includes/classes/coupon-view-table.php:90
+#: includes/classes/coupon-view-table.php:93
+msgid "N/D"
+msgstr "N/D"
+
+#: includes/classes/class-ucg-access-gate.php:172
+#: includes/classes/class-ucg-access-gate.php:371
+#: includes/classes/class-ucg-access-gate.php:410
+#: includes/classes/class-ucg-access-gate.php:731
+#: includes/classes/coupon-options-admin.php:530
+msgid "Mai verificata"
+msgstr "Mai verificata"
+
+#: includes/classes/class-ucg-access-gate.php:204
+msgid "vai a gestione licenza"
+msgstr "vai a gestione licenza"
+
+#: includes/classes/class-ucg-access-gate.php:209
+msgid "La licenza non è ancora stata verificata."
+msgstr "La licenza non è ancora stata verificata."
+
+#: includes/classes/class-ucg-access-gate.php:222
+msgid "Licenza non valida. Verifica la tua chiave di acquisto."
+msgstr "Licenza non valida. Verifica la tua chiave di acquisto."
+
+#: includes/classes/class-ucg-access-gate.php:235
+msgid "Operazione non autorizzata."
+msgstr "Operazione non autorizzata."
+
+#: includes/classes/class-ucg-access-gate.php:242
+msgid "Inserisci un purchase code valido."
+msgstr "Inserisci un purchase code valido."
+
+#: includes/classes/class-ucg-access-gate.php:271
+#: includes/classes/UCG_Downloaded_Coupons.php:141
+#: includes/classes/UCG_Email_Marketing.php:223
+#: includes/classes/UCG_User_Profiles.php:318
+msgid "Permessi insufficienti."
+msgstr "Permessi insufficienti."
+
+#: includes/classes/class-ucg-access-gate.php:277
+msgid "Licenza reimpostata manualmente."
+msgstr "Licenza reimpostata manualmente."
+
+#: includes/classes/class-ucg-access-gate.php:402
+#: includes/classes/coupon-options-admin.php:540
+msgid "Stato licenza"
+msgstr "Stato licenza"
+
+#: includes/classes/class-ucg-access-gate.php:405
+#: includes/classes/coupon-options-admin.php:731
+#: includes/classes/UCG_Email_Marketing.php:105
+#: includes/events/event-admin.php:720 includes/events/event-admin.php:861
+msgid "Stato"
+msgstr "Stato"
+
+#: includes/classes/class-ucg-access-gate.php:408
+msgid "Acquirente"
+msgstr "Acquirente"
+
+#: includes/classes/class-ucg-access-gate.php:409
+#: includes/classes/class-ucg-access-gate.php:433
+msgid "Purchase code"
+msgstr "Purchase code"
+
+#: includes/classes/class-ucg-access-gate.php:410
+msgid "Ultima verifica"
+msgstr "Ultima verifica"
+
+#: includes/classes/class-ucg-access-gate.php:429
+#: includes/classes/class-ucg-access-gate.php:438
+msgid "Verifica licenza"
+msgstr "Verifica licenza"
+
+#: includes/classes/class-ucg-access-gate.php:435
+msgid "Inserisci il purchase code acquistato su Envato."
+msgstr "Inserisci il purchase code acquistato su Envato."
+
+#: includes/classes/class-ucg-access-gate.php:445
+msgid "Reset licenza"
+msgstr "Reset licenza"
+
+#: includes/classes/class-ucg-access-gate.php:450
+msgid "Log licenza"
+msgstr "Log licenza"
+
+#: includes/classes/class-ucg-access-gate.php:458
+msgid "Nessun evento registrato al momento."
+msgstr "Nessun evento registrato al momento."
+
+#: includes/classes/class-ucg-access-gate.php:569
+msgid "Attivazione interna"
+msgstr "Attivazione interna"
+
+#: includes/classes/class-ucg-access-gate.php:579
+#, php-format
+msgid "Licenza attivata tramite codice interno (%s)."
+msgstr "Licenza attivata tramite codice interno (%s)."
+
+#: includes/classes/class-ucg-access-gate.php:587
+#: includes/classes/class-ucg-access-gate.php:647
+msgid "Licenza verificata correttamente."
+msgstr "Licenza verificata correttamente."
+
+#. translators: %s: HTTP status code
+#: includes/classes/class-ucg-access-gate.php:625
+#, php-format
+msgid "Server licenze ha risposto con codice %s."
+msgstr "Server licenze ha risposto con codice %s."
+
+#: includes/classes/class-ucg-access-gate.php:634
+msgid "Risposta non valida dal server licenze."
+msgstr "Risposta non valida dal server licenze."
+
+#: includes/classes/class-ucg-access-gate.php:649
+#, php-format
+msgid "Verifica licenza riuscita (%s)."
+msgstr "Verifica licenza riuscita (%s)."
+
+#: includes/classes/class-ucg-access-gate.php:662
+#: includes/classes/coupon-shortcode.php:14
+#: includes/classes/coupon-user-functions.php:29
+#: includes/classes/coupon-user-shortcode.php:11
+#: includes/shortcodes/fidelity-points.php:6
+#: includes/shortcodes/fidelity-points.php:16
+#: includes/shortcodes/fidelity-points.php:36
+#: includes/shortcodes/fidelity-terminal.php:6
+#: includes/shortcodes/fidelity-terminal.php:17
+#: includes/shortcodes/fidelity-terminal.php:72
+msgid "Licenza non valida."
+msgstr "Licenza non valida."
+
+#: includes/classes/class-ucg-access-gate.php:665
+#, php-format
+msgid "Licenza non valida (%1$s): %2$s"
+msgstr "Licenza non valida (%1$s): %2$s"
+
+#: includes/classes/class-ucg-access-gate.php:689
+msgid "mai"
+msgstr "mai"
+
+#: includes/classes/class-ucg-access-gate.php:693
+#, php-format
+msgid "Server licenze non raggiungibile, ultima verifica %s fa."
+msgstr "Server licenze non raggiungibile, ultima verifica %s fa."
+
+#: includes/classes/class-ucg-access-gate.php:697
+msgid "Server licenze non raggiungibile, verifica mai completata."
+msgstr "Server licenze non raggiungibile, verifica mai completata."
+
+#: includes/classes/class-ucg-access-gate.php:704
+#, php-format
+msgid "Server licenze non raggiungibile: %s"
+msgstr "Server licenze non raggiungibile: %s"
+
+#: includes/classes/class-ucg-access-gate.php:724
+msgid "Valida"
+msgstr "Valida"
+
+#: includes/classes/class-ucg-access-gate.php:728
+msgid "Non valida"
+msgstr "Non valida"
+
+#: includes/classes/coupon-options-admin.php:14
+#: includes/classes/coupon-options-admin.php:15
+#: includes/classes/coupon-options-admin.php:25
+#: includes/classes/coupon-options-admin.php:26
+msgid "Gestione Coupon"
+msgstr "Gestione Coupon"
+
+#: includes/classes/coupon-options-admin.php:34
+#: includes/classes/coupon-options-admin.php:35
+#: includes/events/event-admin.php:19 includes/events/event-admin.php:20
+#: includes/events/event-admin.php:485
+msgid "Gestione Eventi"
+msgstr "Gestione Eventi"
+
+#: includes/classes/coupon-options-admin.php:43
+#: includes/classes/coupon-options-admin.php:44
+msgid "Marketing"
+msgstr "Marketing"
+
+#: includes/classes/coupon-options-admin.php:52
+msgid "Impostazioni Plugin"
+msgstr "Impostazioni Plugin"
+
+#: includes/classes/coupon-options-admin.php:53
+msgid "Impostazioni"
+msgstr "Impostazioni"
+
+#: includes/classes/coupon-options-admin.php:70
+msgid "Gestione coupon & fidelity"
+msgstr "Gestione coupon & fidelity"
+
+#: includes/classes/coupon-options-admin.php:71
+msgid ""
+"Crea, personalizza e monitora i set di coupon e i programmi fidelity con una"
+" vista unica."
+msgstr ""
+"Crea, personalizza e monitora i set di coupon e i programmi fidelity con una"
+" vista unica."
+
+#: includes/classes/coupon-options-admin.php:74
+msgid "Set e generazione"
+msgstr "Set e generazione"
+
+#: includes/classes/coupon-options-admin.php:79
+msgid "Opzioni email"
+msgstr "Opzioni email"
+
+#: includes/classes/coupon-options-admin.php:84
+#: includes/classes/coupon-options-admin.php:410
+msgid "Coupon generati"
+msgstr "Coupon generati"
+
+#: includes/classes/coupon-options-admin.php:89
+#: includes/classes/coupon-options-settings.php:356
+msgid "Fidelity"
+msgstr "Fidelity"
+
+#: includes/classes/coupon-options-admin.php:94
+msgid "Pagine & shortcode"
+msgstr "Pagine & shortcode"
+
+#: includes/classes/coupon-options-admin.php:113
+msgid "Gestione eventi e ticketing"
+msgstr "Gestione eventi e ticketing"
+
+#: includes/classes/coupon-options-admin.php:114
+msgid ""
+"Organizza eventi, controlla i ticket generati e monitora le performance dei "
+"PR."
+msgstr ""
+"Organizza eventi, controlla i ticket generati e monitora le performance dei "
+"PR."
+
+#: includes/classes/coupon-options-admin.php:117
+msgid "Crea o modifica eventi"
+msgstr "Crea o modifica eventi"
+
+#: includes/classes/coupon-options-admin.php:122
+msgid "Ticket e check-in"
+msgstr "Ticket e check-in"
+
+#: includes/classes/coupon-options-admin.php:127
+msgid "Report PR e vendite"
+msgstr "Report PR e vendite"
+
+#: includes/classes/coupon-options-admin.php:132
+msgid "Pagine evento generate"
+msgstr "Pagine evento generate"
+
+#: includes/classes/coupon-options-admin.php:151
+msgid "Marketing e relazioni clienti"
+msgstr "Marketing e relazioni clienti"
+
+#: includes/classes/coupon-options-admin.php:152
+msgid ""
+"Consulta i dati anagrafici, segmenta il pubblico e gestisci template e "
+"campagne email."
+msgstr ""
+"Consulta i dati anagrafici, segmenta il pubblico e gestisci template e "
+"campagne email."
+
+#: includes/classes/coupon-options-admin.php:155
+#: includes/classes/UCG_User_Profiles.php:8
+#: includes/classes/UCG_User_Profiles.php:9
+#: includes/classes/UCG_User_Profiles.php:214
+msgid "Anagrafiche utenti"
+msgstr "Anagrafiche utenti"
+
+#: includes/classes/coupon-options-admin.php:160
+#: includes/classes/UCG_Email_Marketing.php:8
+#: includes/classes/UCG_Email_Marketing.php:9
+msgid "Invio email"
+msgstr "Invio email"
+
+#: includes/classes/coupon-options-admin.php:165
+#: includes/events/event-admin.php:652
+msgid "Template email"
+msgstr "Template email"
+
+#: includes/classes/coupon-options-admin.php:184
+msgid "Impostazioni del plugin"
+msgstr "Impostazioni del plugin"
+
+#: includes/classes/coupon-options-admin.php:185
+msgid ""
+"Configura la licenza, consulta i log e recupera gli shortcode principali."
+msgstr ""
+"Configura la licenza, consulta i log e recupera gli shortcode principali."
+
+#: includes/classes/coupon-options-admin.php:188
+msgid "Benvenuto"
+msgstr "Benvenuto"
+
+#: includes/classes/coupon-options-admin.php:193
+msgid "Gestione licenza"
+msgstr "Gestione licenza"
+
+#: includes/classes/coupon-options-admin.php:198
+#: includes/classes/coupon-options-pages.php:53
+#: includes/classes/coupon-options-settings.php:354
+#: includes/classes/coupon-view-table.php:17
+#: includes/classes/ucg-shortcodes-admin.php:11
+#: includes/classes/ucg-shortcodes-admin.php:41
+#: includes/classes/ucg-shortcodes-admin.php:79
+#: includes/classes/ucg-shortcodes-admin.php:123
+#: includes/classes/ucg-shortcodes-admin.php:124
+#: includes/events/event-admin.php:722
+msgid "Shortcode"
+msgstr "Shortcode"
+
+#: includes/classes/coupon-options-admin.php:203
+msgid "Log errori"
+msgstr "Log errori"
+
+#: includes/classes/coupon-options-admin.php:309
+msgid "Questa sezione non è disponibile."
+msgstr "Questa sezione non è disponibile."
+
+#: includes/classes/coupon-options-admin.php:403
+msgid "Set attivi"
+msgstr "Set attivi"
+
+#: includes/classes/coupon-options-admin.php:407
+msgid "Totale dei set attualmente configurati."
+msgstr "Totale dei set attualmente configurati."
+
+#: includes/classes/coupon-options-admin.php:414
+msgid "Codici coupon creati dal plugin."
+msgstr "Codici coupon creati dal plugin."
+
+#: includes/classes/coupon-options-admin.php:417
+msgid "Coupon da utilizzare"
+msgstr "Coupon da utilizzare"
+
+#: includes/classes/coupon-options-admin.php:421
+msgid "Coupon ancora non segnati come utilizzati."
+msgstr "Coupon ancora non segnati come utilizzati."
+
+#: includes/classes/coupon-options-admin.php:451
+msgid "Eventi pubblicati"
+msgstr "Eventi pubblicati"
+
+#: includes/classes/coupon-options-admin.php:455
+msgid "Eventi creati nel sistema."
+msgstr "Eventi creati nel sistema."
+
+#: includes/classes/coupon-options-admin.php:458
+#: includes/events/event-admin.php:721 includes/events/event-admin.php:816
+msgid "Ticket generati"
+msgstr "Ticket generati"
+
+#: includes/classes/coupon-options-admin.php:462
+msgid "Ticket inviati agli utenti."
+msgstr "Ticket inviati agli utenti."
+
+#: includes/classes/coupon-options-admin.php:465
+msgid "Ticket convalidati"
+msgstr "Ticket convalidati"
+
+#: includes/classes/coupon-options-admin.php:469
+msgid "Ticket già segnati come utilizzati."
+msgstr "Ticket già segnati come utilizzati."
+
+#: includes/classes/coupon-options-admin.php:493
+msgid "Utenti totali"
+msgstr "Utenti totali"
+
+#: includes/classes/coupon-options-admin.php:497
+msgid "Utenti registrati disponibili per le campagne."
+msgstr "Utenti registrati disponibili per le campagne."
+
+#: includes/classes/coupon-options-admin.php:500
+#: includes/classes/UCG_Email_Marketing.php:135
+#: includes/classes/UCG_Email_Templates.php:30
+msgid "Template salvati"
+msgstr "Template salvati"
+
+#: includes/classes/coupon-options-admin.php:504
+msgid "Modelli pronti per l'invio."
+msgstr "Modelli pronti per l'invio."
+
+#: includes/classes/coupon-options-admin.php:507
+msgid "Ultimo invio"
+msgstr "Ultimo invio"
+
+#: includes/classes/coupon-options-admin.php:508
+msgid "Nessun invio"
+msgstr "Nessun invio"
+
+#: includes/classes/coupon-options-admin.php:511
+msgid "Data dell'ultima campagna registrata."
+msgstr "Data dell'ultima campagna registrata."
+
+#: includes/classes/coupon-options-admin.php:525
+msgid "Licenza attiva"
+msgstr "Licenza attiva"
+
+#: includes/classes/coupon-options-admin.php:526
+msgid "Licenza da verificare"
+msgstr "Licenza da verificare"
+
+#: includes/classes/coupon-options-admin.php:544
+#, php-format
+msgid "Ultimo controllo: %s"
+msgstr "Ultimo controllo: %s"
+
+#: includes/classes/coupon-options-admin.php:547
+msgid "Errori registrati"
+msgstr "Errori registrati"
+
+#: includes/classes/coupon-options-admin.php:551
+msgid "Totale errori salvati nel registro del plugin."
+msgstr "Totale errori salvati nel registro del plugin."
+
+#: includes/classes/coupon-options-admin.php:568
+msgid "Gestione coupon"
+msgstr "Gestione coupon"
+
+#: includes/classes/coupon-options-admin.php:573
+msgid "Gestione eventi"
+msgstr "Gestione eventi"
+
+#: includes/classes/coupon-options-admin.php:578
+msgid "Marketing e email"
+msgstr "Marketing e email"
+
+#: includes/classes/coupon-options-admin.php:585
+msgid "Benvenuto a Unique Coupon Generator"
+msgstr "Benvenuto a Unique Coupon Generator"
+
+#: includes/classes/coupon-options-admin.php:586
+msgid ""
+"Organizza coupon, eventi e campagne di fidelizzazione da un unico pannello "
+"progettato in stile WordPress."
+msgstr ""
+"Organizza coupon, eventi e campagne di fidelizzazione da un unico pannello "
+"progettato in stile WordPress."
+
+#: includes/classes/coupon-options-admin.php:588
+msgid "Crea set di coupon e landing page dedicate con pochi clic."
+msgstr "Crea set di coupon e landing page dedicate con pochi clic."
+
+#: includes/classes/coupon-options-admin.php:589
+msgid "Automatizza email con QR code, promemoria e template riutilizzabili."
+msgstr "Automatizza email con QR code, promemoria e template riutilizzabili."
+
+#: includes/classes/coupon-options-admin.php:590
+msgid ""
+"Monitora punti fidelity, ticket evento e report delle attività di marketing."
+msgstr ""
+"Monitora punti fidelity, ticket evento e report delle attività di marketing."
+
+#: includes/classes/coupon-options-admin.php:591
+msgid ""
+"Consulta log e statistiche per intervenire rapidamente in caso di problemi."
+msgstr ""
+"Consulta log e statistiche per intervenire rapidamente in caso di problemi."
+
+#: includes/classes/coupon-options-admin.php:596
+msgid "Azioni rapide"
+msgstr "Azioni rapide"
+
+#: includes/classes/coupon-options-admin.php:615
+msgid "Impossibile inizializzare il gestore della licenza."
+msgstr "Impossibile inizializzare il gestore della licenza."
+
+#: includes/classes/coupon-options-admin.php:660
+msgid "Registro errori svuotato."
+msgstr "Registro errori svuotato."
+
+#: includes/classes/coupon-options-admin.php:662
+msgid "File di log ripulito con successo."
+msgstr "File di log ripulito con successo."
+
+#: includes/classes/coupon-options-admin.php:685
+msgid "Registro errori del plugin"
+msgstr "Registro errori del plugin"
+
+#: includes/classes/coupon-options-admin.php:688
+#: includes/classes/coupon-options-admin.php:731
+#: includes/classes/UCG_Downloaded_Coupons.php:229
+#: includes/classes/UCG_Fidelity_Admin.php:120
+#: includes/events/event-admin.php:719 includes/events/event-frontend.php:672
+#: includes/events/event-frontend.php:875
+msgid "Data"
+msgstr "Data"
+
+#: includes/classes/coupon-options-admin.php:688
+msgid "Messaggio"
+msgstr "Messaggio"
+
+#: includes/classes/coupon-options-admin.php:696
+msgid "Nessun errore registrato nel database."
+msgstr "Nessun errore registrato nel database."
+
+#: includes/classes/coupon-options-admin.php:702
+msgid "Svuota registro"
+msgstr "Svuota registro"
+
+#: includes/classes/coupon-options-admin.php:708
+msgid "File di log PHP"
+msgstr "File di log PHP"
+
+#: includes/classes/coupon-options-admin.php:716
+msgid "Nessun messaggio disponibile nel file ucg_error.log."
+msgstr "Nessun messaggio disponibile nel file ucg_error.log."
+
+#: includes/classes/coupon-options-admin.php:722
+msgid "Svuota file"
+msgstr "Svuota file"
+
+#: includes/classes/coupon-options-admin.php:728
+msgid "Errori invio email"
+msgstr "Errori invio email"
+
+#: includes/classes/coupon-options-admin.php:731
+msgid "Destinatario"
+msgstr "Destinatario"
+
+#: includes/classes/coupon-options-admin.php:731
+#: includes/classes/UCG_Email_Marketing.php:131
+msgid "Oggetto"
+msgstr "Oggetto"
+
+#: includes/classes/coupon-options-admin.php:745
+msgid "Non risultano invii email falliti."
+msgstr "Non risultano invii email falliti."
+
+#: includes/classes/coupon-options-email.php:18
+msgid "Crea almeno un set di coupon per configurare le email automatiche."
+msgstr "Crea almeno un set di coupon per configurare le email automatiche."
+
+#: includes/classes/coupon-options-email.php:19
+msgid "Vai alla scheda \"Set e generazione\" per creare il tuo primo set."
+msgstr "Vai alla scheda \"Set e generazione\" per creare il tuo primo set."
+
+#: includes/classes/coupon-options-email.php:48
+msgid "Opzioni email aggiornate correttamente."
+msgstr "Opzioni email aggiornate correttamente."
+
+#: includes/classes/coupon-options-email.php:56
+#: includes/classes/email-functions.php:46
+msgid "Il tuo codice coupon"
+msgstr "Il tuo codice coupon"
+
+#: includes/classes/coupon-options-email.php:57
+msgid "Ciao {user_name}, ecco il tuo coupon: {coupon_code}<br>{qr_code}"
+msgstr "Ciao {user_name}, ecco il tuo coupon: {coupon_code}<br>{qr_code}"
+
+#: includes/classes/coupon-options-email.php:59
+#: includes/classes/coupon-options-email.php:118
+#: includes/classes/email-functions.php:49
+#: includes/classes/email-functions.php:120
+msgid "Il Team"
+msgstr "Il Team"
+
+#: includes/classes/coupon-options-email.php:61
+#: includes/classes/email-functions.php:118
+msgid "Ricorda di utilizzare il tuo coupon!"
+msgstr "Ricorda di utilizzare il tuo coupon!"
+
+#: includes/classes/coupon-options-email.php:66
+msgid "Nome e cognome del destinatario"
+msgstr "Nome e cognome del destinatario"
+
+#: includes/classes/coupon-options-email.php:67
+msgid "Codice coupon generato"
+msgstr "Codice coupon generato"
+
+#: includes/classes/coupon-options-email.php:68
+msgid "QR code pronto da scansionare"
+msgstr "QR code pronto da scansionare"
+
+#: includes/classes/coupon-options-email.php:69
+msgid "Data di scadenza del coupon"
+msgstr "Data di scadenza del coupon"
+
+#: includes/classes/coupon-options-email.php:78
+msgid "Set di coupon"
+msgstr "Set di coupon"
+
+#: includes/classes/coupon-options-email.php:79
+msgid "Set disponibili"
+msgstr "Set disponibili"
+
+#: includes/classes/coupon-options-email.php:98
+msgid "Segnaposto rapidi"
+msgstr "Segnaposto rapidi"
+
+#: includes/classes/coupon-options-email.php:109
+#, php-format
+msgid "Notifiche per il set \"%s\""
+msgstr "Notifiche per il set \"%s\""
+
+#: includes/classes/coupon-options-email.php:115
+msgid "Mittente"
+msgstr "Mittente"
+
+#: includes/classes/coupon-options-email.php:117
+msgid "Nome mittente"
+msgstr "Nome mittente"
+
+#: includes/classes/coupon-options-email.php:121
+#: includes/events/event-admin.php:646
+msgid "Email mittente"
+msgstr "Email mittente"
+
+#: includes/classes/coupon-options-email.php:127
+msgid "Email di consegna"
+msgstr "Email di consegna"
+
+#: includes/classes/coupon-options-email.php:129
+msgid "Oggetto email"
+msgstr "Oggetto email"
+
+#: includes/classes/coupon-options-email.php:130
+msgid "Il tuo coupon è pronto"
+msgstr "Il tuo coupon è pronto"
+
+#: includes/classes/coupon-options-email.php:133
+msgid "Corpo email"
+msgstr "Corpo email"
+
+#: includes/classes/coupon-options-email.php:143
+msgid "Promemoria automatico"
+msgstr "Promemoria automatico"
+
+#: includes/classes/coupon-options-email.php:146
+msgid "Giorni dopo l'invio"
+msgstr "Giorni dopo l'invio"
+
+#: includes/classes/coupon-options-email.php:148
+msgid "Imposta 0 per disattivare il promemoria."
+msgstr "Imposta 0 per disattivare il promemoria."
+
+#: includes/classes/coupon-options-email.php:151
+msgid "Messaggio promemoria"
+msgstr "Messaggio promemoria"
+
+#: includes/classes/coupon-options-email.php:152
+msgid "Ciao {user_name}, hai già utilizzato il tuo coupon?"
+msgstr "Ciao {user_name}, hai già utilizzato il tuo coupon?"
+
+#: includes/classes/coupon-options-email.php:159
+msgid "Salva impostazioni email"
+msgstr "Salva impostazioni email"
+
+#: includes/classes/coupon-options-pages.php:24
+msgid "Errore nella creazione della pagina."
+msgstr "Errore nella creazione della pagina."
+
+#: includes/classes/coupon-options-pages.php:26
+msgid "Pagina creata con successo."
+msgstr "Pagina creata con successo."
+
+#: includes/classes/coupon-options-pages.php:32
+msgid "Crea pagine"
+msgstr "Crea pagine"
+
+#: includes/classes/coupon-options-pages.php:36
+msgid "Tipo di pagina"
+msgstr "Tipo di pagina"
+
+#: includes/classes/coupon-options-pages.php:39
+msgid "Richiedi coupon"
+msgstr "Richiedi coupon"
+
+#: includes/classes/coupon-options-pages.php:40
+#: includes/classes/coupon-options-settings.php:118
+msgid "Thank You"
+msgstr "Thank You"
+
+#: includes/classes/coupon-options-pages.php:45
+msgid "Titolo della pagina"
+msgstr "Titolo della pagina"
+
+#: includes/classes/coupon-options-pages.php:49
+msgid "Contenuto della pagina"
+msgstr "Contenuto della pagina"
+
+#: includes/classes/coupon-options-pages.php:57
+#: includes/classes/ucg-shortcodes-admin.php:23
+#: includes/classes/ucg-shortcodes-admin.php:87
+msgid "Crea pagina"
+msgstr "Crea pagina"
+
+#: includes/classes/coupon-options-settings.php:74
+#: includes/classes/coupon-options-settings.php:363
+#, php-format
+msgid "Richiedi %s"
+msgstr "Richiedi %s"
+
+#: includes/classes/coupon-options-settings.php:84
+#, php-format
+msgid "Set creato con successo. %sVisualizza pagina%s"
+msgstr "Set creato con successo. %sVisualizza pagina%s"
+
+#: includes/classes/coupon-options-settings.php:120
+msgid "Grazie per aver richiesto il tuo coupon!"
+msgstr "Grazie per aver richiesto il tuo coupon!"
+
+#: includes/classes/coupon-options-settings.php:128
+msgid "Verifica QR"
+msgstr "Verifica QR"
+
+#: includes/classes/coupon-options-settings.php:139
+msgid "Impostazioni del set salvate correttamente."
+msgstr "Impostazioni del set salvate correttamente."
+
+#: includes/classes/coupon-options-settings.php:150
+msgid "Set pronto! Configura anche le email"
+msgstr "Set pronto! Configura anche le email"
+
+#: includes/classes/coupon-options-settings.php:151
+msgid ""
+"Per completare l'esperienza utente imposta ora il mittente e il contenuto "
+"delle comunicazioni automatiche."
+msgstr ""
+"Per completare l'esperienza utente imposta ora il mittente e il contenuto "
+"delle comunicazioni automatiche."
+
+#: includes/classes/coupon-options-settings.php:153
+msgid "Vai alle opzioni email"
+msgstr "Vai alle opzioni email"
+
+#: includes/classes/coupon-options-settings.php:154
+msgid "Più tardi"
+msgstr "Più tardi"
+
+#: includes/classes/coupon-options-settings.php:164
+msgid ""
+"Le impostazioni generali sono state salvate. Inserisci un codice base per "
+"creare un nuovo set."
+msgstr ""
+"Le impostazioni generali sono state salvate. Inserisci un codice base per "
+"creare un nuovo set."
+
+#: includes/classes/coupon-options-settings.php:192
+#: includes/classes/coupon-options-settings.php:353
+#: includes/classes/coupon-view-display.php:282
+#: includes/classes/coupon-view-display.php:333
+#: includes/classes/coupon-view-table.php:69
+#: includes/classes/UCG_Downloaded_Coupons.php:110
+#: includes/classes/UCG_Downloaded_Coupons.php:124
+#: includes/classes/UCG_Downloaded_Coupons.php:227
+#: includes/classes/UCG_Email_Marketing.php:105
+#: includes/classes/UCG_Fidelity_Admin.php:140
+#: includes/classes/UCG_User_Profiles.php:123
+#: includes/classes/UCG_User_Profiles.php:176
+#: includes/classes/UCG_User_Profiles.php:216
+#: includes/classes/UCG_User_Profiles.php:262
+#: includes/events/event-admin.php:557 includes/events/event-frontend.php:148
+#: includes/events/event-frontend.php:649
+#: includes/events/event-frontend.php:852
+msgid "Nome"
+msgstr "Nome"
+
+#: includes/classes/coupon-options-settings.php:193
+#: includes/classes/coupon-view-display.php:283
+#: includes/classes/coupon-view-display.php:334
+#: includes/classes/coupon-view-table.php:70
+#: includes/classes/UCG_Email_Marketing.php:105
+#: includes/classes/UCG_Fidelity_Admin.php:140
+#: includes/classes/UCG_User_Profiles.php:123
+#: includes/classes/UCG_User_Profiles.php:177
+#: includes/classes/UCG_User_Profiles.php:217
+#: includes/classes/UCG_User_Profiles.php:266
+#: includes/events/event-frontend.php:149
+msgid "Cognome"
+msgstr "Cognome"
+
+#: includes/classes/coupon-options-settings.php:194
+#: includes/classes/coupon-view-display.php:284
+#: includes/classes/coupon-view-display.php:335
+#: includes/classes/coupon-view-table.php:71
+#: includes/classes/UCG_Downloaded_Coupons.php:111
+#: includes/classes/UCG_Downloaded_Coupons.php:125
+#: includes/classes/UCG_Downloaded_Coupons.php:228
+#: includes/classes/UCG_Email_Marketing.php:105
+#: includes/classes/UCG_Fidelity_Admin.php:140
+#: includes/classes/UCG_User_Profiles.php:123
+#: includes/classes/UCG_User_Profiles.php:178
+#: includes/classes/UCG_User_Profiles.php:218
+#: includes/classes/UCG_User_Profiles.php:270
+#: includes/events/event-admin.php:857 includes/events/event-frontend.php:150
+#: includes/events/event-frontend.php:651
+#: includes/events/event-frontend.php:854
+msgid "Email"
+msgstr "Email"
+
+#: includes/classes/coupon-options-settings.php:195
+#: includes/classes/coupon-view-display.php:285
+#: includes/classes/coupon-view-display.php:336
+#: includes/classes/coupon-view-table.php:72
+#: includes/classes/UCG_Fidelity_Admin.php:140
+#: includes/classes/UCG_User_Profiles.php:123
+#: includes/classes/UCG_User_Profiles.php:179
+#: includes/classes/UCG_User_Profiles.php:219
+#: includes/classes/UCG_User_Profiles.php:274
+#: includes/events/event-admin.php:858 includes/events/event-frontend.php:151
+#: includes/events/event-frontend.php:654
+#: includes/events/event-frontend.php:857
+msgid "Telefono"
+msgstr "Telefono"
+
+#: includes/classes/coupon-options-settings.php:196
+msgid "Data di nascita"
+msgstr "Data di nascita"
+
+#: includes/classes/coupon-options-settings.php:197
+#: includes/classes/coupon-view-display.php:286
+#: includes/classes/coupon-view-display.php:337
+#: includes/classes/coupon-view-table.php:73
+#: includes/classes/UCG_Email_Marketing.php:80
+#: includes/classes/UCG_Email_Marketing.php:105
+#: includes/classes/UCG_User_Profiles.php:91
+#: includes/classes/UCG_User_Profiles.php:123
+#: includes/classes/UCG_User_Profiles.php:180
+#: includes/classes/UCG_User_Profiles.php:220
+#: includes/classes/UCG_User_Profiles.php:278
+msgid "Città"
+msgstr "Città"
+
+#: includes/classes/coupon-options-settings.php:211
+msgid "Impostazioni generali"
+msgstr "Impostazioni generali"
+
+#: includes/classes/coupon-options-settings.php:212
+msgid ""
+"Definisci il comportamento predefinito per tutti i coupon generati dal "
+"plugin."
+msgstr ""
+"Definisci il comportamento predefinito per tutti i coupon generati dal "
+"plugin."
+
+#: includes/classes/coupon-options-settings.php:214
+msgid "Tipo di sconto"
+msgstr "Tipo di sconto"
+
+#: includes/classes/coupon-options-settings.php:216
+#: includes/classes/coupon-view-display.php:124
+msgid "Sconto fisso"
+msgstr "Sconto fisso"
+
+#: includes/classes/coupon-options-settings.php:217
+#: includes/classes/coupon-view-display.php:123
+msgid "Percentuale"
+msgstr "Percentuale"
+
+#: includes/classes/coupon-options-settings.php:221
+msgid "Valore predefinito"
+msgstr "Valore predefinito"
+
+#: includes/classes/coupon-options-settings.php:223
+msgid ""
+"Questo valore può essere personalizzato per singolo coupon in WooCommerce."
+msgstr ""
+"Questo valore può essere personalizzato per singolo coupon in WooCommerce."
+
+#: includes/classes/coupon-options-settings.php:228
+msgid "Nuovo set di coupon"
+msgstr "Nuovo set di coupon"
+
+#: includes/classes/coupon-options-settings.php:229
+msgid ""
+"Imposta nome, scadenza e pagine collegate per creare un nuovo set di "
+"distribuzione."
+msgstr ""
+"Imposta nome, scadenza e pagine collegate per creare un nuovo set di "
+"distribuzione."
+
+#: includes/classes/coupon-options-settings.php:231
+msgid "Codice base set"
+msgstr "Codice base set"
+
+#: includes/classes/coupon-options-settings.php:233
+msgid "Sarà utilizzato per generare i codici univoci e lo shortcode pubblico."
+msgstr ""
+"Sarà utilizzato per generare i codici univoci e lo shortcode pubblico."
+
+#: includes/classes/coupon-options-settings.php:237
+msgid "Validità (giorni)"
+msgstr "Validità (giorni)"
+
+#: includes/classes/coupon-options-settings.php:239
+msgid "Imposta 0 per nessuna scadenza relativa."
+msgstr "Imposta 0 per nessuna scadenza relativa."
+
+#: includes/classes/coupon-options-settings.php:242
+msgid "Data di scadenza fissa"
+msgstr "Data di scadenza fissa"
+
+#: includes/classes/coupon-options-settings.php:244
+msgid "Opzionale. Se impostata, sovrascrive la scadenza relativa."
+msgstr "Opzionale. Se impostata, sovrascrive la scadenza relativa."
+
+#: includes/classes/coupon-options-settings.php:248
+#: includes/events/event-admin.php:634
+msgid "Pagina di ringraziamento"
+msgstr "Pagina di ringraziamento"
+
+#: includes/classes/coupon-options-settings.php:250
+msgid "— Nessun redirect —"
+msgstr "— Nessun redirect —"
+
+#: includes/classes/coupon-options-settings.php:258
+msgid "Genera automaticamente la pagina di ringraziamento"
+msgstr "Genera automaticamente la pagina di ringraziamento"
+
+#: includes/classes/coupon-options-settings.php:259
+msgid "Genera la pagina di verifica QR"
+msgstr "Genera la pagina di verifica QR"
+
+#: includes/classes/coupon-options-settings.php:267
+msgid "Campi del modulo"
+msgstr "Campi del modulo"
+
+#: includes/classes/coupon-options-settings.php:268
+msgid ""
+"Scegli quali informazioni chiedere all'utente e aggiungi eventuali campi "
+"personalizzati."
+msgstr ""
+"Scegli quali informazioni chiedere all'utente e aggiungi eventuali campi "
+"personalizzati."
+
+#: includes/classes/coupon-options-settings.php:275
+msgid "Consigliato"
+msgstr "Consigliato"
+
+#: includes/classes/coupon-options-settings.php:282
+msgid "Etichetta campo personalizzato"
+msgstr "Etichetta campo personalizzato"
+
+#: includes/classes/coupon-options-settings.php:286
+msgid "Slug campo (minuscole senza spazi)"
+msgstr "Slug campo (minuscole senza spazi)"
+
+#: includes/classes/coupon-options-settings.php:293
+msgid "Programma fidelity"
+msgstr "Programma fidelity"
+
+#: includes/classes/coupon-options-settings.php:294
+msgid "Premia i clienti che richiedono il coupon assegnando punti automatici."
+msgstr ""
+"Premia i clienti che richiedono il coupon assegnando punti automatici."
+
+#: includes/classes/coupon-options-settings.php:297
+msgid "Attiva fidelity per questo set"
+msgstr "Attiva fidelity per questo set"
+
+#: includes/classes/coupon-options-settings.php:302
+msgid "Punti per ogni € speso"
+msgstr "Punti per ogni € speso"
+
+#: includes/classes/coupon-options-settings.php:306
+msgid "Punti di benvenuto"
+msgstr "Punti di benvenuto"
+
+#: includes/classes/coupon-options-settings.php:309
+msgid "I punti vengono registrati automaticamente nel terminal fidelity."
+msgstr "I punti vengono registrati automaticamente nel terminal fidelity."
+
+#: includes/classes/coupon-options-settings.php:316
+msgid "Privacy e pagine collegate"
+msgstr "Privacy e pagine collegate"
+
+#: includes/classes/coupon-options-settings.php:317
+msgid ""
+"Assicurati di informare gli utenti e collega eventuali pagine di policy."
+msgstr ""
+"Assicurati di informare gli utenti e collega eventuali pagine di policy."
+
+#: includes/classes/coupon-options-settings.php:320
+msgid "Richiedi conferma della privacy nel form"
+msgstr "Richiedi conferma della privacy nel form"
+
+#: includes/classes/coupon-options-settings.php:325
+msgid "Pagina informativa"
+msgstr "Pagina informativa"
+
+#: includes/classes/coupon-options-settings.php:327
+msgid "— Seleziona pagina —"
+msgstr "— Seleziona pagina —"
+
+#: includes/classes/coupon-options-settings.php:334
+msgid "Il link verrà mostrato accanto alla checkbox di consenso."
+msgstr "Il link verrà mostrato accanto alla checkbox di consenso."
+
+#: includes/classes/coupon-options-settings.php:340
+msgid "Salva set e impostazioni"
+msgstr "Salva set e impostazioni"
+
+#: includes/classes/coupon-options-settings.php:349
+msgid "Set configurati"
+msgstr "Set configurati"
+
+#: includes/classes/coupon-options-settings.php:350
+msgid ""
+"Riepilogo dei set creati con link rapidi alle pagine pubbliche e agli "
+"shortcode."
+msgstr ""
+"Riepilogo dei set creati con link rapidi alle pagine pubbliche e agli "
+"shortcode."
+
+#: includes/classes/coupon-options-settings.php:355
+msgid "Campi richiesti"
+msgstr "Campi richiesti"
+
+#: includes/classes/coupon-options-settings.php:357
+#: includes/classes/coupon-view-table.php:18
+#: includes/classes/coupon-view-table.php:81
+#: includes/events/event-admin.php:560 includes/events/event-admin.php:604
+#: includes/events/event-admin.php:723
+msgid "Azioni"
+msgstr "Azioni"
+
+#: includes/classes/coupon-options-settings.php:361
+msgid "Attivo"
+msgstr "Attivo"
+
+#: includes/classes/coupon-options-settings.php:361
+msgid "Disattivo"
+msgstr "Disattivo"
+
+#: includes/classes/coupon-options-settings.php:371
+msgid "Apri pagina"
+msgstr "Apri pagina"
+
+#: includes/classes/coupon-options-settings.php:373
+msgid "Copiato!"
+msgstr "Copiato!"
+
+#: includes/classes/coupon-options-settings.php:373
+msgid "Copia shortcode"
+msgstr "Copia shortcode"
+
+#: includes/classes/coupon-shortcode.php:26
+msgid "Il coupon è già stato utilizzato."
+msgstr "Il coupon è già stato utilizzato."
+
+#: includes/classes/coupon-shortcode.php:28
+msgid "Il coupon è valido."
+msgstr "Il coupon è valido."
+
+#: includes/classes/coupon-shortcode.php:29
+#, php-format
+msgid "Sconto: %s"
+msgstr "Sconto: %s"
+
+#: includes/classes/coupon-shortcode.php:30
+#, php-format
+msgid "Tipo di sconto: %s"
+msgstr "Tipo di sconto: %s"
+
+#: includes/classes/coupon-shortcode.php:31
+msgid "Nessuna data di scadenza"
+msgstr "Nessuna data di scadenza"
+
+#: includes/classes/coupon-shortcode.php:32
+#, php-format
+msgid "Data di scadenza: %s"
+msgstr "Data di scadenza: %s"
+
+#: includes/classes/coupon-shortcode.php:38
+msgid "Vuoi segnarlo come utilizzato?"
+msgstr "Vuoi segnarlo come utilizzato?"
+
+#: includes/classes/coupon-shortcode.php:39
+#: includes/classes/coupon-view-display.php:172
+#: includes/events/event-frontend.php:888
+msgid "Sì"
+msgstr "Sì"
+
+#: includes/classes/coupon-shortcode.php:40
+#: includes/classes/coupon-view-display.php:172
+#: includes/events/event-frontend.php:888
+msgid "No"
+msgstr "No"
+
+#: includes/classes/coupon-shortcode.php:46
+#: includes/classes/coupon-shortcode.php:66
+msgid "Il coupon non è valido."
+msgstr "Il coupon non è valido."
+
+#: includes/classes/coupon-shortcode.php:49
+msgid "Per favore, inserisci un codice coupon."
+msgstr "Per favore, inserisci un codice coupon."
+
+#: includes/classes/coupon-shortcode.php:64
+msgid "Il coupon è stato segnato come utilizzato."
+msgstr "Il coupon è stato segnato come utilizzato."
+
+#: includes/classes/coupon-shortcode.php:72
+msgid "Inserisci il codice del coupon:"
+msgstr "Inserisci il codice del coupon:"
+
+#: includes/classes/coupon-shortcode.php:74
+#: includes/views/fidelity-points-display.php:5
+msgid "Verifica"
+msgstr "Verifica"
+
+#: includes/classes/coupon-user-functions.php:33
+#: includes/classes/coupon-user-registration.php:14
+msgid "Coupon preview disabled in Elementor"
+msgstr "Coupon preview disabled in Elementor"
+
+#: includes/classes/coupon-user-functions.php:40
+msgid "Hai già scaricato un coupon di questo set."
+msgstr "Hai già scaricato un coupon di questo set."
+
+#: includes/classes/coupon-user-functions.php:44
+msgid "Hai già ricevuto questo coupon."
+msgstr "Hai già ricevuto questo coupon."
+
+#: includes/classes/coupon-user-functions.php:48
+#: includes/classes/coupon-user-registration.php:119
+msgid "Anteprima coupon disabilitata"
+msgstr "Anteprima coupon disabilitata"
+
+#: includes/classes/coupon-user-functions.php:81
+msgid "Errore durante la generazione del coupon. Riprova più tardi."
+msgstr "Errore durante la generazione del coupon. Riprova più tardi."
+
+#: includes/classes/coupon-user-functions.php:84
+msgid "Devi accedere o registrarti per ricevere il tuo coupon."
+msgstr "Devi accedere o registrarti per ricevere il tuo coupon."
+
+#: includes/classes/coupon-user-registration.php:19
+msgid ""
+"Errore: il codice base del coupon non è stato specificato. Verifica lo "
+"shortcode: <code>[richiedi_coupon base=\"ILTUOSET\"]</code>."
+msgstr ""
+"Errore: il codice base del coupon non è stato specificato. Verifica lo "
+"shortcode: <code>[richiedi_coupon base=\"ILTUOSET\"]</code>."
+
+#: includes/classes/coupon-user-registration.php:65
+#: includes/shortcodes/fidelity-points.php:21
+msgid "Nonce non valido"
+msgstr "Nonce non valido"
+
+#: includes/classes/coupon-user-registration.php:83
+msgid "Per continuare è necessario accettare la Privacy Policy."
+msgstr "Per continuare è necessario accettare la Privacy Policy."
+
+#: includes/classes/coupon-user-registration.php:117
+msgid "Hai ricevuto questo coupon."
+msgstr "Hai ricevuto questo coupon."
+
+#: includes/classes/coupon-user-registration.php:148
+msgid "Errore durante la generazione del coupon."
+msgstr "Errore durante la generazione del coupon."
+
+#: includes/classes/coupon-user-registration.php:168
+msgid "Nome:"
+msgstr "Nome:"
+
+#: includes/classes/coupon-user-registration.php:173
+msgid "Cognome:"
+msgstr "Cognome:"
+
+#: includes/classes/coupon-user-registration.php:178
+msgid "Email:"
+msgstr "Email:"
+
+#: includes/classes/coupon-user-registration.php:183
+msgid "Prefisso:"
+msgstr "Prefisso:"
+
+#: includes/classes/coupon-user-registration.php:185
+msgid "+39 (Italia)"
+msgstr "+39 (Italia)"
+
+#: includes/classes/coupon-user-registration.php:186
+msgid "+1 (USA)"
+msgstr "+1 (USA)"
+
+#: includes/classes/coupon-user-registration.php:189
+msgid "Telefono:"
+msgstr "Telefono:"
+
+#: includes/classes/coupon-user-registration.php:194
+msgid "Data di Nascita:"
+msgstr "Data di Nascita:"
+
+#: includes/classes/coupon-user-registration.php:199
+msgid "Città:"
+msgstr "Città:"
+
+#: includes/classes/coupon-user-registration.php:214
+msgid "Privacy Policy"
+msgstr "Privacy Policy"
+
+#: includes/classes/coupon-user-registration.php:215
+msgid ""
+"Acconsento al trattamento dei dati personali così come indicato nella "
+"Privacy Policy."
+msgstr ""
+"Acconsento al trattamento dei dati personali così come indicato nella "
+"Privacy Policy."
+
+#: includes/classes/coupon-user-registration.php:218
+#, php-format
+msgid ""
+"Acconsento al trattamento dei dati personali così come indicato nella %s."
+msgstr ""
+"Acconsento al trattamento dei dati personali così come indicato nella %s."
+
+#: includes/classes/coupon-user-registration.php:229
+msgid "Richiedi il qr code"
+msgstr "Richiedi il qr code"
+
+#: includes/classes/coupon-user-shortcode.php:18
+msgid ""
+"Errore: shortcode malformato. Inserire attributo base, es. "
+"<code>[richiedi_coupon base=\"NCaloz\"]</code>."
+msgstr ""
+"Errore: shortcode malformato. Inserire attributo base, es. "
+"<code>[richiedi_coupon base=\"NCaloz\"]</code>."
+
+#: includes/classes/coupon-view-display.php:147
+msgid "Nessuna scadenza"
+msgstr "Nessuna scadenza"
+
+#: includes/classes/coupon-view-display.php:187
+msgid "Filtra coupon"
+msgstr "Filtra coupon"
+
+#: includes/classes/coupon-view-display.php:191
+msgid "Filtra per email"
+msgstr "Filtra per email"
+
+#: includes/classes/coupon-view-display.php:192
+msgid "Email cliente"
+msgstr "Email cliente"
+
+#: includes/classes/coupon-view-display.php:193
+msgid "Stato utilizzo"
+msgstr "Stato utilizzo"
+
+#: includes/classes/coupon-view-display.php:195
+msgid "Tutti gli stati"
+msgstr "Tutti gli stati"
+
+#: includes/classes/coupon-view-display.php:196
+#: includes/classes/UCG_Fidelity_Admin.php:140
+msgid "Utilizzati"
+msgstr "Utilizzati"
+
+#: includes/classes/coupon-view-display.php:197
+msgid "Non utilizzati"
+msgstr "Non utilizzati"
+
+#: includes/classes/coupon-view-display.php:199
+msgid "Applica filtri"
+msgstr "Applica filtri"
+
+#: includes/classes/coupon-view-display.php:200
+#: includes/classes/UCG_Email_Marketing.php:96
+#: includes/classes/UCG_User_Profiles.php:95
+msgid "Azzera"
+msgstr "Azzera"
+
+#: includes/classes/coupon-view-display.php:205
+msgid "Filtri attivi:"
+msgstr "Filtri attivi:"
+
+#: includes/classes/coupon-view-display.php:207
+#, php-format
+msgid "Email: %s"
+msgstr "Email: %s"
+
+#: includes/classes/coupon-view-display.php:210
+msgid "Solo utilizzati"
+msgstr "Solo utilizzati"
+
+#: includes/classes/coupon-view-display.php:212
+msgid "Solo da utilizzare"
+msgstr "Solo da utilizzare"
+
+#: includes/classes/coupon-view-display.php:223
+#: includes/classes/UCG_Downloaded_Coupons.php:133
+#: includes/classes/UCG_User_Profiles.php:107
+#: includes/events/event-admin.php:831 includes/events/event-admin.php:980
+msgid "Esporta CSV"
+msgstr "Esporta CSV"
+
+#: includes/classes/coupon-view-display.php:230
+#: includes/classes/UCG_User_Profiles.php:116
+msgid "Esporta PDF"
+msgstr "Esporta PDF"
+
+#: includes/classes/coupon-view-display.php:236
+msgid "Non sono presenti coupon con i filtri selezionati."
+msgstr "Non sono presenti coupon con i filtri selezionati."
+
+#: includes/classes/coupon-view-display.php:239
+msgid "Elenco coupon generati"
+msgstr "Elenco coupon generati"
+
+#: includes/classes/coupon-view-display.php:257
+#: includes/classes/coupon-view-display.php:318
+#: includes/classes/UCG_User_Profiles.php:149
+#: includes/classes/UCG_User_Profiles.php:202
+msgid "Non hai i permessi per esportare i dati."
+msgstr "Non hai i permessi per esportare i dati."
+
+#: includes/classes/coupon-view-display.php:275
+#: includes/classes/UCG_User_Profiles.php:167
+msgid "Impossibile generare il file CSV."
+msgstr "Impossibile generare il file CSV."
+
+#: includes/classes/coupon-view-display.php:281
+#: includes/classes/coupon-view-display.php:332
+msgid "Codice"
+msgstr "Codice"
+
+#: includes/classes/coupon-view-display.php:287
+#: includes/classes/coupon-view-display.php:338
+#: includes/classes/coupon-view-table.php:74
+msgid "Data di Nascita"
+msgstr "Data di Nascita"
+
+#: includes/classes/coupon-view-display.php:288
+#: includes/classes/coupon-view-display.php:339
+#: includes/classes/coupon-view-table.php:75
+msgid "Sconto"
+msgstr "Sconto"
+
+#: includes/classes/coupon-view-display.php:289
+#: includes/classes/coupon-view-display.php:340
+#: includes/classes/coupon-view-table.php:76
+msgid "Tipo di Sconto"
+msgstr "Tipo di Sconto"
+
+#: includes/classes/coupon-view-display.php:290
+#: includes/classes/coupon-view-display.php:341
+#: includes/classes/coupon-view-table.php:77
+msgid "Data di Scadenza"
+msgstr "Data di Scadenza"
+
+#: includes/classes/coupon-view-display.php:291
+#: includes/classes/coupon-view-display.php:342
+#: includes/classes/coupon-view-table.php:78
+msgid "Data di Scaricamento"
+msgstr "Data di Scaricamento"
+
+#: includes/classes/coupon-view-display.php:292
+#: includes/classes/coupon-view-display.php:343
+#: includes/classes/coupon-view-table.php:79
+#: includes/events/event-helpers.php:421
+msgid "Usato"
+msgstr "Usato"
+
+#: includes/classes/coupon-view-display.php:327
+#: includes/classes/UCG_User_Profiles.php:211
+msgid "Impossibile caricare il generatore PDF."
+msgstr "Impossibile caricare il generatore PDF."
+
+#: includes/classes/coupon-view-display.php:330
+msgid "Elenco Coupon"
+msgstr "Elenco Coupon"
+
+#: includes/classes/coupon-view-display.php:347
+msgid "Nessun coupon disponibile per i filtri selezionati."
+msgstr "Nessun coupon disponibile per i filtri selezionati."
+
+#: includes/classes/coupon-view-table.php:12
+msgid "Set di Coupon"
+msgstr "Set di Coupon"
+
+#: includes/classes/coupon-view-table.php:16
+msgid "Nome Set"
+msgstr "Nome Set"
+
+#: includes/classes/coupon-view-table.php:44
+msgid "Copia URL"
+msgstr "Copia URL"
+
+#: includes/classes/coupon-view-table.php:46
+msgid "Sei sicuro di voler eliminare questo set?"
+msgstr "Sei sicuro di voler eliminare questo set?"
+
+#: includes/classes/coupon-view-table.php:47
+#: includes/classes/coupon-view-table.php:114
+msgid "Elimina"
+msgstr "Elimina"
+
+#: includes/classes/coupon-view-table.php:54
+#: includes/classes/ucg-shortcodes-admin.php:28
+msgid "Nessun set di coupon disponibile."
+msgstr "Nessun set di coupon disponibile."
+
+#: includes/classes/coupon-view-table.php:64
+msgid "Coupon Esistenti"
+msgstr "Coupon Esistenti"
+
+#: includes/classes/coupon-view-table.php:68
+msgid "Codice Coupon"
+msgstr "Codice Coupon"
+
+#: includes/classes/coupon-view-table.php:80
+#: includes/classes/email-functions.php:52 includes/events/event-emails.php:96
+msgid "QR Code"
+msgstr "QR Code"
+
+#: includes/classes/coupon-view-table.php:103
+msgid "Scarica QR"
+msgstr "Scarica QR"
+
+#: includes/classes/coupon-view-table.php:106
+msgid "Nessun QR disponibile"
+msgstr "Nessun QR disponibile"
+
+#: includes/classes/coupon-view-table.php:113
+msgid "Sei sicuro di voler eliminare questo coupon?"
+msgstr "Sei sicuro di voler eliminare questo coupon?"
+
+#: includes/classes/coupon-view-table.php:122
+msgid "Nessun coupon trovato per i filtri selezionati."
+msgstr "Nessun coupon trovato per i filtri selezionati."
+
+#: includes/classes/email-functions.php:24
+msgid "Tentativo di invio email senza licenza valida."
+msgstr "Tentativo di invio email senza licenza valida."
+
+#: includes/classes/email-functions.php:35
+#, php-format
+msgid ""
+"❌ Tentativo di inviare email per un set inesistente o non configurato: %s"
+msgstr ""
+"❌ Tentativo di inviare email per un set inesistente o non configurato: %s"
+
+#: includes/classes/email-functions.php:47
+msgid "Grazie {user_name}! Il tuo codice è {coupon_code}<br>{qr_code}"
+msgstr "Grazie {user_name}! Il tuo codice è {coupon_code}<br>{qr_code}"
+
+#: includes/classes/email-functions.php:69
+#, php-format
+msgid "❌ Errore nell'invio della email per il coupon: %s"
+msgstr "❌ Errore nell'invio della email per il coupon: %s"
+
+#: includes/classes/email-functions.php:75
+#, php-format
+msgid "🧪 Debug wp_mail - Oggetto: %1$s | Headers: %2$s | Body: %3$s"
+msgstr "🧪 Debug wp_mail - Oggetto: %1$s | Headers: %2$s | Body: %3$s"
+
+#: includes/classes/email-functions.php:85
+#, php-format
+msgid "✅ Email inviata correttamente a: %s"
+msgstr "✅ Email inviata correttamente a: %s"
+
+#: includes/classes/email-functions.php:99
+msgid "Tentativo di invio remind senza licenza valida."
+msgstr "Tentativo di invio remind senza licenza valida."
+
+#: includes/classes/email-functions.php:151
+#, php-format
+msgid "Ciao {user_name}, %s"
+msgstr "Ciao {user_name}, %s"
+
+#: includes/classes/email-functions.php:154
+#, php-format
+msgid "Promemoria: usa il tuo coupon %s"
+msgstr "Promemoria: usa il tuo coupon %s"
+
+#: includes/classes/ucg-shortcodes-admin.php:8
+msgid "Pagine coupon generate"
+msgstr "Pagine coupon generate"
+
+#: includes/classes/ucg-shortcodes-admin.php:9
+msgid ""
+"Crea o modifica rapidamente le pagine pubbliche associate ai tuoi set di "
+"coupon."
+msgstr ""
+"Crea o modifica rapidamente le pagine pubbliche associate ai tuoi set di "
+"coupon."
+
+#: includes/classes/ucg-shortcodes-admin.php:11
+#: includes/classes/ucg-shortcodes-admin.php:41
+#: includes/classes/ucg-shortcodes-admin.php:79
+msgid "Descrizione"
+msgstr "Descrizione"
+
+#: includes/classes/ucg-shortcodes-admin.php:11
+#: includes/classes/ucg-shortcodes-admin.php:41
+#: includes/classes/ucg-shortcodes-admin.php:79
+#: includes/classes/UCG_Fidelity_Admin.php:120
+msgid "Azione"
+msgstr "Azione"
+
+#: includes/classes/ucg-shortcodes-admin.php:15
+#, php-format
+msgid "Modulo richiesta coupon per il set %s"
+msgstr "Modulo richiesta coupon per il set %s"
+
+#: includes/classes/ucg-shortcodes-admin.php:20
+#: includes/classes/ucg-shortcodes-admin.php:84
+msgid "Modifica pagina"
+msgstr "Modifica pagina"
+
+#: includes/classes/ucg-shortcodes-admin.php:39
+msgid "Shortcode eventi"
+msgstr "Shortcode eventi"
+
+#: includes/classes/ucg-shortcodes-admin.php:45
+#, php-format
+msgid "Modulo richiesta ticket per l'evento \"%s\""
+msgstr "Modulo richiesta ticket per l'evento \"%s\""
+
+#: includes/classes/ucg-shortcodes-admin.php:50
+msgid "Modifica pagina evento"
+msgstr "Modifica pagina evento"
+
+#: includes/classes/ucg-shortcodes-admin.php:53
+msgid "Crea pagina evento"
+msgstr "Crea pagina evento"
+
+#: includes/classes/ucg-shortcodes-admin.php:58
+msgid "Non sono presenti eventi."
+msgstr "Non sono presenti eventi."
+
+#: includes/classes/ucg-shortcodes-admin.php:68
+msgid "Form per verificare i coupon"
+msgstr "Form per verificare i coupon"
+
+#: includes/classes/ucg-shortcodes-admin.php:69
+msgid "Terminale punti fidelity"
+msgstr "Terminale punti fidelity"
+
+#: includes/classes/ucg-shortcodes-admin.php:70
+msgid "Modulo visualizzazione punti"
+msgstr "Modulo visualizzazione punti"
+
+#: includes/classes/ucg-shortcodes-admin.php:71
+msgid "Verifica e convalida i ticket evento"
+msgstr "Verifica e convalida i ticket evento"
+
+#: includes/classes/ucg-shortcodes-admin.php:72
+msgid "Gestione pagamenti ticket per PR"
+msgstr "Gestione pagamenti ticket per PR"
+
+#: includes/classes/ucg-shortcodes-admin.php:76
+msgid "Shortcode disponibili"
+msgstr "Shortcode disponibili"
+
+#: includes/classes/ucg-shortcodes-admin.php:77
+msgid ""
+"Utilizza questi shortcode per creare pagine personalizzate o integrare le "
+"funzionalità del plugin."
+msgstr ""
+"Utilizza questi shortcode per creare pagine personalizzate o integrare le "
+"funzionalità del plugin."
+
+#: includes/classes/ucg-welcome.php:13
+msgid "Benvenuto in Unique Coupon Generator"
+msgstr "Benvenuto in Unique Coupon Generator"
+
+#: includes/classes/ucg-welcome.php:14
+msgid ""
+"Gestisci coupon, programmi fidelity, eventi e comunicazioni marketing da un "
+"unico pannello coerente con WordPress."
+msgstr ""
+"Gestisci coupon, programmi fidelity, eventi e comunicazioni marketing da un "
+"unico pannello coerente con WordPress."
+
+#: includes/classes/ucg-welcome.php:27
+msgid "Pagina di benvenuto"
+msgstr "Pagina di benvenuto"
+
+#: includes/classes/ucg-welcome.php:28
+msgid "Welcome"
+msgstr "Welcome"
+
+#: includes/classes/UCG_Downloaded_Coupons.php:16
+msgid "Coupon Scaricati per Set"
+msgstr "Coupon Scaricati per Set"
+
+#: includes/classes/UCG_Downloaded_Coupons.php:113
+msgid "Verificato?"
+msgstr "Verificato?"
+
+#: includes/classes/UCG_Downloaded_Coupons.php:119
+#: includes/classes/UCG_Email_Marketing.php:95
+#: includes/classes/UCG_User_Profiles.php:94
+#: includes/events/event-admin.php:827 includes/events/event-admin.php:976
+msgid "Filtra"
+msgstr "Filtra"
+
+#: includes/classes/UCG_Downloaded_Coupons.php:126
+msgid "Data Scaricamento"
+msgstr "Data Scaricamento"
+
+#: includes/classes/UCG_Downloaded_Coupons.php:127
+#: includes/classes/UCG_Downloaded_Coupons.php:230
+#: includes/classes/UCG_Email_Marketing.php:92
+#: includes/classes/UCG_Email_Marketing.php:257
+msgid "Verificato"
+msgstr "Verificato"
+
+#: includes/classes/UCG_Downloaded_Coupons.php:132
+msgid "Carica di più"
+msgstr "Carica di più"
+
+#: includes/classes/UCG_Email_Marketing.php:76
+msgid "Filtra destinatari"
+msgstr "Filtra destinatari"
+
+#: includes/classes/UCG_Email_Marketing.php:81
+#: includes/classes/UCG_User_Profiles.php:92
+msgid "Età da"
+msgstr "Età da"
+
+#: includes/classes/UCG_Email_Marketing.php:82
+#: includes/classes/UCG_User_Profiles.php:93
+msgid "Età a"
+msgstr "Età a"
+
+#: includes/classes/UCG_Email_Marketing.php:84
+msgid "Tutti i set"
+msgstr "Tutti i set"
+
+#: includes/classes/UCG_Email_Marketing.php:90
+msgid "Stato verifica"
+msgstr "Stato verifica"
+
+#: includes/classes/UCG_Email_Marketing.php:91
+#: includes/classes/UCG_Email_Marketing.php:259
+msgid "Scaricato non verificato"
+msgstr "Scaricato non verificato"
+
+#: includes/classes/UCG_Email_Marketing.php:93
+#: includes/classes/UCG_Email_Marketing.php:262
+msgid "Mai scaricato"
+msgstr "Mai scaricato"
+
+#: includes/classes/UCG_Email_Marketing.php:103
+msgid "Destinatari"
+msgstr "Destinatari"
+
+#: includes/classes/UCG_Email_Marketing.php:105
+msgid "Età"
+msgstr "Età"
+
+#: includes/classes/UCG_Email_Marketing.php:105
+msgid "Coupon"
+msgstr "Coupon"
+
+#: includes/classes/UCG_Email_Marketing.php:120
+msgid "Nessun destinatario corrisponde ai filtri scelti."
+msgstr "Nessun destinatario corrisponde ai filtri scelti."
+
+#: includes/classes/UCG_Email_Marketing.php:123
+msgid "Selezionati: 0"
+msgstr "Selezionati: 0"
+
+#: includes/classes/UCG_Email_Marketing.php:128
+msgid "Componi email"
+msgstr "Componi email"
+
+#: includes/classes/UCG_Email_Marketing.php:129
+msgid "Destinatari selezionati:"
+msgstr "Destinatari selezionati:"
+
+#: includes/classes/UCG_Email_Marketing.php:132
+msgid "Titolo della campagna"
+msgstr "Titolo della campagna"
+
+#: includes/classes/UCG_Email_Marketing.php:136
+msgid "Scegli template"
+msgstr "Scegli template"
+
+#: includes/classes/UCG_Email_Marketing.php:144
+msgid "Invia email"
+msgstr "Invia email"
+
+#: includes/classes/UCG_Email_Marketing.php:163
+msgid "Selezionati:"
+msgstr "Selezionati:"
+
+#: includes/classes/UCG_Email_Marketing.php:203
+msgid "Si è verificato un errore durante l'invio."
+msgstr "Si è verificato un errore durante l'invio."
+
+#: includes/classes/UCG_Email_Marketing.php:230
+msgid "Dati mancanti."
+msgstr "Dati mancanti."
+
+#: includes/classes/UCG_Email_Marketing.php:251
+msgid "Email inviate correttamente."
+msgstr "Email inviate correttamente."
+
+#: includes/classes/UCG_Email_Templates.php:23
+msgid "Template salvati correttamente."
+msgstr "Template salvati correttamente."
+
+#: includes/classes/UCG_Email_Templates.php:31
+msgid "Personalizza i messaggi da riutilizzare per le tue campagne email."
+msgstr "Personalizza i messaggi da riutilizzare per le tue campagne email."
+
+#: includes/classes/UCG_Email_Templates.php:36
+#: includes/classes/UCG_Email_Templates.php:48
+#: includes/classes/UCG_Email_Templates.php:73
+msgid "Nome template"
+msgstr "Nome template"
+
+#: includes/classes/UCG_Email_Templates.php:37
+msgid "Promo estiva"
+msgstr "Promo estiva"
+
+#: includes/classes/UCG_Email_Templates.php:40
+#: includes/classes/UCG_Email_Templates.php:52
+#: includes/classes/UCG_Email_Templates.php:73
+msgid "Contenuto"
+msgstr "Contenuto"
+
+#: includes/classes/UCG_Email_Templates.php:41
+msgid "Testo del messaggio"
+msgstr "Testo del messaggio"
+
+#: includes/classes/UCG_Email_Templates.php:59
+msgid "Aggiungi template"
+msgstr "Aggiungi template"
+
+#: includes/classes/UCG_Email_Templates.php:63
+msgid "Salva template"
+msgstr "Salva template"
+
+#: includes/classes/UCG_Email_Templates.php:73
+msgid "Nuovo template"
+msgstr "Nuovo template"
+
+#: includes/classes/UCG_FidelityManager.php:25
+msgid "Tentativo di modifica punti senza licenza valida."
+msgstr "Tentativo di modifica punti senza licenza valida."
+
+#: includes/classes/UCG_FidelityManager.php:48
+#, php-format
+msgid "Errore durante l'inserimento dei punti fidelity: %s"
+msgstr "Errore durante l'inserimento dei punti fidelity: %s"
+
+#: includes/classes/UCG_Fidelity_Admin.php:37
+msgid "Impostazioni fidelity salvate con successo."
+msgstr "Impostazioni fidelity salvate con successo."
+
+#: includes/classes/UCG_Fidelity_Admin.php:66
+msgid "Parametri fidelity"
+msgstr "Parametri fidelity"
+
+#: includes/classes/UCG_Fidelity_Admin.php:67
+msgid ""
+"Gestisci i punti assegnati automaticamente per ciascun set con fidelity "
+"attivo."
+msgstr ""
+"Gestisci i punti assegnati automaticamente per ciascun set con fidelity "
+"attivo."
+
+#: includes/classes/UCG_Fidelity_Admin.php:72
+#: includes/classes/UCG_Fidelity_Admin.php:120
+msgid "Set"
+msgstr "Set"
+
+#: includes/classes/UCG_Fidelity_Admin.php:72
+msgid "Punti per €"
+msgstr "Punti per €"
+
+#: includes/classes/UCG_Fidelity_Admin.php:72
+msgid "Punti iscrizione"
+msgstr "Punti iscrizione"
+
+#: includes/classes/UCG_Fidelity_Admin.php:87
+msgid "Salva impostazioni"
+msgstr "Salva impostazioni"
+
+#: includes/classes/UCG_Fidelity_Admin.php:91
+msgid "Non ci sono set con fidelity attivo al momento."
+msgstr "Non ci sono set con fidelity attivo al momento."
+
+#: includes/classes/UCG_Fidelity_Admin.php:96
+msgid "Consulta punti cliente"
+msgstr "Consulta punti cliente"
+
+#: includes/classes/UCG_Fidelity_Admin.php:100
+msgid "Email o codice QR"
+msgstr "Email o codice QR"
+
+#: includes/classes/UCG_Fidelity_Admin.php:101
+msgid "Email cliente o codice QR"
+msgstr "Email cliente o codice QR"
+
+#: includes/classes/UCG_Fidelity_Admin.php:102
+msgid "Cerca"
+msgstr "Cerca"
+
+#: includes/classes/UCG_Fidelity_Admin.php:106
+msgid "Nessun utente trovato con il valore indicato."
+msgstr "Nessun utente trovato con il valore indicato."
+
+#: includes/classes/UCG_Fidelity_Admin.php:112
+msgid "Riepilogo"
+msgstr "Riepilogo"
+
+#: includes/classes/UCG_Fidelity_Admin.php:113
+#, php-format
+msgid "Punti totali: %s"
+msgstr "Punti totali: %s"
+
+#: includes/classes/UCG_Fidelity_Admin.php:120
+#: includes/classes/UCG_Fidelity_Admin.php:140
+msgid "Punti"
+msgstr "Punti"
+
+#: includes/classes/UCG_Fidelity_Admin.php:120
+msgid "Tipo"
+msgstr "Tipo"
+
+#: includes/classes/UCG_Fidelity_Admin.php:120
+msgid "Importo"
+msgstr "Importo"
+
+#: includes/classes/UCG_Fidelity_Admin.php:138
+msgid "Clienti fidelizzati"
+msgstr "Clienti fidelizzati"
+
+#: includes/classes/UCG_Fidelity_Admin.php:140
+msgid "Speso"
+msgstr "Speso"
+
+#: includes/classes/UCG_User_Profiles.php:16
+#: includes/classes/UCG_User_Profiles.php:17
+#: includes/classes/UCG_User_Profiles.php:256
+msgid "Modifica utente"
+msgstr "Modifica utente"
+
+#: includes/classes/UCG_User_Profiles.php:86
+msgid "Segmenta utenti"
+msgstr "Segmenta utenti"
+
+#: includes/classes/UCG_User_Profiles.php:90
+msgid "Nome o email"
+msgstr "Nome o email"
+
+#: includes/classes/UCG_User_Profiles.php:121
+msgid "Anagrafiche disponibili"
+msgstr "Anagrafiche disponibili"
+
+#: includes/classes/UCG_User_Profiles.php:123
+msgid "Data Nascita"
+msgstr "Data Nascita"
+
+#: includes/classes/UCG_User_Profiles.php:125
+msgid "Nessun utente trovato con i filtri correnti."
+msgstr "Nessun utente trovato con i filtri correnti."
+
+#: includes/classes/UCG_User_Profiles.php:135
+#: includes/events/event-admin.php:745
+msgid "Modifica"
+msgstr "Modifica"
+
+#: includes/classes/UCG_User_Profiles.php:181
+#: includes/classes/UCG_User_Profiles.php:221
+#: includes/classes/UCG_User_Profiles.php:282
+msgid "Data nascita"
+msgstr "Data nascita"
+
+#: includes/classes/UCG_User_Profiles.php:225
+msgid "Nessun dato disponibile."
+msgstr "Nessun dato disponibile."
+
+#: includes/classes/UCG_User_Profiles.php:251
+#: includes/shortcodes/fidelity-terminal.php:28
+msgid "Utente non trovato."
+msgstr "Utente non trovato."
+
+#: includes/classes/UCG_User_Profiles.php:286
+msgid "Salva"
+msgstr "Salva"
+
+#: includes/classes/UCG_User_Profiles.php:303
+msgid "Si è verificato un errore durante il salvataggio."
+msgstr "Si è verificato un errore durante il salvataggio."
+
+#: includes/classes/UCG_User_Profiles.php:327
+msgid "Profilo salvato con successo."
+msgstr "Profilo salvato con successo."
+
+#: includes/events/event-admin.php:28 includes/events/event-admin.php:29
+msgid "Visualizza Ticket"
+msgstr "Visualizza Ticket"
+
+#: includes/events/event-admin.php:37 includes/events/event-admin.php:38
+#: includes/events/event-admin.php:965
+msgid "Report PR"
+msgstr "Report PR"
+
+#: includes/events/event-admin.php:58 includes/events/event-admin.php:580
+msgid "Aggiungi tipo di ticket"
+msgstr "Aggiungi tipo di ticket"
+
+#: includes/events/event-admin.php:59 includes/events/event-admin.php:575
+#: includes/events/event-admin.php:619
+msgid "Rimuovi"
+msgstr "Rimuovi"
+
+#: includes/events/event-admin.php:60 includes/events/event-admin.php:624
+msgid "Aggiungi PR"
+msgstr "Aggiungi PR"
+
+#: includes/events/event-admin.php:61
+msgid "Sei sicuro di voler rimuovere questa riga?"
+msgstr "Sei sicuro di voler rimuovere questa riga?"
+
+#: includes/events/event-admin.php:62 includes/events/event-admin.php:537
+msgid "Seleziona immagine"
+msgstr "Seleziona immagine"
+
+#: includes/events/event-admin.php:71
+msgid "Non hai i permessi sufficienti per eseguire questa azione."
+msgstr "Non hai i permessi sufficienti per eseguire questa azione."
+
+#: includes/events/event-admin.php:120
+msgid "Devi inserire almeno un tipo di ticket."
+msgstr "Devi inserire almeno un tipo di ticket."
+
+#: includes/events/event-admin.php:126
+msgid "Il numero massimo di ticket deve essere maggiore di zero."
+msgstr "Il numero massimo di ticket deve essere maggiore di zero."
+
+#: includes/events/event-admin.php:132
+msgid "L'indirizzo email del mittente non è valido."
+msgstr "L'indirizzo email del mittente non è valido."
+
+#: includes/events/event-admin.php:165
+msgid "Devi specificare la data dell'evento."
+msgstr "Devi specificare la data dell'evento."
+
+#: includes/events/event-admin.php:178
+msgid "Evento salvato correttamente."
+msgstr "Evento salvato correttamente."
+
+#: includes/events/event-admin.php:490
+#, php-format
+msgid "Modifica evento: %s"
+msgstr "Modifica evento: %s"
+
+#: includes/events/event-admin.php:492
+msgid "Crea nuovo evento"
+msgstr "Crea nuovo evento"
+
+#: includes/events/event-admin.php:527
+msgid "Titolo evento"
+msgstr "Titolo evento"
+
+#: includes/events/event-admin.php:530
+msgid "Descrizione evento"
+msgstr "Descrizione evento"
+
+#: includes/events/event-admin.php:534
+msgid "Immagine evento"
+msgstr "Immagine evento"
+
+#: includes/events/event-admin.php:543
+msgid "Data evento"
+msgstr "Data evento"
+
+#: includes/events/event-admin.php:546
+msgid "Ora evento"
+msgstr "Ora evento"
+
+#: includes/events/event-admin.php:549
+msgid "Luogo evento"
+msgstr "Luogo evento"
+
+#: includes/events/event-admin.php:552
+msgid "Numero massimo ticket"
+msgstr "Numero massimo ticket"
+
+#: includes/events/event-admin.php:555
+msgid "Tipi di ticket"
+msgstr "Tipi di ticket"
+
+#: includes/events/event-admin.php:558 includes/events/event-admin.php:860
+#: includes/events/event-frontend.php:682
+#: includes/events/event-frontend.php:885
+msgid "Prezzo"
+msgstr "Prezzo"
+
+#: includes/events/event-admin.php:559
+msgid "Massimo"
+msgstr "Massimo"
+
+#: includes/events/event-admin.php:583
+msgid "Opzioni pagamento"
+msgstr "Opzioni pagamento"
+
+#: includes/events/event-admin.php:584
+msgid "Pagamento con WooCommerce"
+msgstr "Pagamento con WooCommerce"
+
+#: includes/events/event-admin.php:585
+msgid "Pagamento in loco (ticket in stato \"Da pagare\")"
+msgstr "Pagamento in loco (ticket in stato \"Da pagare\")"
+
+#: includes/events/event-admin.php:588
+msgid "Privacy policy"
+msgstr "Privacy policy"
+
+#: includes/events/event-admin.php:589
+msgid "Mostra privacy policy nel form"
+msgstr "Mostra privacy policy nel form"
+
+#: includes/events/event-admin.php:590
+msgid "Seleziona pagina"
+msgstr "Seleziona pagina"
+
+#: includes/events/event-admin.php:598
+msgid "Gestione PR"
+msgstr "Gestione PR"
+
+#: includes/events/event-admin.php:599
+msgid "Abilita Gestione PR"
+msgstr "Abilita Gestione PR"
+
+#: includes/events/event-admin.php:602 includes/events/event-admin.php:1015
+msgid "Nome PR"
+msgstr "Nome PR"
+
+#: includes/events/event-admin.php:603
+msgid "Max ticket assegnabili"
+msgstr "Max ticket assegnabili"
+
+#: includes/events/event-admin.php:628
+msgid "Blocco emissione ticket"
+msgstr "Blocco emissione ticket"
+
+#: includes/events/event-admin.php:631
+msgid "Oltre questa data/ora il form front-end verrà bloccato."
+msgstr "Oltre questa data/ora il form front-end verrà bloccato."
+
+#: includes/events/event-admin.php:635
+msgid "Usa pagina corrente"
+msgstr "Usa pagina corrente"
+
+#: includes/events/event-admin.php:643
+msgid "Reminder (giorni prima)"
+msgstr "Reminder (giorni prima)"
+
+#: includes/events/event-admin.php:648
+msgid ""
+"Indirizzo email utilizzato come mittente delle comunicazioni dell’evento. "
+"Lascia vuoto per usare l’indirizzo predefinito."
+msgstr ""
+"Indirizzo email utilizzato come mittente delle comunicazioni dell’evento. "
+"Lascia vuoto per usare l’indirizzo predefinito."
+
+#: includes/events/event-admin.php:653
+msgid ""
+"Personalizza oggetto e contenuto delle email inviate dopo la richiesta del "
+"ticket e prima dell’evento. Lascia vuoto per usare il testo predefinito."
+msgstr ""
+"Personalizza oggetto e contenuto delle email inviate dopo la richiesta del "
+"ticket e prima dell’evento. Lascia vuoto per usare il testo predefinito."
+
+#: includes/events/event-admin.php:664
+msgid "Email di conferma"
+msgstr "Email di conferma"
+
+#: includes/events/event-admin.php:665
+msgid "Oggetto email di conferma"
+msgstr "Oggetto email di conferma"
+
+#: includes/events/event-admin.php:677
+msgid "Email promemoria"
+msgstr "Email promemoria"
+
+#: includes/events/event-admin.php:678
+msgid "Oggetto email promemoria"
+msgstr "Oggetto email promemoria"
+
+#: includes/events/event-admin.php:689
+msgid ""
+"Suggerimento: inserisci {qr_code} nel corpo dell’email se vuoi mostrare "
+"l’immagine del ticket."
+msgstr ""
+"Suggerimento: inserisci {qr_code} nel corpo dell’email se vuoi mostrare "
+"l’immagine del ticket."
+
+#: includes/events/event-admin.php:692
+msgid "Mostra contenuti evento"
+msgstr "Mostra contenuti evento"
+
+#: includes/events/event-admin.php:693
+msgid "Mostra titolo, descrizione e immagine nel front-end"
+msgstr "Mostra titolo, descrizione e immagine nel front-end"
+
+#: includes/events/event-admin.php:696
+msgid "Stato evento"
+msgstr "Stato evento"
+
+#: includes/events/event-admin.php:698
+msgid "Bozza"
+msgstr "Bozza"
+
+#: includes/events/event-admin.php:698
+msgid "Pubblicato"
+msgstr "Pubblicato"
+
+#: includes/events/event-admin.php:698
+msgid "Chiuso"
+msgstr "Chiuso"
+
+#: includes/events/event-admin.php:706
+msgid "Aggiorna evento"
+msgstr "Aggiorna evento"
+
+#: includes/events/event-admin.php:706
+msgid "Crea evento"
+msgstr "Crea evento"
+
+#: includes/events/event-admin.php:711
+msgid "Eventi esistenti"
+msgstr "Eventi esistenti"
+
+#: includes/events/event-admin.php:714
+msgid "Non ci sono eventi al momento."
+msgstr "Non ci sono eventi al momento."
+
+#: includes/events/event-admin.php:717 includes/events/event-admin.php:854
+msgid "ID"
+msgstr "ID"
+
+#: includes/events/event-admin.php:718 includes/events/event-frontend.php:669
+#: includes/events/event-frontend.php:872
+msgid "Titolo"
+msgstr "Titolo"
+
+#: includes/events/event-admin.php:746
+msgid "Ticket"
+msgstr "Ticket"
+
+#: includes/events/event-admin.php:764
+msgid "Permesso negato."
+msgstr "Permesso negato."
+
+#: includes/events/event-admin.php:773
+msgid "Stato non valido."
+msgstr "Stato non valido."
+
+#: includes/events/event-admin.php:789
+msgid "Stato evento aggiornato."
+msgstr "Stato evento aggiornato."
+
+#: includes/events/event-admin.php:821 includes/events/event-admin.php:970
+#: includes/events/event-emails.php:108
+msgid "Evento:"
+msgstr "Evento:"
+
+#: includes/events/event-admin.php:822
+msgid "Tutti gli eventi"
+msgstr "Tutti gli eventi"
+
+#: includes/events/event-admin.php:851
+msgid "Nessun ticket trovato."
+msgstr "Nessun ticket trovato."
+
+#: includes/events/event-admin.php:855 includes/events/event-frontend.php:666
+#: includes/events/event-frontend.php:869
+msgid "Evento"
+msgstr "Evento"
+
+#: includes/events/event-admin.php:856
+msgid "Cliente"
+msgstr "Cliente"
+
+#: includes/events/event-admin.php:859
+msgid "Tipo ticket"
+msgstr "Tipo ticket"
+
+#: includes/events/event-admin.php:862
+msgid "PR"
+msgstr "PR"
+
+#: includes/events/event-admin.php:863
+msgid "Ticket code"
+msgstr "Ticket code"
+
+#: includes/events/event-admin.php:864
+msgid "QR code"
+msgstr "QR code"
+
+#: includes/events/event-admin.php:880
+msgid "Scarica"
+msgstr "Scarica"
+
+#: includes/events/event-admin.php:971
+msgid "Seleziona evento"
+msgstr "Seleziona evento"
+
+#: includes/events/event-admin.php:985
+msgid "Seleziona un evento per visualizzare il report."
+msgstr "Seleziona un evento per visualizzare il report."
+
+#: includes/events/event-admin.php:992
+msgid "La gestione PR non è attiva per questo evento."
+msgstr "La gestione PR non è attiva per questo evento."
+
+#: includes/events/event-admin.php:999
+msgid "Nessun PR configurato per questo evento."
+msgstr "Nessun PR configurato per questo evento."
+
+#: includes/events/event-admin.php:1016
+msgid "Ticket assegnati"
+msgstr "Ticket assegnati"
+
+#: includes/events/event-admin.php:1017
+msgid "Limite"
+msgstr "Limite"
+
+#: includes/events/event-emails.php:83
+#, php-format
+msgid "Promemoria: %s sta per iniziare"
+msgstr "Promemoria: %s sta per iniziare"
+
+#: includes/events/event-emails.php:84
+#, php-format
+msgid "Il tuo ticket per %s"
+msgstr "Il tuo ticket per %s"
+
+#: includes/events/event-emails.php:99
+#, php-format
+msgid "Ciao %s,"
+msgstr "Ciao %s,"
+
+#: includes/events/event-emails.php:102
+msgid "Ti ricordiamo il tuo accesso all’evento."
+msgstr "Ti ricordiamo il tuo accesso all’evento."
+
+#: includes/events/event-emails.php:104
+msgid "Grazie per aver richiesto il tuo ticket digitale. Ecco i dettagli:"
+msgstr "Grazie per aver richiesto il tuo ticket digitale. Ecco i dettagli:"
+
+#: includes/events/event-emails.php:110 includes/events/event-frontend.php:131
+msgid "Data:"
+msgstr "Data:"
+
+#: includes/events/event-emails.php:113
+msgid "Orario:"
+msgstr "Orario:"
+
+#: includes/events/event-emails.php:116 includes/events/event-frontend.php:134
+msgid "Luogo:"
+msgstr "Luogo:"
+
+#: includes/events/event-emails.php:118
+msgid "Tipo di ticket:"
+msgstr "Tipo di ticket:"
+
+#: includes/events/event-emails.php:119
+msgid "Codice ticket:"
+msgstr "Codice ticket:"
+
+#: includes/events/event-emails.php:120
+msgid "Stato:"
+msgstr "Stato:"
+
+#: includes/events/event-emails.php:122
+msgid "Pagina evento:"
+msgstr "Pagina evento:"
+
+#: includes/events/event-emails.php:127
+msgid "Mostra questo codice all’ingresso per completare il check-in."
+msgstr "Mostra questo codice all’ingresso per completare il check-in."
+
+#: includes/events/event-frontend.php:73
+msgid "Evento non trovato."
+msgstr "Evento non trovato."
+
+#: includes/events/event-frontend.php:78
+msgid "Evento non disponibile."
+msgstr "Evento non disponibile."
+
+#: includes/events/event-frontend.php:86
+msgid "Evento concluso, ticket non più disponibili."
+msgstr "Evento concluso, ticket non più disponibili."
+
+#: includes/events/event-frontend.php:108
+#: includes/events/event-frontend.php:269
+msgid ""
+"Il tempo di emissione dei ticket è esaurito o i ticket non sono più "
+"disponibili. Contatta l’assistenza o l’organizzatore dell’evento."
+msgstr ""
+"Il tempo di emissione dei ticket è esaurito o i ticket non sono più "
+"disponibili. Contatta l’assistenza o l’organizzatore dell’evento."
+
+#: includes/events/event-frontend.php:114
+msgid "I ticket sono terminati."
+msgstr "I ticket sono terminati."
+
+#: includes/events/event-frontend.php:154
+msgid "Tipologia di ticket"
+msgstr "Tipologia di ticket"
+
+#: includes/events/event-frontend.php:164
+msgid "Esaurito"
+msgstr "Esaurito"
+
+#: includes/events/event-frontend.php:167
+#, php-format
+msgid "%d disponibile"
+msgid_plural "%d disponibili"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/events/event-frontend.php:174
+msgid "Nessun ticket disponibile al momento."
+msgstr "Nessun ticket disponibile al momento."
+
+#: includes/events/event-frontend.php:192
+msgid "Seleziona PR"
+msgstr "Seleziona PR"
+
+#: includes/events/event-frontend.php:193
+msgid "Seleziona"
+msgstr "Seleziona"
+
+#: includes/events/event-frontend.php:198
+msgid "Nessun ticket disponibile per i PR selezionati."
+msgstr "Nessun ticket disponibile per i PR selezionati."
+
+#: includes/events/event-frontend.php:206
+#: includes/events/event-frontend.php:215
+msgid "Metodo di pagamento"
+msgstr "Metodo di pagamento"
+
+#: includes/events/event-frontend.php:207
+msgid "Paga ora online"
+msgstr "Paga ora online"
+
+#: includes/events/event-frontend.php:208
+#: includes/events/event-frontend.php:216
+msgid "Paga in loco"
+msgstr "Paga in loco"
+
+#: includes/events/event-frontend.php:218
+msgid ""
+"Il pagamento avverrà in loco. Riceverai un ticket da saldare all’ingresso."
+msgstr ""
+"Il pagamento avverrà in loco. Riceverai un ticket da saldare all’ingresso."
+
+#: includes/events/event-frontend.php:220
+msgid "Verrai reindirizzato al checkout per completare il pagamento online."
+msgstr "Verrai reindirizzato al checkout per completare il pagamento online."
+
+#: includes/events/event-frontend.php:222
+msgid "Il ticket è gratuito: riceverai subito il QR code via email."
+msgstr "Il ticket è gratuito: riceverai subito il QR code via email."
+
+#: includes/events/event-frontend.php:229
+#, php-format
+msgid "Ho letto e accetto la <a href=\"%s\" target=\"_blank\">privacy policy</a>."
+msgstr "Ho letto e accetto la <a href=\"%s\" target=\"_blank\">privacy policy</a>."
+
+#: includes/events/event-frontend.php:233
+msgid "Procedi al pagamento"
+msgstr "Procedi al pagamento"
+
+#: includes/events/event-frontend.php:233
+msgid "Richiedi ticket"
+msgstr "Richiedi ticket"
+
+#: includes/events/event-frontend.php:259
+msgid "Evento non valido."
+msgstr "Evento non valido."
+
+#: includes/events/event-frontend.php:264
+msgid "L’evento non è attualmente disponibile."
+msgstr "L’evento non è attualmente disponibile."
+
+#: includes/events/event-frontend.php:282
+msgid "Compila tutti i campi obbligatori."
+msgstr "Compila tutti i campi obbligatori."
+
+#: includes/events/event-frontend.php:287
+msgid "Devi accettare la privacy policy per proseguire."
+msgstr "Devi accettare la privacy policy per proseguire."
+
+#: includes/events/event-frontend.php:301
+msgid "Tipologia di ticket non valida."
+msgstr "Tipologia di ticket non valida."
+
+#: includes/events/event-frontend.php:309
+msgid "I ticket selezionati non sono più disponibili."
+msgstr "I ticket selezionati non sono più disponibili."
+
+#: includes/events/event-frontend.php:315
+msgid "Seleziona il PR di riferimento."
+msgstr "Seleziona il PR di riferimento."
+
+#: includes/events/event-frontend.php:327
+msgid "PR selezionato non valido."
+msgstr "PR selezionato non valido."
+
+#: includes/events/event-frontend.php:332
+msgid "Il PR selezionato ha esaurito i ticket disponibili."
+msgstr "Il PR selezionato ha esaurito i ticket disponibili."
+
+#: includes/events/event-frontend.php:346
+#: includes/events/event-frontend.php:351
+msgid "Il metodo di pagamento selezionato non è disponibile."
+msgstr "Il metodo di pagamento selezionato non è disponibile."
+
+#: includes/events/event-frontend.php:356
+#: includes/events/event-frontend.php:361
+msgid "Metodo di pagamento non valido."
+msgstr "Metodo di pagamento non valido."
+
+#: includes/events/event-frontend.php:378
+msgid "WooCommerce non è attivo, impossibile completare il pagamento."
+msgstr "WooCommerce non è attivo, impossibile completare il pagamento."
+
+#: includes/events/event-frontend.php:405
+msgid ""
+"Richiesta ricevuta! Riceverai una email con il tuo ticket da pagare in loco."
+msgstr ""
+"Richiesta ricevuta! Riceverai una email con il tuo ticket da pagare in loco."
+
+#: includes/events/event-frontend.php:406
+msgid "Ticket generato con successo! Controlla la tua email per i dettagli."
+msgstr "Ticket generato con successo! Controlla la tua email per i dettagli."
+
+#: includes/events/event-frontend.php:417
+msgid "WooCommerce non è attivo."
+msgstr "WooCommerce non è attivo."
+
+#: includes/events/event-frontend.php:436
+msgid "Prodotto WooCommerce non disponibile per questo ticket."
+msgstr "Prodotto WooCommerce non disponibile per questo ticket."
+
+#: includes/events/event-frontend.php:443
+msgid "Impossibile accedere al carrello WooCommerce."
+msgstr "Impossibile accedere al carrello WooCommerce."
+
+#: includes/events/event-frontend.php:573
+#: includes/events/event-frontend.php:769
+#: includes/events/event-frontend.php:947
+#: includes/events/event-frontend.php:1000
+msgid "Ticket non trovato."
+msgstr "Ticket non trovato."
+
+#: includes/events/event-frontend.php:589
+#: includes/events/event-frontend.php:785
+msgid "Inserisci il codice ticket o scansiona il QR"
+msgstr "Inserisci il codice ticket o scansiona il QR"
+
+#: includes/events/event-frontend.php:591
+#: includes/events/event-frontend.php:592
+#: includes/events/event-frontend.php:787
+#: includes/events/event-frontend.php:788
+msgid "Avvia scansione QR"
+msgstr "Avvia scansione QR"
+
+#: includes/events/event-frontend.php:591
+#: includes/events/event-frontend.php:787
+msgid "Interrompi scansione"
+msgstr "Interrompi scansione"
+
+#: includes/events/event-frontend.php:594
+msgid "Inquadra il QR code del ticket per compilare automaticamente il campo."
+msgstr ""
+"Inquadra il QR code del ticket per compilare automaticamente il campo."
+
+#: includes/events/event-frontend.php:596
+msgid "Verifica ticket"
+msgstr "Verifica ticket"
+
+#: includes/events/event-frontend.php:604
+#: includes/events/event-frontend.php:800
+#: includes/events/event-helpers.php:417
+msgid "Pagato"
+msgstr "Pagato"
+
+#: includes/events/event-frontend.php:604
+#: includes/events/event-frontend.php:800
+#: includes/events/event-helpers.php:419
+msgid "Da pagare"
+msgstr "Da pagare"
+
+#: includes/events/event-frontend.php:639
+#: includes/events/event-frontend.php:836
+msgid "Codice ticket"
+msgstr "Codice ticket"
+
+#: includes/events/event-frontend.php:647
+#: includes/events/event-frontend.php:850
+msgid "Partecipante"
+msgstr "Partecipante"
+
+#: includes/events/event-frontend.php:657
+#: includes/events/event-frontend.php:860
+msgid "PR assegnato"
+msgstr "PR assegnato"
+
+#: includes/events/event-frontend.php:660
+#: includes/events/event-frontend.php:863
+msgid "Richiesto il"
+msgstr "Richiesto il"
+
+#: includes/events/event-frontend.php:675
+#: includes/events/event-frontend.php:878
+msgid "Luogo"
+msgstr "Luogo"
+
+#: includes/events/event-frontend.php:678
+#: includes/events/event-frontend.php:881
+msgid "Pagina evento"
+msgstr "Pagina evento"
+
+#: includes/events/event-frontend.php:678
+#: includes/events/event-frontend.php:881
+msgid "Apri"
+msgstr "Apri"
+
+#: includes/events/event-frontend.php:680
+#: includes/events/event-frontend.php:883
+msgid "Tipo di ticket"
+msgstr "Tipo di ticket"
+
+#: includes/events/event-frontend.php:684
+#: includes/events/event-frontend.php:887
+msgid "Pagamento"
+msgstr "Pagamento"
+
+#: includes/events/event-frontend.php:695
+msgid "Segna come usato"
+msgstr "Segna come usato"
+
+#: includes/events/event-frontend.php:734
+msgid "Accedi per gestire i pagamenti dei ticket"
+msgstr "Accedi per gestire i pagamenti dei ticket"
+
+#: includes/events/event-frontend.php:735
+msgid "Inserisci le tue credenziali di accesso per continuare."
+msgstr "Inserisci le tue credenziali di accesso per continuare."
+
+#: includes/events/event-frontend.php:739
+msgid "Nome utente"
+msgstr "Nome utente"
+
+#: includes/events/event-frontend.php:740
+msgid "Password"
+msgstr "Password"
+
+#: includes/events/event-frontend.php:741
+msgid "Ricordami"
+msgstr "Ricordami"
+
+#: includes/events/event-frontend.php:742
+msgid "Accedi"
+msgstr "Accedi"
+
+#: includes/events/event-frontend.php:755
+msgid "Non hai i permessi necessari per accedere a questa pagina."
+msgstr "Non hai i permessi necessari per accedere a questa pagina."
+
+#: includes/events/event-frontend.php:790
+msgid ""
+"Inquadra il QR code assegnato al ticket per compilarlo automaticamente."
+msgstr ""
+"Inquadra il QR code assegnato al ticket per compilarlo automaticamente."
+
+#: includes/events/event-frontend.php:792
+msgid "Cerca ticket"
+msgstr "Cerca ticket"
+
+#: includes/events/event-frontend.php:801
+#: includes/events/event-frontend.php:899
+msgid "Pagato? Sì"
+msgstr "Pagato? Sì"
+
+#: includes/events/event-frontend.php:801
+msgid "Pagato? No"
+msgstr "Pagato? No"
+
+#: includes/events/event-frontend.php:844
+msgid "Stato pagamento"
+msgstr "Stato pagamento"
+
+#: includes/events/event-frontend.php:888
+msgid "Pagato?"
+msgstr "Pagato?"
+
+#: includes/events/event-frontend.php:933
+msgid "Non hai i permessi necessari per eseguire questa operazione."
+msgstr "Non hai i permessi necessari per eseguire questa operazione."
+
+#: includes/events/event-frontend.php:941
+#: includes/events/event-frontend.php:991
+msgid "Inserisci un codice ticket valido."
+msgstr "Inserisci un codice ticket valido."
+
+#: includes/events/event-frontend.php:956
+msgid "Il ticket risulta già pagato."
+msgstr "Il ticket risulta già pagato."
+
+#: includes/events/event-frontend.php:961
+msgid ""
+"Il ticket è già stato utilizzato: impossibile modificarne il pagamento."
+msgstr ""
+"Il ticket è già stato utilizzato: impossibile modificarne il pagamento."
+
+#: includes/events/event-frontend.php:966
+msgid ""
+"Lo stato di pagamento del ticket è stato aggiornato con successo - Ticket "
+"PAGATO"
+msgstr ""
+"Lo stato di pagamento del ticket è stato aggiornato con successo - Ticket "
+"PAGATO"
+
+#: includes/events/event-frontend.php:971
+#: includes/events/event-frontend.php:1021
+msgid "Ticket trovato! Controlla i dettagli qui sotto."
+msgstr "Ticket trovato! Controlla i dettagli qui sotto."
+
+#: includes/events/event-frontend.php:1008
+#, php-format
+msgid "Il ticket %s risulta già utilizzato."
+msgstr "Il ticket %s risulta già utilizzato."
+
+#: includes/events/event-frontend.php:1016
+#, php-format
+msgid "Ticket %1$s segnato come USATO per %2$s."
+msgstr "Ticket %1$s segnato come USATO per %2$s."
+
+#: includes/events/event-helpers.php:247
+#, php-format
+msgid "Evento %d"
+msgstr "Evento %d"
+
+#: includes/events/event-helpers.php:432
+msgid "Nome completo del partecipante"
+msgstr "Nome completo del partecipante"
+
+#: includes/events/event-helpers.php:433
+msgid "Email del partecipante"
+msgstr "Email del partecipante"
+
+#: includes/events/event-helpers.php:434
+msgid "Telefono del partecipante"
+msgstr "Telefono del partecipante"
+
+#: includes/events/event-helpers.php:435
+msgid "Titolo dell’evento"
+msgstr "Titolo dell’evento"
+
+#: includes/events/event-helpers.php:436
+msgid "Data dell’evento (formattata secondo le impostazioni di WordPress)"
+msgstr "Data dell’evento (formattata secondo le impostazioni di WordPress)"
+
+#: includes/events/event-helpers.php:437
+msgid "Ora dell’evento"
+msgstr "Ora dell’evento"
+
+#: includes/events/event-helpers.php:438
+msgid "Luogo dell’evento"
+msgstr "Luogo dell’evento"
+
+#: includes/events/event-helpers.php:439
+msgid "URL della pagina pubblica dell’evento"
+msgstr "URL della pagina pubblica dell’evento"
+
+#: includes/events/event-helpers.php:440
+msgid "Nome del ticket selezionato"
+msgstr "Nome del ticket selezionato"
+
+#: includes/events/event-helpers.php:441
+msgid "Codice univoco del ticket"
+msgstr "Codice univoco del ticket"
+
+#: includes/events/event-helpers.php:442
+msgid "Stato del ticket"
+msgstr "Stato del ticket"
+
+#: includes/events/event-helpers.php:443
+msgid "Immagine del QR code (solo per email HTML)"
+msgstr "Immagine del QR code (solo per email HTML)"
+
+#: includes/events/event-helpers.php:444
+msgid "URL diretto del QR code"
+msgstr "URL diretto del QR code"
+
+#: includes/shortcodes/fidelity-points.php:27
+msgid "Utente non trovato"
+msgstr "Utente non trovato"
+
+#: includes/shortcodes/fidelity-terminal.php:22
+msgid "Nonce non valido."
+msgstr "Nonce non valido."
+
+#: includes/shortcodes/fidelity-terminal.php:52
+msgid "Punti insufficienti"
+msgstr "Punti insufficienti"
+
+#: includes/shortcodes/fidelity-terminal.php:58
+#, php-format
+msgid "%d punto aggiunto"
+msgid_plural "%d punti aggiunti"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/shortcodes/fidelity-terminal.php:61
+#, php-format
+msgid "%d punto scalato"
+msgid_plural "%d punti scalati"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/shortcodes/fidelity-terminal.php:64
+msgid "Nessuna modifica ai punti"
+msgstr "Nessuna modifica ai punti"
+
+#: includes/shortcodes/fidelity-terminal.php:66
+#, php-format
+msgid "Saldo attuale: %d"
+msgstr "Saldo attuale: %d"
+
+#: includes/views/fidelity-points-display.php:4
+#: includes/views/fidelity-terminal-form.php:4
+msgid "Email o Codice QR"
+msgstr "Email o Codice QR"
+
+#: includes/views/fidelity-points-display.php:30
+#, php-format
+msgid "Hai %d punti attivi"
+msgstr "Hai %d punti attivi"
+
+#: includes/views/fidelity-points-display.php:33
+msgid "punti"
+msgstr "punti"
+
+#: includes/views/fidelity-terminal-form.php:5
+msgid "Importo speso"
+msgstr "Importo speso"
+
+#: includes/views/fidelity-terminal-form.php:13
+msgid "Punti da scalare"
+msgstr "Punti da scalare"
+
+#: includes/views/fidelity-terminal-form.php:14
+msgid "Assegna"
+msgstr "Assegna"

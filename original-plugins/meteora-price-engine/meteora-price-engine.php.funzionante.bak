@@ -1,0 +1,321 @@
+<?php
+/**
+ * Plugin Name: Meteora Price Engine - Commander Ultimate V6.7
+ * Description: Gestione completa Variabili, Dashboard statistiche, Arrotondamento .90, Log e Hard Sync SQL.
+ * Version: 6.7
+ * Author: Meteora Web
+ */
+
+if ( ! defined( 'ABSPATH' ) ) exit;
+
+// 1. MENU
+add_action('admin_menu', 'mpe_v6_menu');
+function mpe_v6_menu() {
+    add_menu_page('Meteora Commander', 'Meteora Commander', 'manage_options', 'meteora-price-engine', 'mpe_v6_page', 'dashicons-performance');
+}
+
+// 2. INTERFACCIA
+function mpe_v6_page() {
+    global $wpdb;
+
+    echo '<style>
+        :root { --m-blue: #00a8cc; --m-dark: #2c3e50; --m-bg: #f8f9fa; --m-red: #e74c3c; --m-green: #27ae60; --m-orange: #f39c12; }
+        .mpe-v6 { background: var(--m-bg); font-family: "Segoe UI", sans-serif; padding: 30px; max-width: 1200px; margin: 20px auto; color: var(--m-dark); border-radius: 12px; box-shadow: 0 5px 25px rgba(0,0,0,0.05); }
+        .mpe-header { text-align: center; border-bottom: 2px solid var(--m-blue); margin-bottom: 30px; padding-bottom: 20px; }
+        .mpe-header h1 { color: var(--m-blue); margin: 0; font-weight: 800; text-transform: uppercase; }
+
+        .mpe-nav { display: flex; gap: 5px; margin-bottom: 25px; }
+        .mpe-nav-item { cursor: pointer; padding: 12px 25px; font-weight: bold; color: #7f8c8d; transition: 0.3s; border-radius: 8px 8px 0 0; background: #edeff2; }
+        .mpe-nav-item.active { color: var(--m-blue); background: #fff; border: 1px solid #ddd; border-bottom: 3px solid var(--m-blue); }
+
+        .mpe-tab-content { display: none; background: #fff; padding: 30px; border-radius: 0 0 12px 12px; border: 1px solid #ddd; border-top: none; }
+        .mpe-tab-content.active { display: block; }
+
+        .mpe-card { background: #fff; border-radius: 12px; padding: 20px; border: 1px solid #eee; margin-bottom: 20px; }
+        .mpe-label { display: block; font-weight: bold; margin-bottom: 8px; font-size: 14px; }
+        .mpe-input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 15px; margin-bottom: 15px; box-sizing: border-box; }
+
+        .stats-container { display: flex; gap: 15px; margin-bottom: 25px; }
+        .stat-card { flex: 1; padding: 20px; border-radius: 10px; color: #fff; text-align: center; }
+        .stat-total { background: var(--m-dark); }
+        .stat-ready { background: var(--m-green); }
+        .stat-missing { background: var(--m-red); }
+        .stat-card span { display: block; font-size: 24px; font-weight: 800; }
+
+        .btn-mpe { padding: 12px 24px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; text-transform: uppercase; font-size: 13px; }
+        .btn-blue { background: var(--m-blue); color: #fff; width: 100%; }
+        .btn-outline { background: transparent; border: 2px solid var(--m-blue); color: var(--m-blue); width: 100%; margin-bottom: 10px; }
+        .btn-row { padding: 6px 10px; font-size: 10px; text-decoration: none; display: inline-block; margin-right: 5px; border-radius: 4px; }
+        .btn-apply { background: var(--m-green); color: #fff; border: none; cursor: pointer; }
+        .btn-edit { background: #eee; color: #333; border: 1px solid #ccc; }
+
+        .mpe-table { width: 100%; border-collapse: collapse; margin-top: 25px; font-size: 13px; }
+        .mpe-table th { background: #f8f9fa; padding: 12px; text-align: left; border-bottom: 2px solid #ddd; }
+        .mpe-table td { padding: 10px; border-bottom: 1px solid #eee; vertical-align: middle; }
+        .badge-red { color: var(--m-red); font-weight: bold; border: 1px solid var(--m-red); padding: 2px 5px; border-radius: 4px; font-size: 10px; }
+        .badge-var { background: #e3f2fd; color: var(--m-blue); padding: 3px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; }
+    </style>';
+
+    echo '<script>
+        function openTab(tabId) {
+            document.querySelectorAll(".mpe-tab-content").forEach(t => t.classList.remove("active"));
+            document.querySelectorAll(".mpe-nav-item").forEach(n => n.classList.remove("active"));
+            document.getElementById(tabId).classList.add("active");
+            event.currentTarget.classList.add("active");
+        }
+    </script>';
+
+    echo '<div class="mpe-v6 wrap">';
+    echo '<div class="mpe-header"><h1>☄️ Meteora Commander V6.7</h1></div>';
+
+    echo '<div class="mpe-nav">
+            <div class="mpe-nav-item active" onclick="openTab(\'tab-gold\')">💰 Oro & Peso</div>
+            <div class="mpe-nav-item" onclick="openTab(\'tab-sales\')">🏷️ Saldi %</div>
+            <div class="mpe-nav-item" onclick="openTab(\'tab-logs\')">📜 Log & Rollback</div>
+          </div>';
+
+    // Recupero Categorie
+    $categories = get_terms(['taxonomy' => 'product_cat', 'hide_empty' => false]);
+    function mpe_build_cats($cats, $parent = 0, $depth = 0) {
+        $out = '';
+        foreach ($cats as $cat) {
+            if ($cat->parent == $parent) {
+                $out .= '<option value="'.$cat->term_id.'">'.str_repeat('— ', $depth).$cat->name.' ('.$cat->count.')</option>';
+                $out .= mpe_build_cats($cats, $cat->term_id, $depth + 1);
+            }
+        }
+        return $out;
+    }
+    $cat_options = mpe_build_cats($categories);
+
+    // TAB 1: ORO
+    echo '<div id="tab-gold" class="mpe-tab-content active"><div class="mpe-card">
+        <form method="post">
+            <label class="mpe-label">Categoria Oro</label><select name="cat_id" class="mpe-input">'.$cat_options.'</select>
+            <label class="mpe-label">Quotazione Oro (€/g)</label><input type="number" step="0.01" name="gold_price" class="mpe-input" placeholder="es: 85.00">
+            <div style="margin-bottom:15px;">
+                <input type="checkbox" name="clear_sales" value="1"> <b>Elimina sconti attivi (Tabula Rasa)</b><br>
+                <input type="checkbox" name="round_marketing" value="1" checked> <b>Arrotondamento Marketing (.90)</b>
+            </div>
+            <input type="submit" name="preview_gold" class="btn-mpe btn-outline" value="Analizza Grammature">
+            <input type="submit" name="run_gold" class="btn-mpe btn-blue" value="Applica a tutta la Categoria">
+        </form></div></div>';
+
+    // TAB 2: SALDI
+    echo '<div id="tab-sales" class="mpe-tab-content"><div class="mpe-card">
+        <form method="post">
+            <label class="mpe-label">Categoria / Brand</label><select name="sale_cat_id" class="mpe-input">'.$cat_options.'</select>
+            <label class="mpe-label">Sconto (%)</label><input type="number" name="discount_val" class="mpe-input" placeholder="es: 17">
+            <label class="mpe-label">Escludi parola nel titolo</label><input type="text" name="exclude_word" class="mpe-input" placeholder="es: Oro">
+            <div style="margin-bottom:15px;">
+                <input type="checkbox" name="round_marketing_sale" value="1" checked> <b>Arrotondamento Marketing (.90)</b>
+            </div>
+            <input type="submit" name="preview_sales" class="btn-mpe btn-outline" value="Anteprima Saldi">
+            <input type="submit" name="run_sales" class="btn-mpe btn-blue" value="Lancia Saldi Massivi">
+        </form></div></div>';
+
+    // TAB 3: LOGS
+    echo '<div id="tab-logs" class="mpe-tab-content">';
+    mpe_v6_display_logs();
+    echo '</div>';
+
+    // AZIONI
+    // AZIONE SINGOLA CON LOG
+    if (isset($_POST['apply_single'])) {
+        $pid = intval($_POST['pid']);
+        // 1. Recupero i vecchi prezzi dal database per il Log
+        $old_reg_log = get_post_meta($pid, '_regular_price', true);
+        $old_sale_log = get_post_meta($pid, '_sale_price', true);
+
+        // 2. Salvo lo snapshot (Batch ID 'SINGLE_...')
+        mpe_save_log_v6('SINGLE_' . time(), $pid, $old_reg_log, $old_sale_log);
+
+        // 3. Eseguo l'aggiornamento ricorsivo
+        mpe_apply_single_item($pid, $_POST['reg'], $_POST['sale'], isset($_POST['clear_sales']));
+
+        echo "<div style='background:var(--m-green); color:#fff; padding:10px; margin:10px 0; border-radius:5px; text-align:center;'>✅ Prodotto salvato nel Log e Aggiornato!</div>";
+    }
+
+    if (isset($_POST['preview_gold']) || isset($_POST['run_gold'])) {
+        mpe_v6_gold_logic(floatval($_POST['gold_price']), intval($_POST['cat_id']), isset($_POST['clear_sales']), isset($_POST['round_marketing']), isset($_POST['run_gold']));
+    }
+
+    if (isset($_POST['preview_sales']) || isset($_POST['run_sales'])) {
+        mpe_v6_sales_logic(intval($_POST['discount_val']), intval($_POST['sale_cat_id']), $_POST['exclude_word'], isset($_POST['round_marketing_sale']), isset($_POST['run_sales']));
+    }
+
+    echo '<p style="text-align:center; opacity:0.4; margin-top:40px; font-size:12px;">© meteora_web | el_Caloz</p></div>';
+}
+
+// LOGICA ORO (PESO)
+function mpe_v6_gold_logic($gold_price, $cat_id, $clear_sales, $should_round, $is_run) {
+    global $wpdb;
+    $products = $wpdb->get_results($wpdb->prepare("SELECT p.ID, p.post_title, p.post_content FROM {$wpdb->posts} p JOIN {$wpdb->term_relationships} tr ON p.ID = tr.object_id WHERE tr.term_taxonomy_id = %d AND p.post_status = 'publish'", $cat_id));
+
+    $batch_id = 'GOLD_' . time();
+    $total = count($products); $ready = 0; $missing = 0; $rows_html = '';
+
+    foreach ($products as $p) {
+        $search = $p->post_content . ' ' . mpe_get_attrs_v6($p->ID);
+        // Regex UNIVERSALE: Interi, Decimali, Spazi o uniti (3g, 3 g, 3.5gr, 3,5 grammi)
+        if (preg_match('/(\d+(?:[.,]\d+)?)\s*(?:grammi|grammo|gr|g)(?![a-z])/i', $search, $matches)) {
+            $weight = (float)str_replace(',', '.', $matches[1]);
+            $new_reg = round($weight * $gold_price, 2);
+            if ($should_round) $new_reg = floor($new_reg) + 0.90;
+            $old_reg = get_post_meta($p->ID, '_regular_price', true);
+            $ready++;
+
+            // Check Variazioni
+            $product_obj = wc_get_product($p->ID);
+            $is_variable = ($product_obj && $product_obj->is_type('variable'));
+            $var_label = $is_variable ? "<br><span class='badge-var'>VARIABILE (" . count($product_obj->get_children()) . ")</span>" : "";
+
+            if ($is_run) {
+                mpe_save_log_v6($batch_id, $p->ID, $old_reg, get_post_meta($p->ID, '_sale_price', true));
+                // Funzione che aggiorna anche i figli
+                mpe_update_product_recursive($p->ID, $new_reg, $clear_sales ? '' : 'KEEP_OLD', $clear_sales);
+            }
+
+            $rows_html .= "<tr>
+                <td>{$p->post_title} $var_label</td>
+                <td>{$weight} g</td>
+                <td>€$old_reg</td>
+                <td style='color:var(--m-blue); font-weight:bold;'>€$new_reg</td>
+                <td>
+                    <form method='post' style='display:inline;'>
+                        <input type='hidden' name='pid' value='{$p->ID}'>
+                        <input type='hidden' name='reg' value='{$new_reg}'>
+                        <input type='hidden' name='sale' value=''>
+                        <input type='hidden' name='clear_sales' value='".($clear_sales ? '1' : '0')."'>
+                        <input type='submit' name='apply_single' class='btn-row btn-apply' value='Applica'>
+                    </form>
+                    <a href='".get_edit_post_link($p->ID)."' target='_blank' class='btn-row btn-edit'>Modifica</a>
+                </td></tr>";
+        } else {
+            $missing++;
+            $rows_html .= "<tr><td>{$p->post_title}</td><td colspan='3'><span class='badge-red'>⚠️ PESO NON TROVATO</span></td><td><a href='".get_edit_post_link($p->ID)."' target='_blank' class='btn-row btn-edit'>Modifica</a></td></tr>";
+        }
+    }
+
+    echo "<div class='stats-container'>
+        <div class='stat-card stat-total'><span>$total</span>Totali</div>
+        <div class='stat-card stat-ready'><span>$ready</span>Pronti</div>
+        <div class='stat-card stat-missing'><span>$missing</span>Mancanti</div>
+    </div>";
+    echo "<table class='mpe-table'><thead><tr><th>Prodotto</th><th>Peso</th><th>Vecchio</th><th>Nuovo</th><th>Azioni</th></tr></thead><tbody>$rows_html</tbody></table>";
+    if ($is_run) mpe_hard_sync_v6();
+}
+
+// LOGICA SALDI
+function mpe_v6_sales_logic($percent, $cat_id, $exclude, $should_round, $is_run) {
+    global $wpdb;
+    $products = $wpdb->get_results($wpdb->prepare("SELECT p.ID, p.post_title FROM {$wpdb->posts} p JOIN {$wpdb->term_relationships} tr ON p.ID = tr.object_id WHERE tr.term_taxonomy_id = %d AND p.post_status = 'publish'", $cat_id));
+    $batch_id = 'SALE_' . time(); $mult = (100 - $percent) / 100;
+    $rows_html = '';
+
+    foreach ($products as $p) {
+        $skip = (!empty($exclude) && stripos($p->post_title, $exclude) !== false);
+        $reg = (float)get_post_meta($p->ID, '_regular_price', true);
+        $new_s = round($reg * $mult, 2);
+        if ($should_round && !$skip) $new_s = floor($new_s) + 0.90;
+
+        // Check Variazioni
+        $product_obj = wc_get_product($p->ID);
+        $is_variable = ($product_obj && $product_obj->is_type('variable'));
+        $var_label = $is_variable ? "<br><span class='badge-var'>VARIABILE</span>" : "";
+
+        if ($is_run && !$skip && $reg > 0) {
+            mpe_save_log_v6($batch_id, $p->ID, $reg, get_post_meta($p->ID, '_sale_price', true));
+            mpe_update_product_recursive($p->ID, $reg, $new_s, false);
+        }
+
+        $col_sale = $skip ? 'ESCLUSO' : "€$new_s";
+        $btn_form = (!$skip) ? "<form method='post' style='display:inline;'><input type='hidden' name='pid' value='{$p->ID}'><input type='hidden' name='reg' value='{$reg}'><input type='hidden' name='sale' value='{$new_s}'><input type='submit' name='apply_single' class='btn-row btn-apply' value='Applica'></form>" : "";
+
+        $rows_html .= "<tr><td>{$p->post_title} $var_label</td><td>€$reg</td><td style='color:var(--m-red)'>$col_sale</td>
+            <td>$btn_form <a href='".get_edit_post_link($p->ID)."' target='_blank' class='btn-row btn-edit'>Modifica</a></td></tr>";
+    }
+    echo "<table class='mpe-table'><thead><tr><th>Prodotto</th><th>Listino</th><th>Nuovo Saldo</th><th>Azioni</th></tr></thead><tbody>$rows_html</tbody></table>";
+    if ($is_run) mpe_hard_sync_v6();
+}
+
+// FUNZIONE AGGIORNAMENTO RICORSIVO (PADRE + FIGLI)
+function mpe_update_product_recursive($pid, $reg, $sale, $clear_sales_flag) {
+    $product = wc_get_product($pid);
+
+    // Lista di ID da aggiornare: il Padre + eventuali Figli
+    $ids_to_update = array($pid);
+    if ($product && $product->is_type('variable')) {
+        $ids_to_update = array_merge($ids_to_update, $product->get_children());
+    }
+
+    foreach ($ids_to_update as $id) {
+        // Aggiorno Listino
+        update_post_meta($id, '_regular_price', $reg);
+
+        // Logica Saldi
+        if ($clear_sales_flag) {
+            delete_post_meta($id, '_sale_price');
+            update_post_meta($id, '_price', $reg);
+        } elseif ($sale === 'KEEP_OLD') {
+            // Mantieni vecchio saldo se esiste
+            $old_s = get_post_meta($id, '_sale_price', true);
+            update_post_meta($id, '_price', ($old_s ? $old_s : $reg));
+        } else {
+            // Applica nuovo saldo
+            update_post_meta($id, '_sale_price', $sale);
+            update_post_meta($id, '_price', $sale);
+        }
+    }
+}
+
+// HELPER APPLICA SINGOLO (CHIAMA LA RICORSIVA)
+function mpe_apply_single_item($pid, $reg, $sale, $clear_sales = false) {
+    $final_sale = empty($sale) ? ($clear_sales ? '' : 'KEEP_OLD') : $sale;
+    mpe_update_product_recursive($pid, $reg, $final_sale, $clear_sales);
+    mpe_hard_sync_v6();
+}
+
+// SINCRONIZZAZIONE HARD (SQL DEL CAPO)
+function mpe_hard_sync_v6() {
+    global $wpdb;
+
+    // 1. UPDATE LOOKUP TABLE
+    $wpdb->query("UPDATE {$wpdb->prefix}wc_product_meta_lookup l JOIN (
+        SELECT p.post_parent, MIN(CAST(pm.meta_value AS DECIMAL(10,2))) as min_p, MAX(CAST(pm.meta_value AS DECIMAL(10,2))) as max_p
+        FROM {$wpdb->posts} p JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
+        WHERE p.post_type = 'product_variation' AND p.post_status = 'publish' AND pm.meta_key = '_price'
+        GROUP BY p.post_parent
+    ) as v ON l.product_id = v.post_parent SET l.min_price = v.min_p, l.max_price = v.min_p, l.onsale = 1");
+
+    // 2. PULIZIA TRANSIENT
+    $wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_wc_price_%' OR option_name LIKE '_transient_timeout_wc_price_%' OR option_name LIKE '_transient_wc_var_prices_%' OR option_name LIKE '_transient_timeout_wc_var_prices_%'");
+
+    // 3. ALLINEAMENTO META PADRE
+    $wpdb->query("UPDATE {$wpdb->postmeta} pm_p JOIN (
+        SELECT p.post_parent, MIN(CAST(pm.meta_value AS DECIMAL(10,2))) as min_val
+        FROM {$wpdb->posts} p JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
+        WHERE p.post_type = 'product_variation' AND pm.meta_key = '_price' AND pm.meta_value != ''
+        GROUP BY p.post_parent
+    ) as v ON pm_p.post_id = v.post_parent SET pm_p.meta_value = v.min_val WHERE pm_p.meta_key IN ('_price', '_sale_price', '_min_variation_price', '_max_variation_price')");
+
+    echo "<div style='background:var(--m-green); color:#fff; padding:15px; border-radius:8px; margin-top:20px;'>🚀 Aggiornamento & Sincronizzazione Variazioni Completata!</div>";
+}
+
+// ALTRI HELPERS
+function mpe_get_attrs_v6($pid) { $p = wc_get_product($pid); $o=''; if($p) foreach($p->get_attributes() as $a) $o.=implode(' ', (array)$a->get_options()).' '; return $o; }
+function mpe_save_log_v6($b, $pid, $reg, $sale) { global $wpdb; $wpdb->insert($wpdb->prefix . 'mpe_price_logs', ['batch_id'=>$b, 'product_id'=>$pid, 'old_regular'=>$reg, 'old_sale'=>$sale, 'date'=>current_time('mysql')]); }
+function mpe_v6_display_logs() {
+    global $wpdb; $logs = $wpdb->get_results("SELECT batch_id, COUNT(*) as pezzi, date FROM {$wpdb->prefix}mpe_price_logs GROUP BY batch_id ORDER BY date DESC LIMIT 10");
+    if (!$logs) { echo "Nessun log."; return; }
+    echo "<table class='mpe-table'><thead><tr><th>Data</th><th>Prodotti</th><th>Azione</th></tr></thead>";
+    foreach ($logs as $l) echo "<tr><td>{$l->date}</td><td>{$l->pezzi}</td><td><form method='post'><input type='hidden' name='rb_id' value='{$l->batch_id}'><input type='submit' name='rollback' class='btn-mpe btn-red' style='padding:5px;' value='Rollback'></form></td></tr>";
+    echo "</table>";
+    if (isset($_POST['rollback'])) mpe_execute_rollback_v6($_POST['rb_id']);
+}
+function mpe_execute_rollback_v6($bid) {
+    global $wpdb; $items = $wpdb->get_results($wpdb->prepare("SELECT * FROM {$wpdb->prefix}mpe_price_logs WHERE batch_id = %s", $bid));
+    foreach ($items as $i) { mpe_update_product_recursive($i->product_id, $i->old_regular, $i->old_sale, false); }
+    $wpdb->delete($wpdb->prefix . 'mpe_price_logs', ['batch_id' => $bid]);
+    echo "<script>alert('Annullato!'); window.location.href=window.location.href;</script>";
+}

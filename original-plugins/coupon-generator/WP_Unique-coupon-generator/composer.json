@@ -1,0 +1,11 @@
+{
+    "name": "meteora/unique-coupon-generator",
+    "description": "Genera coupon unici per ogni utente.",
+    "type": "project",
+    "require": {},
+    "autoload": {
+      "psr-4": {
+        "UCG\\": "includes/"
+      }
+    }
+  }
