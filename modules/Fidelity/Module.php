@@ -44,14 +44,31 @@ class Module {
 
         $in_elementor_ctx = function_exists('myplugin_is_elementor_context') ? myplugin_is_elementor_context() : false;
 
-        $this->autoloadRecursive(__DIR__ . '/includes');
+        // Since classes are now loaded via Composer classmap, we only need to explicitly
+        // require procedural files or files that register hooks immediately
+        require_once __DIR__ . '/includes/functions.php';
 
-        if (is_admin()) {
-            $this->autoloadRecursive(__DIR__ . '/admin');
-        }
+        // Let's manually require the setup files instead of blind recursion
+        $setup_files = [
+            '/includes/events/event-helpers.php',
+            '/includes/events/event-database.php',
+            '/includes/events/event-emails.php',
+            '/includes/events/event-gateway-in-loco.php',
+            '/includes/events/event-admin.php',
+            '/includes/events/event-frontend.php',
+            '/includes/classes/coupon-options-admin.php',
+            '/includes/classes/ucg-welcome.php',
+            '/includes/classes/coupon-shortcode.php',
+            '/includes/classes/coupon-user-shortcode.php',
+            '/includes/shortcodes/coupon-collections.php',
+            '/includes/shortcodes/fidelity-points.php',
+            '/includes/shortcodes/fidelity-terminal.php',
+        ];
 
-        if (!$in_elementor_ctx) {
-            $this->autoloadRecursive(__DIR__ . '/public');
+        foreach ($setup_files as $file) {
+            if (file_exists(__DIR__ . $file)) {
+                require_once __DIR__ . $file;
+            }
         }
 
         add_action('admin_enqueue_scripts', [$this, 'enqueueAdminStyles']);
@@ -63,29 +80,6 @@ class Module {
 
         // Modifiche del menu di WP Unique Coupon Generator per spostarlo sotto Meteora System
         add_action('admin_menu', [$this, 'modifyMenu'], 999);
-    }
-
-    private function autoloadRecursive($dir) {
-        if (!is_dir($dir)) {
-            return;
-        }
-
-        $files = scandir($dir);
-        if ($files === false) {
-            return;
-        }
-
-        foreach ($files as $file) {
-            if ($file === '.' || $file === '..') continue;
-            $path = $dir . '/' . $file;
-            if (is_dir($path)) {
-                $base = basename($path);
-                if ($base === 'lib' || $base === 'views') continue;
-                $this->autoloadRecursive($path);
-            } elseif (substr($file, -4) === '.php') {
-                require_once $path;
-            }
-        }
     }
 
     public function modifyMenu() {

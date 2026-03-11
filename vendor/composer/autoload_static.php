@@ -27,6 +27,19 @@ class ComposerStaticInit52da63f15a70505aca3e367898c7f42a
 
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'CouponCleaner' => __DIR__ . '/../..' . '/modules/Fidelity/includes/classes/class-coupon-cleaner.php',
+        'CouponGenerator' => __DIR__ . '/../..' . '/modules/Fidelity/includes/classes/class-coupon-generator.php',
+        'CouponNotifier' => __DIR__ . '/../..' . '/modules/Fidelity/includes/classes/class-coupon-notifier.php',
+        'CouponValidator' => __DIR__ . '/../..' . '/modules/Fidelity/includes/classes/class-coupon-validator.php',
+        'UCG_Access_Gate' => __DIR__ . '/../..' . '/modules/Fidelity/includes/classes/class-ucg-access-gate.php',
+        'UCG_Downloaded_Coupons' => __DIR__ . '/../..' . '/modules/Fidelity/includes/classes/UCG_Downloaded_Coupons.php',
+        'UCG_Email_Marketing' => __DIR__ . '/../..' . '/modules/Fidelity/includes/classes/UCG_Email_Marketing.php',
+        'UCG_Email_Templates' => __DIR__ . '/../..' . '/modules/Fidelity/includes/classes/UCG_Email_Templates.php',
+        'UCG_Error_Log_Admin' => __DIR__ . '/../..' . '/modules/Fidelity/includes/classes/UCG_Error_Log_Admin.php',
+        'UCG_FidelityManager' => __DIR__ . '/../..' . '/modules/Fidelity/includes/classes/UCG_FidelityManager.php',
+        'UCG_Fidelity_Admin' => __DIR__ . '/../..' . '/modules/Fidelity/includes/classes/UCG_Fidelity_Admin.php',
+        'UCG_PDF_Exporter' => __DIR__ . '/../..' . '/modules/Fidelity/includes/classes/UCG_PDF_Exporter.php',
+        'UCG_User_Profiles' => __DIR__ . '/../..' . '/modules/Fidelity/includes/classes/UCG_User_Profiles.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

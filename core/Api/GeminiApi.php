@@ -18,7 +18,7 @@ class GeminiApi {
         $response = wp_remote_post($url, [
             'headers' => ['Content-Type' => 'application/json'],
             'body'    => $body,
-            'timeout' => 60
+            'timeout' => 120
         ]);
 
         if (is_wp_error($response)) {

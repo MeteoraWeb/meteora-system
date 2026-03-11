@@ -3,6 +3,7 @@ namespace Meteora\Modules\Seo;
 
 use Meteora\Core\Menu\MenuManager;
 use Meteora\Core\Api\GeminiApi;
+use Meteora\Core\Api\DeepSeekApi;
 
 class SeoAutomation {
     /**
@@ -36,15 +37,19 @@ class SeoAutomation {
             return;
         }
 
-        if (isset($_POST['save_gemini_api']) && isset($_POST['mpe_seo_nonce']) && wp_verify_nonce($_POST['mpe_seo_nonce'], 'mpe_seo_action')) {
+        if (isset($_POST['save_api_settings']) && isset($_POST['mpe_seo_nonce']) && wp_verify_nonce($_POST['mpe_seo_nonce'], 'mpe_seo_action')) {
             update_option('mpe_gemini_api_key', sanitize_text_field($_POST['mpe_gemini_api_key']));
+            update_option('mpe_deepseek_api_key', sanitize_text_field($_POST['mpe_deepseek_api_key']));
+            update_option('mpe_seo_ai_engine', sanitize_text_field($_POST['mpe_seo_ai_engine']));
         }
     }
 
     public function renderSeoTab() {
         if (!class_exists('WooCommerce')) { echo '<p>WooCommerce non rilevato.</p>'; return; }
 
-        $api_key = get_option('mpe_gemini_api_key', '');
+        $gemini_key = get_option('mpe_gemini_api_key', '');
+        $deepseek_key = get_option('mpe_deepseek_api_key', '');
+        $ai_engine = get_option('mpe_seo_ai_engine', 'gemini');
 
         // Menu a tendina categorie
         $cat_dropdown = wp_dropdown_categories([
@@ -60,19 +65,32 @@ class SeoAutomation {
         ]);
 
         echo '<div class="mpe-card" style="border-left: 4px solid #8b5cf6;">
-                <h3>🤖 Configurazione Motore AI (Gemini 2.0 Flash Lite)</h3>
-                <form method="post" style="display:flex; gap:10px; align-items:flex-end;">
+                <h3>🤖 Configurazione Motore AI (SEO)</h3>
+                <form method="post">
                     ' . wp_nonce_field('mpe_seo_action', 'mpe_seo_nonce', true, false) . '
-                    <div style="flex:1;">
-                        <label class="mpe-label">Chiave API Google Gemini</label>
-                        <input type="password" name="mpe_gemini_api_key" value="'.esc_attr($api_key).'" class="mpe-input" placeholder="Incolla qui la tua API Key...">
+                    <div style="display:flex; gap:15px; align-items:flex-end; flex-wrap:wrap; margin-bottom:15px;">
+                        <div style="flex:1; min-width:200px;">
+                            <label class="mpe-label">Motore Preferito</label>
+                            <select name="mpe_seo_ai_engine" class="mpe-input">
+                                <option value="gemini" '.selected($ai_engine, 'gemini', false).'>Google Gemini (Flash 2.0)</option>
+                                <option value="deepseek" '.selected($ai_engine, 'deepseek', false).'>DeepSeek (Chat)</option>
+                            </select>
+                        </div>
+                        <div style="flex:2; min-width:250px;">
+                            <label class="mpe-label">API Key Google Gemini</label>
+                            <input type="password" name="mpe_gemini_api_key" value="'.esc_attr($gemini_key).'" class="mpe-input" placeholder="Chiave Gemini...">
+                        </div>
+                        <div style="flex:2; min-width:250px;">
+                            <label class="mpe-label">API Key DeepSeek</label>
+                            <input type="password" name="mpe_deepseek_api_key" value="'.esc_attr($deepseek_key).'" class="mpe-input" placeholder="Chiave DeepSeek...">
+                        </div>
                     </div>
-                    <button type="submit" name="save_gemini_api" class="btn-mpe btn-blue">Salva Chiave</button>
+                    <button type="submit" name="save_api_settings" class="btn-mpe btn-blue">Salva Impostazioni AI</button>
                 </form>
             </div>';
 
-        if (empty($api_key)) {
-            echo '<div class="mpe-card"><p style="color:red; font-weight:bold;">⚠️ Inserisci la chiave API per sbloccare il SEO Engine.</p></div>';
+        if ( ($ai_engine === 'gemini' && empty($gemini_key)) || ($ai_engine === 'deepseek' && empty($deepseek_key)) ) {
+            echo '<div class="mpe-card"><p style="color:red; font-weight:bold;">⚠️ Inserisci la chiave API per il motore selezionato per sbloccare il SEO Engine.</p></div>';
             return;
         }
 
@@ -432,9 +450,11 @@ class SeoAutomation {
 
         global $wpdb;
         $pid = intval($_POST['pid']);
-        $api_key = trim(get_option('mpe_gemini_api_key'));
 
-        if (empty($api_key)) wp_send_json_error("Chiave API mancante.");
+        $ai_engine = get_option('mpe_seo_ai_engine', 'gemini');
+        $api_key = ($ai_engine === 'deepseek') ? trim(get_option('mpe_deepseek_api_key')) : trim(get_option('mpe_gemini_api_key'));
+
+        if (empty($api_key)) wp_send_json_error("Chiave API mancante per il motore selezionato.");
 
         $product = get_post($pid);
         if (!$product) wp_send_json_error("Prodotto ID {$pid} non trovato.");
@@ -479,7 +499,11 @@ class SeoAutomation {
         \"seo_desc\": \"Meta Description persuasiva, max 160 car\"
         }";
 
-        $raw_json = GeminiApi::generateContent($prompt, $api_key);
+        if ($ai_engine === 'deepseek') {
+            $raw_json = DeepSeekApi::generateContent($prompt, $api_key);
+        } else {
+            $raw_json = GeminiApi::generateContent($prompt, $api_key);
+        }
 
         if (is_wp_error($raw_json)) {
             if ($raw_json->get_error_message() === '429') {

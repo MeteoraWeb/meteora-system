@@ -3,6 +3,7 @@ namespace Meteora\Modules\ArticoliAi;
 
 use Meteora\Core\Menu\MenuManager;
 use Meteora\Core\Api\GeminiApi;
+use Meteora\Core\Api\DeepSeekApi;
 
 class NewsEngine {
     /**
@@ -32,6 +33,7 @@ class NewsEngine {
         add_action('wp_ajax_mpe_news_fetch_rss', [$this, 'fetchRssAjax']);
         add_action('wp_ajax_mpe_news_process_single', [$this, 'processSingleAjax']);
         add_action('wp_ajax_mpe_news_process_custom_links', [$this, 'processCustomLinksAjax']);
+        add_action('wp_ajax_mpe_news_process_custom_topic', [$this, 'processCustomTopicAjax']);
     }
 
     public function handlePostRequests() {
@@ -42,6 +44,8 @@ class NewsEngine {
         if (isset($_POST['save_news_settings']) && isset($_POST['mpe_news_nonce']) && wp_verify_nonce($_POST['mpe_news_nonce'], 'mpe_news_action')) {
             update_option('mpe_pexels_api_key', sanitize_text_field($_POST['mpe_pexels_api_key']));
             update_option('mpe_gemini_api_key', sanitize_text_field($_POST['mpe_gemini_api_key_news']));
+            update_option('mpe_deepseek_api_key', sanitize_text_field($_POST['mpe_deepseek_api_key_news']));
+            update_option('mpe_news_ai_engine', sanitize_text_field($_POST['mpe_news_ai_engine']));
             update_option('mpe_news_rss_sources', sanitize_textarea_field($_POST['news_rss_urls']));
             update_option('mpe_news_fetch_count', intval($_POST['news_fetch_count']));
             update_option('mpe_news_process_count', intval($_POST['news_process_count']));
@@ -82,6 +86,8 @@ class NewsEngine {
     public function renderNewsTab() {
         global $wpdb;
         $gemini_key = get_option('mpe_gemini_api_key', '');
+        $deepseek_key = get_option('mpe_deepseek_api_key', '');
+        $ai_engine = get_option('mpe_news_ai_engine', 'gemini');
         $pexels_key = get_option('mpe_pexels_api_key', '');
         $saved_urls = get_option('mpe_news_rss_sources', '');
         $fetch_count = get_option('mpe_news_fetch_count', 2);
@@ -97,12 +103,23 @@ class NewsEngine {
                 <form method="post">
                     ' . wp_nonce_field("mpe_news_action", "mpe_news_nonce", true, false) . '
                     <div style="display:flex; gap:15px; align-items:flex-end; flex-wrap:wrap; margin-bottom:20px;">
-                        <div style="flex:1; min-width:250px;">
-                            <label class="mpe-label">API Google Gemini</label>
+                        <div style="flex:1; min-width:150px;">
+                            <label class="mpe-label">Motore AI</label>
+                            <select name="mpe_news_ai_engine" class="mpe-input">
+                                <option value="gemini" '.selected($ai_engine, 'gemini', false).'>Google Gemini (Flash 2.0)</option>
+                                <option value="deepseek" '.selected($ai_engine, 'deepseek', false).'>DeepSeek (Chat)</option>
+                            </select>
+                        </div>
+                        <div style="flex:1; min-width:200px;">
+                            <label class="mpe-label">API Key Gemini</label>
                             <input type="password" name="mpe_gemini_api_key_news" value="'.esc_attr($gemini_key).'" class="mpe-input" placeholder="Chiave Gemini...">
                         </div>
-                        <div style="flex:1; min-width:250px;">
-                            <label class="mpe-label">API Pexels</label>
+                        <div style="flex:1; min-width:200px;">
+                            <label class="mpe-label">API Key DeepSeek</label>
+                            <input type="password" name="mpe_deepseek_api_key_news" value="'.esc_attr($deepseek_key).'" class="mpe-input" placeholder="Chiave DeepSeek...">
+                        </div>
+                        <div style="flex:1; min-width:200px;">
+                            <label class="mpe-label">API Key Pexels</label>
                             <input type="password" name="mpe_pexels_api_key" value="'.esc_attr($pexels_key).'" class="mpe-input" placeholder="Chiave Pexels...">
                         </div>
                     </div>
@@ -140,8 +157,8 @@ class NewsEngine {
                 </form>
             </div>';
 
-        if (empty($gemini_key) || empty($pexels_key)) {
-            echo '<div class="mpe-card"><p style="color:red; font-weight:bold;">Inserisci le chiavi API per sbloccare la rotativa</p></div>';
+        if ( ($ai_engine === 'gemini' && empty($gemini_key)) || ($ai_engine === 'deepseek' && empty($deepseek_key)) || empty($pexels_key)) {
+            echo '<div class="mpe-card"><p style="color:red; font-weight:bold;">Inserisci le chiavi API per sbloccare la rotativa (AI e Pexels richiesti)</p></div>';
             return;
         }
 
@@ -156,8 +173,14 @@ class NewsEngine {
                     <h3>Scrittura Guidata da Link</h3>
                     <p style="font-size:13px; color:#666; margin-bottom:5px;">Incolla i link (anche più di uno) per fondere le fonti in un unico grande articolo</p>
                     <textarea id="custom_news_links" class="mpe-input" style="height:60px; margin-bottom:10px;" placeholder="https://..."></textarea>
-                    <button type="button" id="btn-start-custom-news" class="btn-mpe btn-blue" style="width:100%; justify-content:center; padding:15px;">GENERA ARTICOLO DA QUESTI LINK</button>
+                    <button type="button" id="btn-start-custom-news" class="btn-mpe btn-blue" style="width:100%; justify-content:center; padding:15px;">GENERA DA LINK</button>
                 </div>
+            </div>
+            <div class="mpe-card" style="border-left: 4px solid var(--m-orange); margin-top: 20px;">
+                <h3>Scrittura Libera da Argomento</h3>
+                <p style="font-size:13px; color:#666; margin-bottom:5px;">Scrivi qui l\'argomento o il titolo e l\'intelligenza artificiale genererà un articolo originale senza fonti esterne.</p>
+                <textarea id="custom_news_topic" class="mpe-input" style="height:60px; margin-bottom:10px;" placeholder="Es: Scrivi un articolo sui diamanti rosa e sul loro valore di mercato..."></textarea>
+                <button type="button" id="btn-start-custom-topic" class="btn-mpe" style="background:var(--m-orange); color:#fff; width:100%; justify-content:center; padding:15px;">GENERA ARTICOLO DA ARGOMENTO</button>
             </div>';
 
         echo '<div id="news-progress-area" style="display:none; margin-top:10px; padding:15px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:4px;">
@@ -228,6 +251,34 @@ class NewsEngine {
             });
         });
 
+        document.getElementById("btn-start-custom-topic")?.addEventListener("click", function() {
+            const customTopic = document.getElementById("custom_news_topic").value.trim();
+            if(!customTopic) { alert("Scrivi un argomento"); return; }
+
+            startNewsUI("Creazione articolo originale basato sul tuo input...");
+            document.getElementById("news-counter").innerText = `0 / 1`;
+
+            fetch(ajaxurl, {
+                method: "POST",
+                headers: {"Content-Type": "application/x-www-form-urlencoded"},
+                body: `action=mpe_news_process_custom_topic&topic=${encodeURIComponent(customTopic)}&nonce=${newsNonce}`
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success) {
+                    logNews(`Articolo generato con successo ID Post ${data.data}`);
+                    document.getElementById("news-progress-bar").style.width = "100%";
+                    document.getElementById("news-counter").innerText = `1 / 1`;
+                } else {
+                    logNews(`Operazione fallita: ${data.data}`);
+                }
+                setTimeout(() => { location.reload(); }, 1000);
+            }).catch(err => {
+                logNews("Errore server durante la generazione: " + err.message);
+                resetNewsUI();
+            });
+        });
+
         document.getElementById("btn-start-custom-news")?.addEventListener("click", function() {
             const customLinks = document.getElementById("custom_news_links").value.trim();
             if(!customLinks) { alert("Incolla almeno un link"); return; }
@@ -247,11 +298,11 @@ class NewsEngine {
                     document.getElementById("news-progress-bar").style.width = "100%";
                     document.getElementById("news-counter").innerText = `1 / 1`;
                 } else {
-                    logNews(`Operazione fallita a causa di ${data.data}`);
+                    logNews(`Operazione fallita: ${data.data}`);
                 }
                 setTimeout(() => { location.reload(); }, 1000);
             }).catch(err => {
-                logNews("Errore server durante la generazione");
+                logNews("Errore server durante la generazione: " + err.message);
                 resetNewsUI();
             });
         });
@@ -319,23 +370,24 @@ class NewsEngine {
 
     public function runAutomatedNewsFactory() {
         @set_time_limit(300);
-        $gemini_key = trim(get_option('mpe_gemini_api_key'));
+        $ai_engine = get_option('mpe_news_ai_engine', 'gemini');
+        $api_key = ($ai_engine === 'deepseek') ? trim(get_option('mpe_deepseek_api_key')) : trim(get_option('mpe_gemini_api_key'));
         $pexels_key = trim(get_option('mpe_pexels_api_key'));
         $urls_raw = get_option('mpe_news_rss_sources', '');
 
-        if (empty($urls_raw) || empty($gemini_key) || empty($pexels_key)) return;
+        if (empty($urls_raw) || empty($api_key) || empty($pexels_key)) return;
 
         $urls = array_filter(array_map('trim', explode("\n", $urls_raw)));
         $fetch_count = intval(get_option('mpe_news_fetch_count', 2));
         $process_count = intval(get_option('mpe_news_process_count', 2));
 
-        $articles = $this->fetchAndFilterRss($urls, $fetch_count, $process_count, $gemini_key);
+        $articles = $this->fetchAndFilterRss($urls, $fetch_count, $process_count, $api_key, $ai_engine);
         if (empty($articles)) return;
 
         $success_count = 0;
         foreach ($articles as $art) {
             if ($success_count >= $process_count) break;
-            $result = $this->processSingleArticle($art['title'], $art['content'], $art['link'], $gemini_key, $pexels_key, 'rss');
+            $result = $this->processSingleArticle($art['title'], $art['content'], $art['link'], $api_key, $pexels_key, 'rss', $ai_engine);
             if (is_numeric($result)) {
                 $success_count++;
             }
@@ -352,9 +404,11 @@ class NewsEngine {
         $urls = array_filter(array_map('trim', explode("\n", $urls_raw)));
         $fetch_count = intval($_POST['fetch_count']);
         $process_count = intval($_POST['process_count']);
-        $gemini_key = trim(get_option('mpe_gemini_api_key'));
 
-        $selected_articles = $this->fetchAndFilterRss($urls, $fetch_count, $process_count, $gemini_key);
+        $ai_engine = get_option('mpe_news_ai_engine', 'gemini');
+        $api_key = ($ai_engine === 'deepseek') ? trim(get_option('mpe_deepseek_api_key')) : trim(get_option('mpe_gemini_api_key'));
+
+        $selected_articles = $this->fetchAndFilterRss($urls, $fetch_count, $process_count, $api_key, $ai_engine);
 
         if (empty($selected_articles)) {
             wp_send_json_error("Nessun contenuto trovato");
@@ -369,13 +423,36 @@ class NewsEngine {
             wp_send_json_error('Unauthorized');
         }
 
-        $gemini_key = trim(get_option('mpe_gemini_api_key'));
+        $ai_engine = get_option('mpe_news_ai_engine', 'gemini');
+        $api_key = ($ai_engine === 'deepseek') ? trim(get_option('mpe_deepseek_api_key')) : trim(get_option('mpe_gemini_api_key'));
         $pexels_key = trim(get_option('mpe_pexels_api_key'));
         $raw_title = sanitize_text_field($_POST['title']);
         $raw_content = sanitize_text_field($_POST['content']);
         $source_link = esc_url_raw($_POST['link']);
 
-        $result = $this->processSingleArticle($raw_title, $raw_content, $source_link, $gemini_key, $pexels_key, 'rss');
+        $result = $this->processSingleArticle($raw_title, $raw_content, $source_link, $api_key, $pexels_key, 'rss', $ai_engine);
+
+        if (is_numeric($result)) {
+            wp_send_json_success($result);
+        } else {
+            wp_send_json_error($result);
+        }
+    }
+
+    public function processCustomTopicAjax() {
+        check_ajax_referer('mpe_news_ajax', 'nonce');
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error('Unauthorized');
+        }
+
+        $ai_engine = get_option('mpe_news_ai_engine', 'gemini');
+        $api_key = ($ai_engine === 'deepseek') ? trim(get_option('mpe_deepseek_api_key')) : trim(get_option('mpe_gemini_api_key'));
+        $pexels_key = trim(get_option('mpe_pexels_api_key'));
+        $topic = sanitize_textarea_field($_POST['topic']);
+
+        if (empty($topic) || empty($api_key)) wp_send_json_error("Dati mancanti");
+
+        $result = $this->processSingleArticle("Generazione da Argomento", $topic, "Argomento personalizzato", $api_key, $pexels_key, 'custom_topic', $ai_engine);
 
         if (is_numeric($result)) {
             wp_send_json_success($result);
@@ -390,12 +467,13 @@ class NewsEngine {
             wp_send_json_error('Unauthorized');
         }
 
-        $gemini_key = trim(get_option('mpe_gemini_api_key'));
+        $ai_engine = get_option('mpe_news_ai_engine', 'gemini');
+        $api_key = ($ai_engine === 'deepseek') ? trim(get_option('mpe_deepseek_api_key')) : trim(get_option('mpe_gemini_api_key'));
         $pexels_key = trim(get_option('mpe_pexels_api_key'));
         $links_raw = sanitize_textarea_field($_POST['links']);
         $links = array_filter(array_map('trim', explode("\n", $links_raw)));
 
-        if (empty($links) || empty($gemini_key)) wp_send_json_error("Dati mancanti");
+        if (empty($links) || empty($api_key)) wp_send_json_error("Dati mancanti");
 
         $combined_text = "";
         foreach ($links as $link) {
@@ -403,7 +481,7 @@ class NewsEngine {
             $combined_text .= "FONTE $link \n" . $extracted . "\n\n";
         }
 
-        $result = $this->processSingleArticle("Generazione Multi-Link", $combined_text, implode(", ", $links), $gemini_key, $pexels_key, 'custom_links');
+        $result = $this->processSingleArticle("Generazione Multi-Link", $combined_text, implode(", ", $links), $api_key, $pexels_key, 'custom_links', $ai_engine);
 
         if (is_numeric($result)) {
             wp_send_json_success($result);
@@ -433,7 +511,7 @@ class NewsEngine {
         return "";
     }
 
-    private function fetchAndFilterRss($urls, $fetch_count, $process_count, $gemini_key) {
+    private function fetchAndFilterRss($urls, $fetch_count, $process_count, $api_key, $ai_engine = 'gemini') {
         global $wpdb;
         include_once(ABSPATH . WPINC . '/feed.php');
         $all_articles = [];
@@ -466,7 +544,7 @@ class NewsEngine {
 
         $ai_target = $process_count + 6;
 
-        if (empty($gemini_key) || count($all_articles) <= $process_count) {
+        if (empty($api_key) || count($all_articles) <= $process_count) {
             shuffle($all_articles);
             return array_slice($all_articles, 0, $ai_target);
         }
@@ -498,7 +576,11 @@ class NewsEngine {
 
         $prompt = "Agisci da Caporedattore. Le categorie ufficiali del nostro sito sono {$available_categories_string}. In questo preciso momento in Italia le persone stanno cercando su Google questi argomenti bollenti {$trending_keywords}. Ecco un calderone di notizie inedite raccolte da vari feed. Devi valutare la pertinenza di ogni notizia con le nostre categorie e incrociarle il piu possibile con le tendenze di ricerca attuali. Scarta la spazzatura. Tra quelle in target e possibilmente in trend seleziona ESATTAMENTE {$ai_target} notizie eliminando i doppioni. Rispondi solo con un array JSON puro contenente gli ID numerici delle scelte esempio [1, 4, 8]";
 
-        $raw_json = GeminiApi::generateContent($prompt . "\n\nNotizie\n" . $titles_list, $gemini_key, 0.1);
+        if ($ai_engine === 'deepseek') {
+            $raw_json = DeepSeekApi::generateContent($prompt . "\n\nNotizie\n" . $titles_list, $api_key, 0.1);
+        } else {
+            $raw_json = GeminiApi::generateContent($prompt . "\n\nNotizie\n" . $titles_list, $api_key, 0.1);
+        }
 
         $selected_articles = [];
         if (!is_wp_error($raw_json)) {
@@ -521,7 +603,7 @@ class NewsEngine {
         return $selected_articles;
     }
 
-    private function processSingleArticle($raw_title, $raw_content, $source_link, $gemini_key, $pexels_key, $source_type = 'rss') {
+    private function processSingleArticle($raw_title, $raw_content, $source_link, $api_key, $pexels_key, $source_type = 'rss', $ai_engine = 'gemini') {
         global $wpdb;
 
         if ($source_type === 'rss') {
@@ -571,9 +653,13 @@ class NewsEngine {
         \"pexel_keyword\" \"Frase specifica in inglese di 2 o 3 parole per cercare la foto\"
         }";
 
-        $raw_json = GeminiApi::generateContent($prompt, $gemini_key, 0.4);
+        if ($ai_engine === 'deepseek') {
+            $raw_json = DeepSeekApi::generateContent($prompt, $api_key, 0.4);
+        } else {
+            $raw_json = GeminiApi::generateContent($prompt, $api_key, 0.4);
+        }
 
-        if (is_wp_error($raw_json)) return "Connessione Google fallita";
+        if (is_wp_error($raw_json)) return "Connessione AI fallita: " . $raw_json->get_error_message();
 
         $data = json_decode($raw_json, true);
 

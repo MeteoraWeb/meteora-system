@@ -303,7 +303,13 @@ class UCG_Email_Marketing {
         echo '<label for="ucg-subject">' . esc_html__('Oggetto', 'unique-coupon-generator') . '</label>';
         echo '<input type="text" id="ucg-subject" name="subject" placeholder="' . esc_attr__('Titolo della campagna', 'unique-coupon-generator') . '" required>';
         echo '</div>';
-        echo '<div class="ucg-field">';
+        echo '<div class="ucg-field" style="margin-bottom:15px; border-bottom: 1px solid #eee; padding-bottom: 15px;">';
+        echo '<label style="font-weight:bold; margin-right:15px;">' . esc_html__('Modalità Composizione', 'unique-coupon-generator') . '</label>';
+        echo '<label style="margin-right:10px;"><input type="radio" name="email_mode" value="visual" checked onchange="toggleEmailMode(this.value)"> Editor Visuale</label>';
+        echo '<label><input type="radio" name="email_mode" value="html" onchange="toggleEmailMode(this.value)"> Codice HTML Puro</label>';
+        echo '</div>';
+
+        echo '<div class="ucg-field" id="template-selector-wrap">';
         echo '<label for="ucg-template-select">' . esc_html__('Template salvati', 'unique-coupon-generator') . '</label>';
         echo '<select id="ucg-template-select"><option value="">' . esc_html__('Scegli template', 'unique-coupon-generator') . '</option>';
         foreach($templates as $i=>$t){
@@ -311,7 +317,16 @@ class UCG_Email_Marketing {
         }
         echo '</select>';
         echo '</div>';
+
+        echo '<div id="visual-editor-wrap">';
         wp_editor('', 'ucg_email_content', ['textarea_name'=>'content']);
+        echo '</div>';
+
+        echo '<div id="html-editor-wrap" style="display:none;">';
+        echo '<p style="font-size:12px; color:#666;">Incolla qui il tuo codice HTML (Verrà inviato esattamente come scritto).</p>';
+        echo '<textarea name="content_html" id="ucg_email_content_html" style="width:100%; height:300px; font-family:monospace; background:#1e1e1e; color:#a3e635; padding:15px;" placeholder="<html>..."></textarea>';
+        echo '</div>';
+
         echo '<div class="ucg-form-actions">';
         echo '<button type="submit" id="ucg-send-btn" class="button button-primary" disabled>' . esc_html__('Invia email', 'unique-coupon-generator') . '</button>';
         echo '</div>';
@@ -319,6 +334,18 @@ class UCG_Email_Marketing {
         echo '</form>';
         ?>
         <script>
+        function toggleEmailMode(mode) {
+            if (mode === 'visual') {
+                document.getElementById('visual-editor-wrap').style.display = 'block';
+                document.getElementById('template-selector-wrap').style.display = 'block';
+                document.getElementById('html-editor-wrap').style.display = 'none';
+            } else {
+                document.getElementById('visual-editor-wrap').style.display = 'none';
+                document.getElementById('template-selector-wrap').style.display = 'none';
+                document.getElementById('html-editor-wrap').style.display = 'block';
+            }
+        }
+
         (function(){
             var all = document.getElementById('ucg-check-all');
             var checkNodes = document.querySelectorAll('.ucg-user-check');
@@ -428,7 +455,15 @@ class UCG_Email_Marketing {
         $raw_ids = array_filter(array_map('trim', explode(',', wp_unslash($_POST['user_ids'] ?? ''))));
         $subject = sanitize_text_field(wp_unslash($_POST['subject'] ?? ''));
         $sender = sanitize_email(wp_unslash($_POST['sender'] ?? ''));
-        $content = wp_kses_post(wp_unslash($_POST['content'] ?? ''));
+
+        $mode = isset($_POST['email_mode']) ? sanitize_text_field($_POST['email_mode']) : 'visual';
+        if ($mode === 'html') {
+            // For HTML mode, we allow full HTML markup since the admin is doing email marketing
+            $content = wp_unslash($_POST['content_html'] ?? '');
+        } else {
+            $content = wp_kses_post(wp_unslash($_POST['content'] ?? ''));
+        }
+
         if(!$raw_ids || !$subject || !$content || !$sender) {
             wp_send_json_error(__('Dati mancanti.', 'unique-coupon-generator'));
         }

@@ -9,6 +9,9 @@
         "psr-4": {
             "Meteora\\Core\\": "core/",
             "Meteora\\Modules\\": "modules/"
-        }
+        },
+        "classmap": [
+            "modules/Fidelity/includes/classes/"
+        ]
     }
 }

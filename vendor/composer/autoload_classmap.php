@@ -7,4 +7,17 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
+    'CouponCleaner' => $baseDir . '/modules/Fidelity/includes/classes/class-coupon-cleaner.php',
+    'CouponGenerator' => $baseDir . '/modules/Fidelity/includes/classes/class-coupon-generator.php',
+    'CouponNotifier' => $baseDir . '/modules/Fidelity/includes/classes/class-coupon-notifier.php',
+    'CouponValidator' => $baseDir . '/modules/Fidelity/includes/classes/class-coupon-validator.php',
+    'UCG_Access_Gate' => $baseDir . '/modules/Fidelity/includes/classes/class-ucg-access-gate.php',
+    'UCG_Downloaded_Coupons' => $baseDir . '/modules/Fidelity/includes/classes/UCG_Downloaded_Coupons.php',
+    'UCG_Email_Marketing' => $baseDir . '/modules/Fidelity/includes/classes/UCG_Email_Marketing.php',
+    'UCG_Email_Templates' => $baseDir . '/modules/Fidelity/includes/classes/UCG_Email_Templates.php',
+    'UCG_Error_Log_Admin' => $baseDir . '/modules/Fidelity/includes/classes/UCG_Error_Log_Admin.php',
+    'UCG_FidelityManager' => $baseDir . '/modules/Fidelity/includes/classes/UCG_FidelityManager.php',
+    'UCG_Fidelity_Admin' => $baseDir . '/modules/Fidelity/includes/classes/UCG_Fidelity_Admin.php',
+    'UCG_PDF_Exporter' => $baseDir . '/modules/Fidelity/includes/classes/UCG_PDF_Exporter.php',
+    'UCG_User_Profiles' => $baseDir . '/modules/Fidelity/includes/classes/UCG_User_Profiles.php',
 );
