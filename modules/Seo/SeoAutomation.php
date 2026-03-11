@@ -22,8 +22,7 @@ class SeoAutomation {
     }
 
     private function __construct() {
-        MenuManager::instance()->registerTab('tab-seo', 'SEO PRODOTTI', 'dashicons-format-aside', [$this, 'renderSeoTab']);
-        MenuManager::instance()->registerTab('tab-seo-backup', 'ROLLBACK PRODOTTI', 'dashicons-undo', [$this, 'renderSeoBackupTab']);
+        MenuManager::instance()->registerTab('tab-seo-hub', 'SEO Automation', 'dashicons-format-aside', [$this, 'renderSeoHub']);
 
         add_action('admin_init', [$this, 'handlePostRequests']);
         add_action('wp_ajax_mpe_seo_get_products', [$this, 'getProductsAjax']);
@@ -44,8 +43,10 @@ class SeoAutomation {
         }
     }
 
-    public function renderSeoTab() {
+    public function renderSeoHub() {
         if (!class_exists('WooCommerce')) { echo '<p>WooCommerce non rilevato.</p>'; return; }
+
+        echo '<div style="max-width: 900px;">';
 
         $gemini_key = get_option('mpe_gemini_api_key', '');
         $deepseek_key = get_option('mpe_deepseek_api_key', '');
@@ -261,8 +262,8 @@ class SeoAutomation {
         </script>';
     }
 
-    public function renderSeoBackupTab() {
-        if (!class_exists('WooCommerce')) { echo '<p>WooCommerce non rilevato.</p>'; return; }
+    private function renderSeoBackupTab() {
+        if (!class_exists('WooCommerce')) { return; }
 
         global $wpdb;
         $table_name = $wpdb->prefix . 'mpe_seo_logs';

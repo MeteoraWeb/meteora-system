@@ -143,7 +143,7 @@ if (!function_exists('ucg_enforce_access_point')) {
             $context_key = 'default';
         }
 
-        $access = function_exists('ucg_access_granted') ? (bool) ucg_access_granted() : false;
+        $access = class_exists('\UCG_Access_Gate') ? (bool) \UCG_Access_Gate::instance()->is_license_valid() : false;
         if ($access) {
             return true;
         }

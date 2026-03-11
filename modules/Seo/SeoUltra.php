@@ -20,7 +20,7 @@ class SeoUltra {
     }
 
     private function __construct() {
-        MenuManager::instance()->registerTab('tab-seo-ultra', 'SEO ULTRA', 'dashicons-superhero', [$this, 'renderTab']);
+        // Tab visually embedded inside SeoAutomation hub. No separate main tab needed.
     }
 
     public function renderTab() {
