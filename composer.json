@@ -1,0 +1,14 @@
+{
+    "name": "meteora/meteora-system",
+    "description": "Meteora System - La Suite di Marketing e Gestione Definitiva per WordPress",
+    "type": "wordpress-plugin",
+    "require": {
+        "php": ">=7.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Meteora\\Core\\": "core/",
+            "Meteora\\Modules\\": "modules/"
+        }
+    }
+}
