@@ -13,8 +13,14 @@ function ucg_welcome_page(){
         return;
     }
 
+    if (class_exists('\Meteora\Core\Menu\MenuManager')) {
+        \Meteora\Core\Menu\MenuManager::instance()->renderHeader();
+    }
+
     echo '<div class="wrap ucg-admin-app">';
-    echo '<header class="ucg-admin-header">';
+
+    // Hide old header but keep structure
+    echo '<header class="ucg-admin-header" style="display:none;">';
     echo '<h1>' . esc_html__('Benvenuto in Unique Coupon Generator', 'unique-coupon-generator') . '</h1>';
     echo '<p class="ucg-admin-lead">' . esc_html__('Gestisci coupon, programmi fidelity, eventi e comunicazioni marketing da un unico pannello coerente con WordPress.', 'unique-coupon-generator') . '</p>';
     echo '</header>';
@@ -24,6 +30,10 @@ function ucg_welcome_page(){
     }
 
     echo '</div>';
+
+    if (class_exists('\Meteora\Core\Menu\MenuManager')) {
+        \Meteora\Core\Menu\MenuManager::instance()->renderFooter();
+    }
 }
 
 function ucg_add_welcome_submenu(){

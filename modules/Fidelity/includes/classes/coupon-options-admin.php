@@ -298,8 +298,14 @@ function ucg_admin_render_page(array $args) {
     $current_tab = ucg_admin_current_tab($args['tabs'], $default_tab);
     $base_url    = ucg_admin_page_url($args['slug']);
 
+    if (class_exists('\Meteora\Core\Menu\MenuManager')) {
+        \Meteora\Core\Menu\MenuManager::instance()->renderHeader();
+    }
+
     echo '<div class="wrap ucg-admin-app" data-ucg-page="' . esc_attr($args['slug']) . '">';
-    echo '<header class="ucg-admin-header">';
+
+    // Hide old header but keep structure
+    echo '<header class="ucg-admin-header" style="display:none;">';
     echo '<h1>' . esc_html($args['title']) . '</h1>';
     if (!empty($args['description'])) {
         echo '<p class="ucg-admin-lead">' . esc_html($args['description']) . '</p>';
@@ -308,30 +314,34 @@ function ucg_admin_render_page(array $args) {
 
     $cards = is_callable($args['cards']) ? call_user_func($args['cards'], $current_tab) : $args['cards'];
     if (!empty($cards) && is_array($cards)) {
+        echo '<div style="margin-bottom: 20px;">';
         ucg_admin_render_cards($cards);
+        echo '</div>';
     }
 
-    echo '<nav class="nav-tab-wrapper ucg-admin-tabs" role="tablist">';
-    foreach ($args['tabs'] as $tab_key => $tab) {
-        $tab_label = isset($tab['label']) ? $tab['label'] : ucfirst($tab_key);
-        $icon      = !empty($tab['icon']) ? $tab['icon'] : '';
-        $is_active = $tab_key === $current_tab;
-        $classes   = 'nav-tab ucg-tab-link' . ($is_active ? ' nav-tab-active is-active' : '');
-        $url       = ucg_admin_page_url($args['slug'], $tab_key);
+    if (!empty($args['tabs'])) {
+        echo '<nav class="ucg-tabs" role="tablist" style="margin-bottom: 20px; display:flex !important; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px;">';
+        foreach ($args['tabs'] as $tab_key => $tab) {
+            $is_active = $tab_key === $current_tab;
+            $classes   = 'btn-mpe ' . ($is_active ? 'btn-blue' : 'btn-grey') . ' ucg-tabs__link';
+            $icon      = isset($tab['icon']) ? $tab['icon'] : '';
+            $tab_label = is_array($tab) ? $tab['label'] : $tab;
+            $url       = ucg_admin_page_url($args['slug'], $tab_key);
 
-        echo '<a href="' . esc_url($url) . '" class="' . esc_attr($classes) . '" role="tab" aria-selected="' . ($is_active ? 'true' : 'false') . '">';
-        if ($icon) {
-            echo '<span class="dashicons ' . esc_attr($icon) . '" aria-hidden="true"></span>';
+            echo '<a href="' . esc_url($url) . '" class="' . esc_attr($classes) . '" role="tab" aria-selected="' . ($is_active ? 'true' : 'false') . '" style="margin-right:10px;">';
+            if ($icon) {
+                echo '<span class="dashicons ' . esc_attr($icon) . '" aria-hidden="true" style="margin-right:5px;"></span>';
+            }
+            echo '<span>' . esc_html($tab_label) . '</span>';
+            if (!empty($tab['badge'])) {
+                echo '<span class="ucg-tab-badge" style="margin-left: 5px; background: #fff; color: #000; padding: 2px 6px; border-radius: 10px;">' . esc_html($tab['badge']) . '</span>';
+            }
+            echo '</a>';
         }
-        echo '<span>' . esc_html($tab_label) . '</span>';
-        if (!empty($tab['badge'])) {
-            echo '<span class="ucg-tab-badge">' . esc_html($tab['badge']) . '</span>';
-        }
-        echo '</a>';
+        echo '</nav>';
     }
-    echo '</nav>';
 
-    echo '<div class="ucg-admin-content" role="tabpanel">';
+    echo '<div class="ucg-admin-content mpe-card" role="tabpanel" style="border-top:none;">';
     if (!empty($args['tabs'][$current_tab]['callback']) && is_callable($args['tabs'][$current_tab]['callback'])) {
         $context = array(
             'current_tab' => $current_tab,
@@ -346,6 +356,10 @@ function ucg_admin_render_page(array $args) {
     }
     echo '</div>';
     echo '</div>';
+
+    if (class_exists('\Meteora\Core\Menu\MenuManager')) {
+        \Meteora\Core\Menu\MenuManager::instance()->renderFooter();
+    }
 }
 
 /**

@@ -35,17 +35,18 @@ class MenuManager {
         );
     }
 
-    public function registerTab($id, $title, $icon, $callback) {
+    public function registerTab($id, $title, $icon, $callback, $slug = 'meteora-system') {
         $this->tabs[$id] = [
             'title' => $title,
             'icon' => $icon,
-            'callback' => $callback
+            'callback' => $callback,
+            'slug' => $slug
         ];
     }
 
-    public function renderPage() {
-        // Sensore di Rilevamento Ambientale
+    public function renderHeader() {
         $has_woo = class_exists('WooCommerce');
+        $current_page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : 'meteora-system';
 
         echo '<style>
             :root {
@@ -62,7 +63,7 @@ class MenuManager {
 
             /* NAVIGAZIONE */
             .mpe-nav { display: flex; background: #f8fafc; border-bottom: 1px solid #e2e8f0; padding: 0 5px; user-select: none; flex-wrap: wrap; }
-            .mpe-nav-item { padding: 12px 18px; cursor: pointer; font-weight: 600; font-size: 13px; color: #64748b; border-bottom: 3px solid transparent; transition: 0.1s; display: flex; align-items: center; gap: 6px; }
+            .mpe-nav-item { padding: 12px 18px; cursor: pointer; font-weight: 600; font-size: 13px; color: #64748b; border-bottom: 3px solid transparent; transition: 0.1s; display: flex; align-items: center; gap: 6px; text-decoration: none;}
             .mpe-nav-item:hover { background: #f1f5f9; color: var(--m-dark); }
             .mpe-nav-item.active { background: #fff; color: var(--m-blue); border-bottom-color: var(--m-blue); border-right: 1px solid #e2e8f0; border-left: 1px solid #e2e8f0; }
 
@@ -94,11 +95,75 @@ class MenuManager {
 
             /* CONSOLE */
             .console-window { background: #1e1e1e; color: #a3e635; padding: 15px; border-radius: 4px; font-family: "Courier New", monospace; height: 500px; overflow-y: auto; font-size: 12px; line-height: 1.4; border: 1px solid #333; }
+
+            /* RESET UCG WRAPPERS per integrazione */
+            .ucg-admin-app { margin: 0 !important; padding: 0 !important; background: transparent !important; }
+            .ucg-admin-header { display: none !important; }
+            .ucg-tabs { display: none !important; }
         </style>';
 
+        echo '<div class="mpe-wrap">';
+
+        // HEADER
+        echo '<div class="mpe-header">
+                <h1><span class="dashicons dashicons-superhero-alt"></span> Meteora System <span class="mpe-badge">V1.0.0</span></h1>
+                <div style="font-size:11px; opacity:0.8; font-family:monospace;">SYSTEM ' . ($has_woo ? 'WOOCOMMERCE DETECTED' : 'STANDALONE MODE') . '</div>
+              </div>';
+
+        // NAVIGAZIONE MODULARE (Pagine Principali)
+        // Hardcode external Fidelity tabs to ensure they are always present across pages
+        $fidelity_tabs = [
+            'ucg-admin' => ['title' => 'Fidelity Coupon', 'icon' => 'dashicons-tickets'],
+            'ucg-admin-events' => ['title' => 'Fidelity Eventi', 'icon' => 'dashicons-calendar-alt'],
+            'ucg-admin-marketing' => ['title' => 'Fidelity Marketing', 'icon' => 'dashicons-email-alt2'],
+            'ucg-admin-whatsapp' => ['title' => 'Fidelity WhatsApp', 'icon' => 'dashicons-whatsapp'],
+            'ucg-admin-settings' => ['title' => 'Fidelity Settings', 'icon' => 'dashicons-admin-settings']
+        ];
+
+        echo '<div class="mpe-nav">';
+        $rendered_slugs = [];
+
+        // Add Core Tabs mapped to main page
+        $is_core_page = ($current_page === 'meteora-system');
+
+        foreach ($this->tabs as $id => $tab) {
+            if ($tab['slug'] === 'meteora-system') {
+                $is_active = $is_core_page ? '' : ''; // Will be handled by JS for internal tabs
+                if ($is_core_page) {
+                    echo '<div id="nav-' . esc_attr($id) . '" class="mpe-nav-item ' . $is_active . '" onclick="openTab(\'' . esc_attr($id) . '\')"><span class="dashicons ' . esc_attr($tab['icon']) . '"></span> ' . esc_html($tab['title']) . '</div>';
+                } else {
+                    echo '<a href="' . esc_url(admin_url('admin.php?page=meteora-system#nav-' . $id)) . '" class="mpe-nav-item"><span class="dashicons ' . esc_attr($tab['icon']) . '"></span> ' . esc_html($tab['title']) . '</a>';
+                }
+            } else {
+                // Ignore here, we will render Fidelity specifically to avoid duplication
+            }
+        }
+
+        // Render Fidelity tabs
+        foreach ($fidelity_tabs as $slug => $tab_data) {
+            $active_class = ($current_page === $slug) ? 'active' : '';
+            echo '<a href="' . esc_url(admin_url('admin.php?page=' . $slug)) . '" class="mpe-nav-item ' . $active_class . '"><span class="dashicons ' . esc_attr($tab_data['icon']) . '"></span> ' . esc_html($tab_data['title']) . '</a>';
+        }
+
+        echo '</div>';
+
+        echo '<div class="mpe-body">';
+    }
+
+    public function renderFooter() {
+        echo '</div>'; // End Body
+        echo '<div style="text-align:center; padding:20px; color:#94a3b8; font-size:11px;">Meteora SYSTEM | <span style="color:var(--m-green)">Status Operativo Assoluto</span></div>';
+        echo '</div>'; // End Wrap
+    }
+
+    public function renderPage() {
+        $this->renderHeader();
+
         $default_tab = '';
-        if (!empty($this->tabs)) {
-            $default_tab = array_key_first($this->tabs);
+        foreach ($this->tabs as $id => $tab) {
+            if ($tab['slug'] === 'meteora-system') {
+                if (empty($default_tab)) $default_tab = $id;
+            }
         }
 
         echo '<script>
@@ -114,40 +179,29 @@ class MenuManager {
                 if(tabNav) tabNav.classList.add("active");
             }
             document.addEventListener("DOMContentLoaded", () => {
-                let t = localStorage.getItem("meteora_system_tab") || "' . $default_tab . '";
+                let hash = window.location.hash;
+                let t = "' . $default_tab . '";
+                if (hash && hash.startsWith("#nav-")) {
+                    t = hash.replace("#nav-", "");
+                } else {
+                    t = localStorage.getItem("meteora_system_tab") || "' . $default_tab . '";
+                }
+
                 if(!document.getElementById(t)) { t = "' . $default_tab . '"; }
                 if(t) openTab(t);
             });
         </script>';
 
-        echo '<div class="mpe-wrap">';
-
-        // HEADER
-        echo '<div class="mpe-header">
-                <h1><span class="dashicons dashicons-superhero-alt"></span> Meteora System <span class="mpe-badge">V1.0.0</span></h1>
-                <div style="font-size:11px; opacity:0.8; font-family:monospace;">SYSTEM ' . ($has_woo ? 'WOOCOMMERCE DETECTED' : 'STANDALONE MODE') . '</div>
-              </div>';
-
-        // NAVIGAZIONE MODULARE
-        echo '<div class="mpe-nav">';
         foreach ($this->tabs as $id => $tab) {
-             echo '<div id="nav-' . esc_attr($id) . '" class="mpe-nav-item" onclick="openTab(\'' . esc_attr($id) . '\')"><span class="dashicons ' . esc_attr($tab['icon']) . '"></span> ' . esc_html($tab['title']) . '</div>';
-        }
-        echo '</div>';
-
-        // BODY START
-        echo '<div class="mpe-body">';
-
-        foreach ($this->tabs as $id => $tab) {
-            echo '<div id="' . esc_attr($id) . '" class="mpe-tab-content">';
-            if (is_callable($tab['callback'])) {
-                call_user_func($tab['callback']);
+            if ($tab['slug'] === 'meteora-system') {
+                echo '<div id="' . esc_attr($id) . '" class="mpe-tab-content">';
+                if (is_callable($tab['callback'])) {
+                    call_user_func($tab['callback']);
+                }
+                echo '</div>';
             }
-            echo '</div>';
         }
 
-        echo '</div>'; // End Body
-        echo '<div style="text-align:center; padding:20px; color:#94a3b8; font-size:11px;">Meteora SYSTEM | <span style="color:var(--m-green)">Status Operativo Assoluto</span></div>';
-        echo '</div>'; // End Wrap
+        $this->renderFooter();
     }
 }
