@@ -89,36 +89,8 @@ class Module {
     }
 
     public function modifyMenu() {
-        // Rimuove il menu di primo livello di UCG ("ucg-admin") creato dal plugin originale
-        remove_menu_page('ucg-admin');
-
-        global $submenu;
-
-        // Sposta tutte le sottotab di 'ucg-admin' sotto 'meteora-system' in modo che appaiano nel menu nativo di Meteora
-        if (isset($submenu['ucg-admin'])) {
-            foreach ($submenu['ucg-admin'] as $item) {
-                // $item[0] è il menu_title, $item[1] è la capability, $item[2] è il menu_slug, $item[3] è il page_title
-                $menu_title = $item[0];
-                $capability = $item[1];
-                $menu_slug = $item[2];
-                $page_title = isset($item[3]) ? $item[3] : $item[0];
-
-                // Rimuoviamo il primo elemento 'Gestione Coupon' duplicato che si viene a creare per default
-                if ($menu_slug === 'ucg-admin' && $menu_title === __('Gestione Coupon', 'unique-coupon-generator')) {
-                    continue;
-                }
-
-                add_submenu_page(
-                    'meteora-system',
-                    $page_title,
-                    $menu_title,
-                    $capability,
-                    $menu_slug,
-                    '' // Non abbiamo bisogno di ri-registrare la callback, WordPress sa come risolverla dal menu originale
-                );
-            }
-            unset($submenu['ucg-admin']);
-        }
+        // Fidelity submenus are now registered directly under 'meteora-system'
+        // in coupon-options-admin.php and ucg-welcome.php
     }
 
     public function enqueueAdminStyles($hook) {

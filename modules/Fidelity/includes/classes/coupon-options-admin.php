@@ -9,62 +9,52 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-add_action('admin_menu', 'ucg_register_admin_hub');
+add_action('admin_menu', 'ucg_register_admin_hub', 20);
 
 /**
- * Register the unified admin pages for the plugin.
+ * Register the unified admin pages for the plugin natively under Meteora System.
  */
 function ucg_register_admin_hub() {
-    add_menu_page(
-        __('Gestione Coupon', 'unique-coupon-generator'),
-        __('Gestione Coupon', 'unique-coupon-generator'),
-        'manage_options',
-        'ucg-admin',
-        'ucg_render_coupon_hub',
-        'dashicons-tickets',
-        56
-    );
-
     ucg_safe_add_submenu_page(
-        'ucg-admin',
-        __('Gestione Coupon', 'unique-coupon-generator'),
-        __('Gestione Coupon', 'unique-coupon-generator'),
+        'meteora-system',
+        __('Fidelity Coupon', 'unique-coupon-generator'),
+        __('Fidelity Coupon', 'unique-coupon-generator'),
         'manage_options',
         'ucg-admin',
         'ucg_render_coupon_hub'
     );
 
     ucg_safe_add_submenu_page(
-        'ucg-admin',
-        __('Gestione Eventi', 'unique-coupon-generator'),
-        __('Gestione Eventi', 'unique-coupon-generator'),
+        'meteora-system',
+        __('Fidelity Eventi', 'unique-coupon-generator'),
+        __('Fidelity Eventi', 'unique-coupon-generator'),
         'manage_options',
         'ucg-admin-events',
         'ucg_render_events_hub'
     );
 
     ucg_safe_add_submenu_page(
-        'ucg-admin',
-        __('Marketing', 'unique-coupon-generator'),
-        __('Marketing', 'unique-coupon-generator'),
+        'meteora-system',
+        __('Fidelity Marketing', 'unique-coupon-generator'),
+        __('Fidelity Marketing', 'unique-coupon-generator'),
         'manage_options',
         'ucg-admin-marketing',
         'ucg_render_marketing_hub'
     );
 
     ucg_safe_add_submenu_page(
-        'ucg-admin',
-        __('WhatsApp', 'unique-coupon-generator'),
-        __('WhatsApp', 'unique-coupon-generator'),
+        'meteora-system',
+        __('Fidelity WhatsApp', 'unique-coupon-generator'),
+        __('Fidelity WhatsApp', 'unique-coupon-generator'),
         'manage_options',
         'ucg-admin-whatsapp',
         'ucg_render_whatsapp_hub'
     );
 
     ucg_safe_add_submenu_page(
-        'ucg-admin',
-        __('Impostazioni Plugin', 'unique-coupon-generator'),
-        __('Impostazioni', 'unique-coupon-generator'),
+        'meteora-system',
+        __('Fidelity Settings', 'unique-coupon-generator'),
+        __('Fidelity Settings', 'unique-coupon-generator'),
         'manage_options',
         'ucg-admin-settings',
         'ucg_render_settings_hub'

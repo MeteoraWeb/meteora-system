@@ -28,9 +28,9 @@ function ucg_welcome_page(){
 
 function ucg_add_welcome_submenu(){
     ucg_safe_add_submenu_page(
-        'ucc-gestione-coupon',
+        'meteora-system',
         __('Pagina di benvenuto', 'unique-coupon-generator'),
-        __('Welcome', 'unique-coupon-generator'),
+        __('Fidelity Welcome', 'unique-coupon-generator'),
         'manage_options',
         'ucg-welcome',
         'ucg_welcome_page'
@@ -69,9 +69,8 @@ function ucg_redirect_to_welcome() {
         return;
     }
 
-    if ($page === 'ucc-gestione-coupon') {
-        wp_safe_redirect(admin_url('admin.php?page=ucg-welcome'));
-        exit;
+    if ($page === 'ucg-admin') {
+        // Option to redirect to welcome if visiting ucg-admin
     }
 
     $should_redirect = get_option('ucg_show_welcome', false);
