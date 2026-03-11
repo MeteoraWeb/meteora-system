@@ -89,27 +89,35 @@ class Module {
     }
 
     public function modifyMenu() {
-        // Rimuove il menu di primo livello creato dal plugin originale e lo sposta
-        remove_menu_page('unique-coupon-generator');
-
-        // Nel plugin originale i sottomenu sono agganciati a 'unique-coupon-generator'.
-        // Potremmo re-registrarli qui o lasciare che il menu originale funzioni e semplicemente cambiarne il parent,
-        // ma è più pulito non sovrascriverlo se vogliamo usare la stessa UI,
-        // però per ora limitiamoci a farlo comparire dentro Meteora System.
-        // Un trucco comune è aggiungere i sottomenu di UCG a Meteora System:
+        // Rimuove il menu di primo livello di UCG ("ucg-admin") creato dal plugin originale
+        remove_menu_page('ucg-admin');
 
         global $submenu;
-        if (isset($submenu['unique-coupon-generator'])) {
-            foreach ($submenu['unique-coupon-generator'] as $item) {
+
+        // Sposta tutte le sottotab di 'ucg-admin' sotto 'meteora-system' in modo che appaiano nel menu nativo di Meteora
+        if (isset($submenu['ucg-admin'])) {
+            foreach ($submenu['ucg-admin'] as $item) {
+                // $item[0] è il menu_title, $item[1] è la capability, $item[2] è il menu_slug, $item[3] è il page_title
+                $menu_title = $item[0];
+                $capability = $item[1];
+                $menu_slug = $item[2];
+                $page_title = isset($item[3]) ? $item[3] : $item[0];
+
+                // Rimuoviamo il primo elemento 'Gestione Coupon' duplicato che si viene a creare per default
+                if ($menu_slug === 'ucg-admin' && $menu_title === __('Gestione Coupon', 'unique-coupon-generator')) {
+                    continue;
+                }
+
                 add_submenu_page(
                     'meteora-system',
-                    $item[3],
-                    $item[0],
-                    $item[1],
-                    $item[2]
+                    $page_title,
+                    $menu_title,
+                    $capability,
+                    $menu_slug,
+                    '' // Non abbiamo bisogno di ri-registrare la callback, WordPress sa come risolverla dal menu originale
                 );
             }
-            unset($submenu['unique-coupon-generator']);
+            unset($submenu['ucg-admin']);
         }
     }
 
