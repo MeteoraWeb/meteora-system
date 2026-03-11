@@ -1,0 +1,201 @@
+.ucg-events-admin .ucg-ticket-table input[type="text"],
+.ucg-events-admin .ucg-ticket-table input[type="number"] {
+    width: 100%;
+}
+
+.ucg-events-admin .ucg-ticket-table th,
+.ucg-events-admin .ucg-ticket-table td {
+    vertical-align: middle;
+}
+
+.ucg-events-admin .ucg-placeholder-list {
+    margin: 8px 0 16px;
+    padding-left: 18px;
+    font-size: 13px;
+    list-style: disc;
+}
+
+.ucg-events-admin .ucg-placeholder-list code {
+    background: #f0f0f0;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.ucg-events-admin .ucg-email-template-wrapper {
+    display: grid;
+    gap: 20px;
+}
+
+@media (min-width: 900px) {
+    .ucg-events-admin .ucg-email-template-wrapper {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.ucg-events-admin .ucg-email-template-block h4 {
+    margin-top: 0;
+}
+
+.ucg-events-admin .ucg-email-template-block .wp-editor-wrap {
+    margin-top: 8px;
+}
+
+.ucg-events-admin .ucg-pr-report .ucg-pr-top {
+    background-color: #f0fff0;
+}
+
+.ucg-events-admin .ucg-image-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 400px;
+}
+
+.ucg-events-admin .ucg-image-preview img {
+    max-width: 200px;
+    height: auto;
+    border: 1px solid #ddd;
+}
+
+.ucg-events-admin .ucg-status {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    color: #fff;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.ucg-events-admin .ucg-status-bozza { background: #7a7a7a; }
+.ucg-events-admin .ucg-status-pubblicato { background: #2271b1; }
+.ucg-events-admin .ucg-status-chiuso { background: #ca4a1f; }
+
+.ucg-events-admin .ucg-filter-form {
+    margin: 20px 0;
+}
+
+.ucg-events-admin .ucg-filter-form select {
+    min-width: 220px;
+}
+
+.ucg-events-admin .ucg-payment-options-cell {
+    position: relative;
+}
+
+.ucg-events-admin .ucg-gateway-controls {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.ucg-events-admin .ucg-gateway-controls .button {
+    align-self: flex-start;
+}
+
+.ucg-events-admin .ucg-gateway-summary,
+.ucg-events-admin .ucg-gateway-note,
+.ucg-events-admin .ucg-gateway-warning,
+.ucg-events-admin .ucg-gateway-empty {
+    margin: 0;
+}
+
+.ucg-events-admin .ucg-gateway-warning {
+    color: #d63638;
+}
+
+.ucg-events-admin .ucg-wc-gateway-modal {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100000;
+}
+
+.ucg-events-admin .ucg-wc-gateway-modal.is-visible {
+    display: flex;
+}
+
+.ucg-events-admin .ucg-wc-gateway-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+}
+
+.ucg-events-admin .ucg-wc-gateway-dialog {
+    position: relative;
+    z-index: 1;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.2);
+    width: min(520px, 92vw);
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.ucg-events-admin .ucg-wc-gateway-header {
+    padding: 18px 24px;
+    border-bottom: 1px solid #e2e2e2;
+    background: #f6f7f7;
+}
+
+.ucg-events-admin .ucg-wc-gateway-header h2 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.ucg-events-admin .ucg-wc-gateway-body {
+    padding: 20px 24px;
+    overflow-y: auto;
+}
+
+.ucg-events-admin .ucg-wc-gateway-list {
+    display: grid;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.ucg-events-admin .ucg-gateway-option {
+    display: block;
+    padding: 12px 14px;
+    border: 1px solid #d9d9d9;
+    border-radius: 6px;
+    background: #fafafa;
+}
+
+.ucg-events-admin .ucg-gateway-option input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.ucg-events-admin .ucg-gateway-option-name {
+    font-weight: 600;
+    display: inline-block;
+    margin-right: 6px;
+}
+
+.ucg-events-admin .ucg-gateway-option-id {
+    color: #50575e;
+    font-size: 12px;
+    margin-right: 8px;
+}
+
+.ucg-events-admin .ucg-gateway-option-desc {
+    display: block;
+    margin-top: 6px;
+    color: #50575e;
+    font-size: 13px;
+}
+
+.ucg-events-admin .ucg-wc-gateway-footer {
+    padding: 16px 24px;
+    border-top: 1px solid #e2e2e2;
+    background: #f6f7f7;
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}

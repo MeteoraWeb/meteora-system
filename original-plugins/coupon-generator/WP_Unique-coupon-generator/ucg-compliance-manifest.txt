@@ -1,0 +1,36 @@
+UCG Compliance Manifest
+=======================
+
+1. PHP Code License
+-------------------
+This plugin is built for WordPress, which is licensed under the GNU General Public License (GPL).
+As such, all PHP code in this plugin is licensed under the GPL v2 or later.
+
+Compliance with the GPL is enforced at runtime by the `UCG_Access_Gate` component (exposed tramite `ucg_access_gate()` / `ucg_access_granted()`), che abilita le funzionalità premium solo dopo la validazione.
+
+You are free to:
+- Use the PHP code in your own projects.
+- Modify the PHP code to suit your needs.
+- Redistribute the PHP code, as long as the redistributed code is also licensed under the GPL.
+
+2. Envato Market License
+------------------------
+When purchased through Envato Market (e.g., CodeCanyon), this plugin is distributed under the Envato Market licenses:
+
+- Regular License
+- Extended License
+
+You must comply with the Envato license terms depending on your purchase.
+
+For more details, please refer to:
+https://codecanyon.net/licenses/standard
+
+3. Other Assets
+---------------
+Non-PHP assets in this plugin (such as JavaScript, CSS, images, fonts, and design elements) are NOT covered by the GPL.
+These assets are licensed to you under the Envato Market License that applies to your purchase.
+
+4. Copyright
+------------
+© 2025 Meteora Web. All rights reserved.
+This plugin is an original work and remains the intellectual property of its author.
