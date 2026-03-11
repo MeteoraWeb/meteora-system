@@ -143,6 +143,14 @@ class SeoAutomation {
                 </div>
             </div>';
 
+        $this->renderSeoBackupTab();
+
+        if (class_exists('\Meteora\Modules\Seo\SeoUltra')) {
+            \Meteora\Modules\Seo\SeoUltra::instance()->renderTab();
+        }
+
+        echo '</div>'; // End container
+
         echo '<script>
         let isSeoRunning = false;
         const seoNonce = "'.wp_create_nonce('mpe_seo_ajax').'";

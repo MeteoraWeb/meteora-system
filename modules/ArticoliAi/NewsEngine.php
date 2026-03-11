@@ -423,6 +423,8 @@ class NewsEngine {
             wp_send_json_error('Unauthorized');
         }
 
+        ob_start();
+
         $ai_engine = get_option('mpe_news_ai_engine', 'gemini');
         $api_key = ($ai_engine === 'deepseek') ? trim(get_option('mpe_deepseek_api_key')) : trim(get_option('mpe_gemini_api_key'));
         $pexels_key = trim(get_option('mpe_pexels_api_key'));
@@ -431,6 +433,8 @@ class NewsEngine {
         $source_link = esc_url_raw($_POST['link']);
 
         $result = $this->processSingleArticle($raw_title, $raw_content, $source_link, $api_key, $pexels_key, 'rss', $ai_engine);
+
+        $output = ob_get_clean();
 
         if (is_numeric($result)) {
             wp_send_json_success($result);
@@ -445,14 +449,21 @@ class NewsEngine {
             wp_send_json_error('Unauthorized');
         }
 
+        ob_start();
+
         $ai_engine = get_option('mpe_news_ai_engine', 'gemini');
         $api_key = ($ai_engine === 'deepseek') ? trim(get_option('mpe_deepseek_api_key')) : trim(get_option('mpe_gemini_api_key'));
         $pexels_key = trim(get_option('mpe_pexels_api_key'));
         $topic = sanitize_textarea_field($_POST['topic']);
 
-        if (empty($topic) || empty($api_key)) wp_send_json_error("Dati mancanti");
+        if (empty($topic) || empty($api_key)) {
+            ob_end_clean();
+            wp_send_json_error("Dati mancanti");
+        }
 
         $result = $this->processSingleArticle("Generazione da Argomento", $topic, "Argomento personalizzato", $api_key, $pexels_key, 'custom_topic', $ai_engine);
+
+        $output = ob_get_clean();
 
         if (is_numeric($result)) {
             wp_send_json_success($result);
@@ -467,13 +478,18 @@ class NewsEngine {
             wp_send_json_error('Unauthorized');
         }
 
+        ob_start();
+
         $ai_engine = get_option('mpe_news_ai_engine', 'gemini');
         $api_key = ($ai_engine === 'deepseek') ? trim(get_option('mpe_deepseek_api_key')) : trim(get_option('mpe_gemini_api_key'));
         $pexels_key = trim(get_option('mpe_pexels_api_key'));
         $links_raw = sanitize_textarea_field($_POST['links']);
         $links = array_filter(array_map('trim', explode("\n", $links_raw)));
 
-        if (empty($links) || empty($api_key)) wp_send_json_error("Dati mancanti");
+        if (empty($links) || empty($api_key)) {
+            ob_end_clean();
+            wp_send_json_error("Dati mancanti");
+        }
 
         $combined_text = "";
         foreach ($links as $link) {
@@ -482,6 +498,8 @@ class NewsEngine {
         }
 
         $result = $this->processSingleArticle("Generazione Multi-Link", $combined_text, implode(", ", $links), $api_key, $pexels_key, 'custom_links', $ai_engine);
+
+        $output = ob_get_clean();
 
         if (is_numeric($result)) {
             wp_send_json_success($result);

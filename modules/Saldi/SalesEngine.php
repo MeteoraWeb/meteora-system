@@ -20,11 +20,7 @@ class SalesEngine {
     }
 
     private function __construct() {
-        MenuManager::instance()->registerTab('tab-gold', 'ORO (Preview/Run)', 'dashicons-money', [$this, 'renderGoldTab']);
-        MenuManager::instance()->registerTab('tab-sales', 'APPLICA SALDI', 'dashicons-tag', [$this, 'renderSalesTab']);
-        MenuManager::instance()->registerTab('tab-clear-sales', 'RIMUOVI SALDI', 'dashicons-trash', [$this, 'renderClearSalesTab']);
-        MenuManager::instance()->registerTab('tab-logs', 'LOGS SALDI', 'dashicons-backup', [$this, 'renderLogsTab']);
-
+        MenuManager::instance()->registerTab('tab-sales-hub', 'Catalogo e Prezzi', 'dashicons-money', [$this, 'renderSalesHub']);
         add_action('admin_init', [$this, 'handlePostRequests']);
     }
 
@@ -83,12 +79,15 @@ class SalesEngine {
         return $out;
     }
 
-    public function renderGoldTab() {
+    public function renderSalesHub() {
         if (!class_exists('WooCommerce')) { echo '<p>WooCommerce non rilevato.</p>'; return; }
         $cat_options = $this->getCategoryOptions();
-        echo '
-        <div class="mpe-card">
-            <h3>Gestione Prezzi Oro (V6.7 Logic)</h3>
+
+        echo '<div style="max-width: 900px;">';
+
+        // --- GOLD ENGINE ---
+        echo '<div class="mpe-card" style="border-left: 4px solid #f59e0b;">
+            <h3>Gestione Prezzi Oro</h3>
             <p style="margin-bottom:15px; font-size:12px; color:#666;">Il sistema cerca il peso nel titolo o descrizione e ricalcola il prezzo</p>
             <form method="post">
                 ' . wp_nonce_field('mpe_sales_action', 'mpe_sales_nonce', true, false) . '
@@ -106,14 +105,10 @@ class SalesEngine {
                 </div>
             </form>
         </div>';
-    }
 
-    public function renderSalesTab() {
-        if (!class_exists('WooCommerce')) { echo '<p>WooCommerce non rilevato.</p>'; return; }
-        $cat_options = $this->getCategoryOptions();
-        echo '
-        <div class="mpe-card">
-            <h3>Gestione Saldi (V6.7 Logic)</h3>
+        // --- SALES ENGINE ---
+        echo '<div class="mpe-card" style="border-left: 4px solid #3b82f6;">
+            <h3>Applica Saldi Massivi</h3>
             <form method="post">
                 ' . wp_nonce_field('mpe_sales_action', 'mpe_sales_nonce', true, false) . '
                 <div class="mpe-grid-2">
@@ -133,13 +128,9 @@ class SalesEngine {
                 </div>
             </form>
         </div>';
-    }
 
-    public function renderClearSalesTab() {
-        if (!class_exists('WooCommerce')) { echo '<p>WooCommerce non rilevato.</p>'; return; }
-        $cat_options = $this->getCategoryOptions();
-        echo '
-        <div class="mpe-card" style="border-left: 4px solid var(--m-red);">
+        // --- CLEAR SALES ---
+        echo '<div class="mpe-card" style="border-left: 4px solid #ef4444;">
             <h3>Rimozione Selettiva Saldi</h3>
             <p style="margin-bottom:15px; font-size:12px; color:#666;">Rimuove lo sconto e ripristina il prezzo di listino originale per i prodotti filtrati</p>
             <form method="post">
@@ -154,14 +145,11 @@ class SalesEngine {
                 </div>
             </form>
         </div>';
-    }
 
-    public function renderLogsTab() {
-        if (!class_exists('WooCommerce')) { echo '<p>WooCommerce non rilevato.</p>'; return; }
+        // --- LOGS ---
         global $wpdb;
         $l = $wpdb->get_results("SELECT batch_id,COUNT(*)c,date FROM {$wpdb->prefix}mpe_price_logs GROUP BY batch_id ORDER BY date DESC LIMIT 5");
-
-        echo "<div class='mpe-card'><h3>Log Modifiche Prezzi</h3>";
+        echo "<div class='mpe-card' style='border-left: 4px solid #64748b;'><h3>Log Modifiche Prezzi (Rollback)</h3>";
         if($l) {
             echo "<table class='mpe-table'><thead><tr><th>Date</th><th>Items</th><th>Undo</th></tr></thead><tbody>";
             foreach($l as $r) {
@@ -174,6 +162,8 @@ class SalesEngine {
             echo "<p>Nessun log presente.</p>";
         }
         echo "</div>";
+
+        echo '</div>'; // End container
     }
 
     private function getAttrs($id){

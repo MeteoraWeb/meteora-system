@@ -33,8 +33,10 @@ class SystemCore {
         \Meteora\Modules\GlaSync\ForceSync::instance();
         \Meteora\Modules\Saldi\SalesEngine::instance();
         \Meteora\Modules\Seo\SeoAutomation::instance();
+        \Meteora\Modules\Seo\SeoUltra::instance();
         \Meteora\Modules\ArticoliAi\NewsEngine::instance();
         \Meteora\Modules\Fidelity\Module::instance();
+        \Meteora\Modules\Diagnostic\DiagnosticEngine::instance();
     }
 
     public static function activate() {
