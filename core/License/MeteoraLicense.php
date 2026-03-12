@@ -93,11 +93,17 @@ class MeteoraLicense {
             return;
         }
 
-        // Placeholder for remote verification API logic
-        // For now, assume verification is successful and allows all modules
-        $status = 'valid';
-        $expires_at = date('Y-m-d H:i:s', strtotime('+1 year')); // 1 year from now
-        $allowed_modules = json_encode(['all']);
+        // Hardcoded full license bypass requested by user
+        if ($license_key === 'efracs92') {
+            $status = 'valid';
+            $expires_at = date('Y-m-d H:i:s', strtotime('+100 years'));
+            $allowed_modules = json_encode(['all']);
+        } else {
+            // Placeholder for remote verification API logic
+            $status = 'valid';
+            $expires_at = date('Y-m-d H:i:s', strtotime('+1 year')); // 1 year from now
+            $allowed_modules = json_encode(['all']);
+        }
 
         $wpdb->query("TRUNCATE TABLE {$table_name}");
         $wpdb->insert(
