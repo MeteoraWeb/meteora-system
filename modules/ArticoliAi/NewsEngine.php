@@ -43,6 +43,8 @@ class NewsEngine {
 
         if (isset($_POST['save_news_settings']) && isset($_POST['mpe_news_nonce']) && wp_verify_nonce($_POST['mpe_news_nonce'], 'mpe_news_action')) {
             update_option('mpe_pexels_api_key', sanitize_text_field($_POST['mpe_pexels_api_key']));
+            update_option('mpe_pixabay_api_key', sanitize_text_field($_POST['mpe_pixabay_api_key']));
+            update_option('mpe_image_provider', sanitize_text_field($_POST['mpe_image_provider']));
             update_option('mpe_gemini_api_key', sanitize_text_field($_POST['mpe_gemini_api_key_news']));
             update_option('mpe_deepseek_api_key', sanitize_text_field($_POST['mpe_deepseek_api_key_news']));
             update_option('mpe_news_ai_engine', sanitize_text_field($_POST['mpe_news_ai_engine']));
@@ -89,6 +91,8 @@ class NewsEngine {
         $deepseek_key = get_option('mpe_deepseek_api_key', '');
         $ai_engine = get_option('mpe_news_ai_engine', 'gemini');
         $pexels_key = get_option('mpe_pexels_api_key', '');
+        $pixabay_key = get_option('mpe_pixabay_api_key', '');
+        $image_provider = get_option('mpe_image_provider', 'pexels');
         $saved_urls = get_option('mpe_news_rss_sources', '');
         $fetch_count = get_option('mpe_news_fetch_count', 2);
         $process_count = get_option('mpe_news_process_count', 2);
@@ -118,9 +122,20 @@ class NewsEngine {
                             <label class="mpe-label">API Key DeepSeek</label>
                             <input type="password" name="mpe_deepseek_api_key_news" value="'.esc_attr($deepseek_key).'" class="mpe-input" placeholder="Chiave DeepSeek...">
                         </div>
+                        <div style="flex:1; min-width:150px;">
+                            <label class="mpe-label">Provider Immagini</label>
+                            <select name="mpe_image_provider" class="mpe-input">
+                                <option value="pexels" '.selected($image_provider, 'pexels', false).'>Pexels</option>
+                                <option value="pixabay" '.selected($image_provider, 'pixabay', false).'>Pixabay</option>
+                            </select>
+                        </div>
                         <div style="flex:1; min-width:200px;">
                             <label class="mpe-label">API Key Pexels</label>
                             <input type="password" name="mpe_pexels_api_key" value="'.esc_attr($pexels_key).'" class="mpe-input" placeholder="Chiave Pexels...">
+                        </div>
+                        <div style="flex:1; min-width:200px;">
+                            <label class="mpe-label">API Key Pixabay</label>
+                            <input type="password" name="mpe_pixabay_api_key" value="'.esc_attr($pixabay_key).'" class="mpe-input" placeholder="Chiave Pixabay...">
                         </div>
                     </div>
 
@@ -157,8 +172,8 @@ class NewsEngine {
                 </form>
             </div>';
 
-        if ( ($ai_engine === 'gemini' && empty($gemini_key)) || ($ai_engine === 'deepseek' && empty($deepseek_key)) || empty($pexels_key)) {
-            echo '<div class="mpe-card"><p style="color:red; font-weight:bold;">Inserisci le chiavi API per sbloccare la rotativa (AI e Pexels richiesti)</p></div>';
+        if ( ($ai_engine === 'gemini' && empty($gemini_key)) || ($ai_engine === 'deepseek' && empty($deepseek_key)) || ($image_provider === 'pexels' && empty($pexels_key)) || ($image_provider === 'pixabay' && empty($pixabay_key)) ) {
+            echo '<div class="mpe-card"><p style="color:red; font-weight:bold;">Inserisci le chiavi API per sbloccare la rotativa (AI e Immagini richiesti)</p></div>';
             return;
         }
 
@@ -372,10 +387,11 @@ class NewsEngine {
         @set_time_limit(300);
         $ai_engine = get_option('mpe_news_ai_engine', 'gemini');
         $api_key = ($ai_engine === 'deepseek') ? trim(get_option('mpe_deepseek_api_key')) : trim(get_option('mpe_gemini_api_key'));
-        $pexels_key = trim(get_option('mpe_pexels_api_key'));
+        $image_provider = get_option('mpe_image_provider', 'pexels');
+        $image_api_key = ($image_provider === 'pixabay') ? trim(get_option('mpe_pixabay_api_key')) : trim(get_option('mpe_pexels_api_key'));
         $urls_raw = get_option('mpe_news_rss_sources', '');
 
-        if (empty($urls_raw) || empty($api_key) || empty($pexels_key)) return;
+        if (empty($urls_raw) || empty($api_key) || empty($image_api_key)) return;
 
         $urls = array_filter(array_map('trim', explode("\n", $urls_raw)));
         $fetch_count = intval(get_option('mpe_news_fetch_count', 2));
@@ -387,7 +403,7 @@ class NewsEngine {
         $success_count = 0;
         foreach ($articles as $art) {
             if ($success_count >= $process_count) break;
-            $result = $this->processSingleArticle($art['title'], $art['content'], $art['link'], $api_key, $pexels_key, 'rss', $ai_engine);
+            $result = $this->processSingleArticle($art['title'], $art['content'], $art['link'], $api_key, $image_api_key, 'rss', $ai_engine, $image_provider);
             if (is_numeric($result)) {
                 $success_count++;
             }
@@ -427,12 +443,13 @@ class NewsEngine {
 
         $ai_engine = get_option('mpe_news_ai_engine', 'gemini');
         $api_key = ($ai_engine === 'deepseek') ? trim(get_option('mpe_deepseek_api_key')) : trim(get_option('mpe_gemini_api_key'));
-        $pexels_key = trim(get_option('mpe_pexels_api_key'));
+        $image_provider = get_option('mpe_image_provider', 'pexels');
+        $image_api_key = ($image_provider === 'pixabay') ? trim(get_option('mpe_pixabay_api_key')) : trim(get_option('mpe_pexels_api_key'));
         $raw_title = sanitize_text_field($_POST['title']);
         $raw_content = sanitize_text_field($_POST['content']);
         $source_link = esc_url_raw($_POST['link']);
 
-        $result = $this->processSingleArticle($raw_title, $raw_content, $source_link, $api_key, $pexels_key, 'rss', $ai_engine);
+        $result = $this->processSingleArticle($raw_title, $raw_content, $source_link, $api_key, $image_api_key, 'rss', $ai_engine, $image_provider);
 
         $output = ob_get_clean();
 
@@ -453,7 +470,8 @@ class NewsEngine {
 
         $ai_engine = get_option('mpe_news_ai_engine', 'gemini');
         $api_key = ($ai_engine === 'deepseek') ? trim(get_option('mpe_deepseek_api_key')) : trim(get_option('mpe_gemini_api_key'));
-        $pexels_key = trim(get_option('mpe_pexels_api_key'));
+        $image_provider = get_option('mpe_image_provider', 'pexels');
+        $image_api_key = ($image_provider === 'pixabay') ? trim(get_option('mpe_pixabay_api_key')) : trim(get_option('mpe_pexels_api_key'));
         $topic = sanitize_textarea_field($_POST['topic']);
 
         if (empty($topic) || empty($api_key)) {
@@ -461,7 +479,7 @@ class NewsEngine {
             wp_send_json_error("Dati mancanti");
         }
 
-        $result = $this->processSingleArticle("Generazione da Argomento", $topic, "Argomento personalizzato", $api_key, $pexels_key, 'custom_topic', $ai_engine);
+        $result = $this->processSingleArticle("Generazione da Argomento", $topic, "Argomento personalizzato", $api_key, $image_api_key, 'custom_topic', $ai_engine, $image_provider);
 
         $output = ob_get_clean();
 
@@ -482,7 +500,8 @@ class NewsEngine {
 
         $ai_engine = get_option('mpe_news_ai_engine', 'gemini');
         $api_key = ($ai_engine === 'deepseek') ? trim(get_option('mpe_deepseek_api_key')) : trim(get_option('mpe_gemini_api_key'));
-        $pexels_key = trim(get_option('mpe_pexels_api_key'));
+        $image_provider = get_option('mpe_image_provider', 'pexels');
+        $image_api_key = ($image_provider === 'pixabay') ? trim(get_option('mpe_pixabay_api_key')) : trim(get_option('mpe_pexels_api_key'));
         $links_raw = sanitize_textarea_field($_POST['links']);
         $links = array_filter(array_map('trim', explode("\n", $links_raw)));
 
@@ -497,7 +516,7 @@ class NewsEngine {
             $combined_text .= "FONTE $link \n" . $extracted . "\n\n";
         }
 
-        $result = $this->processSingleArticle("Generazione Multi-Link", $combined_text, implode(", ", $links), $api_key, $pexels_key, 'custom_links', $ai_engine);
+        $result = $this->processSingleArticle("Generazione Multi-Link", $combined_text, implode(", ", $links), $api_key, $image_api_key, 'custom_links', $ai_engine, $image_provider);
 
         $output = ob_get_clean();
 
@@ -621,7 +640,7 @@ class NewsEngine {
         return $selected_articles;
     }
 
-    private function processSingleArticle($raw_title, $raw_content, $source_link, $api_key, $pexels_key, $source_type = 'rss', $ai_engine = 'gemini') {
+    private function processSingleArticle($raw_title, $raw_content, $source_link, $api_key, $image_api_key, $source_type = 'rss', $ai_engine = 'gemini', $image_provider = 'pexels') {
         global $wpdb;
 
         if ($source_type === 'rss') {
@@ -684,28 +703,40 @@ class NewsEngine {
         if (!$data || empty($data['title'])) return "Dati illeggibili";
 
         $thumbnail_id = 0;
-        $rand_page = rand(1, 10);
-        $search_url = "https://api.pexels.com/v1/search?query=" . urlencode($data['pexel_keyword']) . "&per_page=15&page=" . $rand_page;
-        $pex_response = wp_remote_get($search_url, ['headers' => ['Authorization' => $pexels_key], 'timeout' => 15]);
 
-        if (!is_wp_error($pex_response) && wp_remote_retrieve_response_code($pex_response) == 200) {
-            $pex_data = json_decode(wp_remote_retrieve_body($pex_response), true);
-            if (!empty($pex_data['photos'])) {
+        if ($image_provider === 'pixabay') {
+            $search_url = "https://pixabay.com/api/?key=" . urlencode($image_api_key) . "&q=" . urlencode($data['pexel_keyword']) . "&image_type=photo&per_page=15";
+            $api_response = wp_remote_get($search_url, ['timeout' => 15]);
+        } else {
+            $rand_page = rand(1, 10);
+            $search_url = "https://api.pexels.com/v1/search?query=" . urlencode($data['pexel_keyword']) . "&per_page=15&page=" . $rand_page;
+            $api_response = wp_remote_get($search_url, ['headers' => ['Authorization' => $image_api_key], 'timeout' => 15]);
+        }
+
+        if (!is_wp_error($api_response) && wp_remote_retrieve_response_code($api_response) == 200) {
+            $api_data = json_decode(wp_remote_retrieve_body($api_response), true);
+            $photos = ($image_provider === 'pixabay') ? ($api_data['hits'] ?? []) : ($api_data['photos'] ?? []);
+
+            if (!empty($photos)) {
                 require_once(ABSPATH . 'wp-admin/includes/media.php');
                 require_once(ABSPATH . 'wp-admin/includes/file.php');
                 require_once(ABSPATH . 'wp-admin/includes/image.php');
 
-                shuffle($pex_data['photos']);
+                shuffle($photos);
 
-                foreach ($pex_data['photos'] as $photo) {
-                    $pex_id = $photo['id'];
-                    $already_used = $wpdb->get_var($wpdb->prepare("SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = '_mpe_pexels_id' AND meta_value = %s LIMIT 1", $pex_id));
+                foreach ($photos as $photo) {
+                    $img_id = $photo['id'];
+                    $meta_key = ($image_provider === 'pixabay') ? '_mpe_pixabay_id' : '_mpe_pexels_id';
+
+                    $already_used = $wpdb->get_var($wpdb->prepare("SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = %s AND meta_value = %s LIMIT 1", $meta_key, $img_id));
 
                     if (!$already_used) {
-                        $thumbnail_id = media_sideload_image($photo['src']['large'], 0, $data['title'], 'id');
+                        $img_url = ($image_provider === 'pixabay') ? $photo['largeImageURL'] : $photo['src']['large'];
+                        $thumbnail_id = media_sideload_image($img_url, 0, $data['title'], 'id');
+
                         if (!is_wp_error($thumbnail_id)) {
                             update_post_meta($thumbnail_id, '_wp_attachment_image_alt', sanitize_text_field($data['kw']));
-                            update_post_meta($thumbnail_id, '_mpe_pexels_id', $pex_id);
+                            update_post_meta($thumbnail_id, $meta_key, $img_id);
                             break;
                         }
                     }
