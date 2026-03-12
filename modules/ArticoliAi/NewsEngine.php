@@ -86,6 +86,11 @@ class NewsEngine {
     }
 
     public function renderNewsTab() {
+        if (class_exists('\Meteora\Core\License\MeteoraLicense') && !\Meteora\Core\License\MeteoraLicense::is_module_allowed('news')) {
+            echo '<div class="mpe-card"><p style="color:red; font-weight:bold;">Modulo News Engine non abilitato. Inserisci una licenza valida nel pannello Impostazioni per sbloccare questa funzionalità.</p></div>';
+            return;
+        }
+
         global $wpdb;
         $gemini_key = get_option('mpe_gemini_api_key', '');
         $deepseek_key = get_option('mpe_deepseek_api_key', '');
@@ -210,7 +215,7 @@ class NewsEngine {
                 </div>
             </div>';
 
-        $table_name = $wpdb->prefix . 'mpe_news_logs';
+        $table_name = $wpdb->prefix . 'mms_news_logs';
         if ($wpdb->get_var("SHOW TABLES LIKE '{$table_name}'") == $table_name) {
             $logs = $wpdb->get_results("SELECT * FROM {$table_name} ORDER BY id DESC LIMIT 15");
             if (!empty($logs)) {
@@ -780,7 +785,7 @@ class NewsEngine {
             update_post_meta($new_post_id, 'rank_math_description', sanitize_text_field($data['seo_desc']));
             update_post_meta($new_post_id, '_mpe_source_link', $source_link);
 
-            $wpdb->insert($wpdb->prefix . 'mpe_news_logs', [
+            $wpdb->insert($wpdb->prefix . 'mms_news_logs', [
                 'post_id'      => $new_post_id,
                 'source_type'  => $source_type,
                 'source_links' => $source_link,

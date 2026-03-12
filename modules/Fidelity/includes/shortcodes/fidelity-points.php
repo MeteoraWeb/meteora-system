@@ -6,7 +6,7 @@
 
 if(!defined('ABSPATH')){exit;}
 
-function ucg_fidelity_points_form($points=null,$log=[]){
+function mms_fidelity_points_form($points=null,$log=[]){
     $denied_message = '<div id="ucg-fid-message" class="error"><p>' . esc_html__('Licenza non valida.', 'unique-coupon-generator') . '</p></div>';
     $blocked = ucg_block_when_forbidden('points_screen', $denied_message);
     if ($blocked !== null) {
@@ -25,7 +25,7 @@ function ucg_handle_fidelity_points(){
     }
 
     if($_SERVER['REQUEST_METHOD']!=='POST') return null;
-    if(empty($_POST['_wpnonce_ucg_pts']) || !wp_verify_nonce($_POST['_wpnonce_ucg_pts'],'ucg_fidelity_points')){
+    if(empty($_POST['_wpnonce_ucg_pts']) || !wp_verify_nonce($_POST['_wpnonce_ucg_pts'],'mms_fidelity_points')){
         return ['error'=>__('Nonce non valido','unique-coupon-generator')];
     }
     $identifier=sanitize_text_field($_POST['fid_identifier']);
@@ -39,7 +39,7 @@ function ucg_handle_fidelity_points(){
     return ['points'=>$points,'log'=>$log];
 }
 
-function ucg_fidelity_points_shortcode(){
+function mms_fidelity_points_shortcode(){
     $denied_message = '<div id="ucg-fid-message" class="error"><p>' . esc_html__('Licenza non valida.', 'unique-coupon-generator') . '</p></div>';
     $blocked = ucg_block_when_forbidden('points_shortcode', $denied_message);
     if ($blocked !== null) {
@@ -51,10 +51,10 @@ function ucg_fidelity_points_shortcode(){
         $data=ucg_handle_fidelity_points();
     }
     if(is_array($data) && isset($data['error'])){
-        return '<div id="ucg-fid-message" class="error"><p>'.esc_html($data['error']).'</p></div>'.ucg_fidelity_points_form();
+        return '<div id="ucg-fid-message" class="error"><p>'.esc_html($data['error']).'</p></div>'.mms_fidelity_points_form();
     }
     $points=$data['points']??null;
     $log=$data['log']??[];
-    return ucg_fidelity_points_form($points,$log);
+    return mms_fidelity_points_form($points,$log);
 }
-add_shortcode('ucg_fidelity_points','ucg_fidelity_points_shortcode');
+add_shortcode('ucg_fidelity_points','mms_fidelity_points_shortcode');

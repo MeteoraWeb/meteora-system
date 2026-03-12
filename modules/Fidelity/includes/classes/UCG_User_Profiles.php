@@ -328,7 +328,7 @@ class UCG_User_Profiles {
         update_user_meta($user_id,'billing_phone',sanitize_text_field($_POST['billing_phone']));
         update_user_meta($user_id,'billing_city',sanitize_text_field($_POST['billing_city']));
         update_user_meta($user_id,'birth_date',sanitize_text_field($_POST['birth_date']));
-        global $wpdb; $wpdb->insert($wpdb->prefix.'ucg_logs',['action'=>'edit_user','user_id'=>$user_id,'timestamp'=>current_time('mysql')]);
+        global $wpdb; $wpdb->insert($wpdb->prefix.'mms_logs',['action'=>'edit_user','user_id'=>$user_id,'timestamp'=>current_time('mysql')]);
         wp_send_json_success(__('Profilo salvato con successo.', 'unique-coupon-generator'));
     }
 }

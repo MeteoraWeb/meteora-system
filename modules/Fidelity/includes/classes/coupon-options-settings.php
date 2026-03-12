@@ -175,7 +175,7 @@ function ucg_render_tab_coupon_sets($context = array()) {
             $set_data['image_url'] = $image_url;
 
             $coupon_sets[$base_coupon_code] = $set_data;
-            update_option('ucc_coupon_sets', $coupon_sets);
+            update_option('mms_coupon_sets', $coupon_sets);
             $coupon_sets = ucg_get_coupon_sets();
 
             if ($create_thank_you && !get_page_by_path('thank-you')) {

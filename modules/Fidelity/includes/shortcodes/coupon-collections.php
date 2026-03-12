@@ -9,13 +9,13 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-function ucg_coupon_sets_grid_shortcode($atts = array()) {
+function mms_coupon_sets_grid_shortcode($atts = array()) {
     $atts = shortcode_atts(
         array(
             'status' => 'active',
         ),
         $atts,
-        'ucg_coupon_sets'
+        'mms_coupon_sets'
     );
 
     $status_filter = array_filter(array_map('trim', explode(',', strtolower((string) $atts['status']))));
@@ -86,14 +86,14 @@ function ucg_coupon_sets_grid_shortcode($atts = array()) {
 
     return ob_get_clean();
 }
-add_shortcode('ucg_coupon_sets', 'ucg_coupon_sets_grid_shortcode');
+add_shortcode('ucg_coupon_sets', 'mms_coupon_sets_grid_shortcode');
 
 function ucg_active_events_grid_shortcode($atts = array()) {
-    if (!function_exists('ucg_events_table')) {
+    if (!function_exists('mms_events_table')) {
         return '';
     }
 
-    $events_table = ucg_events_table('events');
+    $events_table = mms_events_table('events');
     if (!$events_table) {
         return '';
     }
@@ -115,8 +115,8 @@ function ucg_active_events_grid_shortcode($atts = array()) {
             }
         }
 
-        if (!$request_url && function_exists('ucg_events_get_event')) {
-            $full_event = ucg_events_get_event((int) $event->id);
+        if (!$request_url && function_exists('mms_events_get_event')) {
+            $full_event = mms_events_get_event((int) $event->id);
             if ($full_event && !empty($full_event->page_id)) {
                 $page = get_post($full_event->page_id);
                 if ($page && 'trash' !== get_post_status($page)) {

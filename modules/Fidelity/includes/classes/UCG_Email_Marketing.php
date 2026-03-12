@@ -54,8 +54,8 @@ class UCG_Email_Marketing {
         $event_id = isset($_GET['event_id']) ? absint($_GET['event_id']) : 0;
 
         $events_list = array();
-        if(function_exists('ucg_events_table')){
-            $events_table = ucg_events_table('events');
+        if(function_exists('mms_events_table')){
+            $events_table = mms_events_table('events');
             if($events_table && $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $events_table)) === $events_table){
                 $events_list = $wpdb->get_results("SELECT id, titolo FROM {$events_table} ORDER BY data_evento DESC, id DESC");
             }
@@ -100,9 +100,9 @@ class UCG_Email_Marketing {
             }
         }
 
-        if($source !== 'coupon' && function_exists('ucg_events_table')){
-            $tickets_table = ucg_events_table('tickets');
-            $events_table = ucg_events_table('events');
+        if($source !== 'coupon' && function_exists('mms_events_table')){
+            $tickets_table = mms_events_table('tickets');
+            $events_table = mms_events_table('events');
             $tickets_table_exists = $tickets_table && $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $tickets_table)) === $tickets_table;
             $events_table_exists = $events_table && $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $events_table)) === $events_table;
             if($tickets_table_exists){
@@ -215,7 +215,7 @@ class UCG_Email_Marketing {
             }
         }
 
-        $coupon_sets = get_option('ucc_coupon_sets', []);
+        $coupon_sets = get_option('mms_coupon_sets', []);
         $templates = get_option('ucg_email_templates', []);
 
         echo '<section class="ucg-card ucg-card--filters">';
@@ -555,7 +555,7 @@ class UCG_Email_Marketing {
             }else{
                 $failed++;
             }
-            $wpdb->insert($wpdb->prefix.'ucg_email_log',[
+            $wpdb->insert($wpdb->prefix.'mms_email_log',[
                 'user_id'=>!empty($info['user_id']) ? intval($info['user_id']) : 0,
                 'email'=>$email,
                 'subject'=>$subject,
@@ -564,7 +564,7 @@ class UCG_Email_Marketing {
                 'sent_at'=>current_time('mysql')
             ]);
         }
-        $wpdb->insert($wpdb->prefix.'ucg_logs',[
+        $wpdb->insert($wpdb->prefix.'mms_logs',[
             'action'=>'send_email',
             'user_id'=>get_current_user_id(),
             'timestamp'=>current_time('mysql')

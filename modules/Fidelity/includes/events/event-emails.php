@@ -8,29 +8,29 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-add_action('ucg_events_daily_reminder', 'ucg_events_process_reminders');
-add_action('init', 'ucg_events_schedule_reminders');
+add_action('mms_events_daily_reminder', 'mms_events_process_reminders');
+add_action('init', 'mms_events_schedule_reminders');
 
 /**
  * Schedule the reminder cron if missing.
  */
-function ucg_events_schedule_reminders() {
-    if (!wp_next_scheduled('ucg_events_daily_reminder')) {
-        wp_schedule_event(time(), 'daily', 'ucg_events_daily_reminder');
+function mms_events_schedule_reminders() {
+    if (!wp_next_scheduled('mms_events_daily_reminder')) {
+        wp_schedule_event(time(), 'daily', 'mms_events_daily_reminder');
     }
 }
 
 /**
  * Build the placeholder map for email templates.
  */
-function ucg_events_prepare_email_replacements($event, $ticket, $qr_html) {
+function mms_events_prepare_email_replacements($event, $ticket, $qr_html) {
     $event_date = !empty($event->data_evento) ? date_i18n(get_option('date_format'), strtotime($event->data_evento)) : '';
     $event_time = !empty($event->ora_evento) ? $event->ora_evento : '';
     $event_location = !empty($event->luogo) ? $event->luogo : '';
-    $event_url = !empty($event->page_id) ? ucg_events_safe_url(get_permalink($event->page_id)) : '';
+    $event_url = !empty($event->page_id) ? mms_events_safe_url(get_permalink($event->page_id)) : '';
 
-    $ticket_label = ucg_events_get_ticket_label($event, $ticket->tipo_ticket);
-    $status_label = ucg_events_get_ticket_status_label($ticket->stato);
+    $ticket_label = mms_events_get_ticket_label($event, $ticket->tipo_ticket);
+    $status_label = mms_events_get_ticket_status_label($ticket->stato);
 
     $raw = array(
         '{customer_name}' => $ticket->utente_nome,
@@ -54,7 +54,7 @@ function ucg_events_prepare_email_replacements($event, $ticket, $qr_html) {
         $value = is_string($value) ? $value : '';
 
         if ($placeholder === '{event_page_url}' || $placeholder === '{qr_code_url}') {
-            $safe_value = ucg_events_safe_url($value);
+            $safe_value = mms_events_safe_url($value);
             $html[$placeholder] = $safe_value !== '' ? esc_url($safe_value) : '';
             $plain[$placeholder] = $safe_value;
         } else {
@@ -64,7 +64,7 @@ function ucg_events_prepare_email_replacements($event, $ticket, $qr_html) {
     }
 
     $html['{qr_code}'] = $qr_html;
-    $plain['{qr_code}'] = isset($raw['{qr_code_url}']) ? ucg_events_safe_url($raw['{qr_code_url}']) : '';
+    $plain['{qr_code}'] = isset($raw['{qr_code_url}']) ? mms_events_safe_url($raw['{qr_code_url}']) : '';
 
     return array($html, $plain);
 }
@@ -72,12 +72,12 @@ function ucg_events_prepare_email_replacements($event, $ticket, $qr_html) {
 /**
  * Send confirmation or reminder emails for tickets.
  */
-function ucg_events_send_ticket_email($event, $ticket, $context = 'confirmation') {
+function mms_events_send_ticket_email($event, $ticket, $context = 'confirmation') {
     if (!$event || !$ticket) {
         return false;
     }
 
-    list($sender_name, $sender_email, $headers) = ucg_events_get_email_headers($event);
+    list($sender_name, $sender_email, $headers) = mms_events_get_email_headers($event);
 
     $recipient_name = trim((string) $ticket->utente_nome);
     if ($recipient_name === '' && !empty($ticket->utente_email)) {
@@ -92,13 +92,13 @@ function ucg_events_send_ticket_email($event, $ticket, $context = 'confirmation'
     $event_date = !empty($event->data_evento) ? date_i18n(get_option('date_format'), strtotime($event->data_evento)) : '';
     $event_time = !empty($event->ora_evento) ? $event->ora_evento : '';
     $event_location = !empty($event->luogo) ? $event->luogo : '';
-    $event_url = !empty($event->page_id) ? ucg_events_safe_url(get_permalink($event->page_id)) : '';
+    $event_url = !empty($event->page_id) ? mms_events_safe_url(get_permalink($event->page_id)) : '';
 
-    $ticket_label = ucg_events_get_ticket_label($event, $ticket->tipo_ticket);
-    $status_label = ucg_events_get_ticket_status_label($ticket->stato);
+    $ticket_label = mms_events_get_ticket_label($event, $ticket->tipo_ticket);
+    $status_label = mms_events_get_ticket_status_label($ticket->stato);
 
     $qr_html = '';
-    $qr_src = ucg_events_safe_url($ticket->qr_code ?? '');
+    $qr_src = mms_events_safe_url($ticket->qr_code ?? '');
     if ($qr_src !== '') {
         $qr_html = '<p><img src="' . esc_url($qr_src) . '" alt="' . esc_attr__('QR Code', 'unique-coupon-generator') . '" style="max-width:200px;height:auto;"></p>';
     }
@@ -133,7 +133,7 @@ function ucg_events_send_ticket_email($event, $ticket, $context = 'confirmation'
     $body_default .= $qr_html;
     $body_default .= '<p>' . esc_html__('Mostra questo codice all’ingresso per completare il check-in.', 'unique-coupon-generator') . '</p>';
 
-    list($replacements_html, $replacements_plain) = ucg_events_prepare_email_replacements($event, $ticket, $qr_html);
+    list($replacements_html, $replacements_plain) = mms_events_prepare_email_replacements($event, $ticket, $qr_html);
 
     $subject_template = $context === 'reminder' ? $event->email_subject_reminder : $event->email_subject_confirm;
     if (!empty($subject_template)) {
@@ -163,10 +163,10 @@ function ucg_events_send_ticket_email($event, $ticket, $context = 'confirmation'
 /**
  * Process scheduled reminders for upcoming events.
  */
-function ucg_events_process_reminders() {
+function mms_events_process_reminders() {
     global $wpdb;
-    $events_table = ucg_events_table('events');
-    $tickets_table = ucg_events_table('tickets');
+    $events_table = mms_events_table('events');
+    $tickets_table = mms_events_table('tickets');
 
     $events = $wpdb->get_results("SELECT * FROM {$events_table} WHERE stato = 'pubblicato' AND reminder_days > 0");
     if (!$events) {
@@ -196,9 +196,9 @@ function ucg_events_process_reminders() {
         ));
 
         foreach ($tickets as $ticket) {
-            $sent = ucg_events_send_ticket_email($event, $ticket, 'reminder');
+            $sent = mms_events_send_ticket_email($event, $ticket, 'reminder');
             if ($sent) {
-                ucg_events_mark_ticket_reminder_sent($ticket->id);
+                mms_events_mark_ticket_reminder_sent($ticket->id);
             }
         }
     }

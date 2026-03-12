@@ -85,7 +85,7 @@ function richiedi_coupon($base_coupon_code) {
 
             update_user_meta($user_id, 'coupon_sent_' . $base_coupon_code, 1);
             if(class_exists('UCG_FidelityManager')){
-                $sets=get_option('ucc_coupon_sets',[]);
+                $sets=get_option('mms_coupon_sets',[]);
                 $signup=intval($sets[$base_coupon_code]['fidelity']['signup_points']??0);
                 if($signup>0){
                     UCG_FidelityManager::add_points($user_id,$base_coupon_code,$signup,'aggiunta','iscrizione');

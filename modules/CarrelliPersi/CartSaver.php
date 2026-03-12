@@ -38,7 +38,7 @@ class CartSaver {
         add_filter( 'wp_mail_from', [$this, 'mailFrom'] );
 
         // Admin Tab
-        MenuManager::instance()->registerTab('tab-carrelli-persi', 'Carrelli Persi', 'dashicons-cart', [$this, 'renderAdminPage']);
+        MenuManager::instance()->registerTab('tab-carrelli-persi', 'Carrelli Persi', 'dashicons-cart', [$this, 'renderAdminPage'], 'meteora-system', 'Marketing');
     }
 
     public function enqueueScripts() {

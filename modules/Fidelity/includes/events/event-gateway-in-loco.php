@@ -20,7 +20,7 @@ if (!defined('ABSPATH')) {
  * The file is kept to avoid fatal errors during updates and to make sure any
  * lingering references to the old gateway identifier are ignored.
  */
-add_filter('woocommerce_payment_gateways', 'ucg_events_remove_legacy_in_loco_gateway', 99);
+add_filter('woocommerce_payment_gateways', 'mms_events_remove_legacy_in_loco_gateway', 99);
 
 /**
  * Remove the legacy gateway from the WooCommerce gateway registry.
@@ -28,7 +28,7 @@ add_filter('woocommerce_payment_gateways', 'ucg_events_remove_legacy_in_loco_gat
  * @param array<int|string,string|object> $methods Registered gateway class names.
  * @return array
  */
-function ucg_events_remove_legacy_in_loco_gateway($methods) {
+function mms_events_remove_legacy_in_loco_gateway($methods) {
     if (!is_array($methods)) {
         return $methods;
     }

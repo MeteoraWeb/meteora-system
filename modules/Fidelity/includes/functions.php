@@ -39,61 +39,17 @@ if(!function_exists('ucg_safe_add_submenu_page')){
 }
 
 /**
- * Registra un messaggio di errore nel database e nel log di PHP.
+ * Wraps the global logger for backwards compatibility.
  *
  * @param string       $message Testo dell'errore.
  * @param array|string $context Dati contestuali opzionali per facilitare il debug.
  */
 function ucg_log_error($message, $context = array()){
-    if (!is_string($message)) {
-        $message = wp_json_encode($message);
+    if (class_exists('\Meteora\Core\Diagnostic\Logger')) {
+        \Meteora\Core\Diagnostic\Logger::log($message, 'fidelity', 'error', $context);
+    } else {
+        error_log(is_string($message) ? $message : wp_json_encode($message));
     }
-
-    $sanitized_message = sanitize_textarea_field((string) $message);
-
-    if (!empty($context) && is_array($context)) {
-        $prepared_context = array();
-        $index = 0;
-
-        foreach ($context as $key => $value) {
-            $index++;
-            $normalized_key = is_string($key) ? sanitize_key($key) : '';
-            if ($normalized_key === '') {
-                $normalized_key = 'item_' . $index;
-            }
-
-            if (is_scalar($value) || (is_object($value) && method_exists($value, '__toString'))) {
-                $prepared_context[$normalized_key] = sanitize_text_field((string) $value);
-            } else {
-                $prepared_context[$normalized_key] = wp_json_encode($value);
-            }
-        }
-
-        $context_json = wp_json_encode($prepared_context);
-        if ($context_json) {
-            $sanitized_message .= ' | context: ' . $context_json;
-        }
-
-        $sanitized_message = sanitize_textarea_field($sanitized_message);
-    }
-
-    global $wpdb;
-    $table = $wpdb->prefix . 'ucg_error_log';
-
-    $inserted = $wpdb->insert(
-        $table,
-        array(
-            'message'   => $sanitized_message,
-            'timestamp' => current_time('mysql'),
-        ),
-        array('%s', '%s')
-    );
-
-    if ($inserted === false && method_exists($wpdb, 'print_error')) {
-        error_log('UCG log insert failed: ' . $wpdb->last_error);
-    }
-
-    error_log($sanitized_message);
 }
 
 if (!function_exists('ucg_access_guard_profiles')) {
@@ -143,7 +99,7 @@ if (!function_exists('ucg_enforce_access_point')) {
             $context_key = 'default';
         }
 
-        $access = class_exists('\UCG_Access_Gate') ? (bool) \UCG_Access_Gate::instance()->is_license_valid() : false;
+        $access = class_exists('\Meteora\Core\License\MeteoraLicense') ? \Meteora\Core\License\MeteoraLicense::is_module_allowed('fidelity') : false;
         if ($access) {
             return true;
         }
@@ -190,6 +146,39 @@ if (!function_exists('ucg_block_when_forbidden')) {
         $profile  = $profiles[$context_key] ?? $profiles['default'];
 
         return $profile['fallback'] ?? '';
+    }
+}
+
+if (!function_exists('myplugin_is_elementor_context')) {
+    /**
+     * Controlla se siamo all'interno dell'editor di Elementor o in un'anteprima.
+     *
+     * @return bool
+     */
+    function myplugin_is_elementor_context() {
+        if (!class_exists('\Elementor\Plugin')) {
+            return false;
+        }
+
+        $elementor = \Elementor\Plugin::$instance;
+
+        if (isset($_REQUEST['action']) && in_array($_REQUEST['action'], array('elementor', 'elementor_ajax'))) {
+            return true;
+        }
+
+        if (isset($_REQUEST['elementor-preview']) && $_REQUEST['elementor-preview']) {
+            return true;
+        }
+
+        if ($elementor->editor && method_exists($elementor->editor, 'is_edit_mode') && $elementor->editor->is_edit_mode()) {
+            return true;
+        }
+
+        if ($elementor->preview && method_exists($elementor->preview, 'is_preview_mode') && $elementor->preview->is_preview_mode()) {
+            return true;
+        }
+
+        return false;
     }
 }
 
@@ -241,7 +230,7 @@ function ucg_parse_float($value){
  * @return array
  */
 function ucg_get_coupon_sets(){
-    $sets = get_option('ucc_coupon_sets', array());
+    $sets = get_option('mms_coupon_sets', array());
     if (!is_array($sets)) {
         return array();
     }
@@ -499,8 +488,8 @@ function ucg_prepare_whatsapp_message($template, array $data = array()) {
 
     $qr_link = isset($data['qr_link']) ? (string) $data['qr_link'] : '';
     if ($qr_link !== '') {
-        if (function_exists('ucg_events_safe_url')) {
-            $qr_link = ucg_events_safe_url($qr_link);
+        if (function_exists('mms_events_safe_url')) {
+            $qr_link = mms_events_safe_url($qr_link);
         } else {
             try {
                 $qr_link = esc_url_raw($qr_link);
@@ -681,8 +670,8 @@ function ucg_generate_pdf_file($title, array $lines, $subfolder, $filename, arra
 
     $file_url = trailingslashit($upload_dir['baseurl']) . $safe_folder . '/' . $safe_name . '.pdf';
 
-    if (function_exists('ucg_events_safe_url')) {
-        $file_url = ucg_events_safe_url($file_url);
+    if (function_exists('mms_events_safe_url')) {
+        $file_url = mms_events_safe_url($file_url);
     } else {
         try {
             $file_url = esc_url_raw($file_url);
@@ -774,8 +763,8 @@ function ucg_generate_whatsapp_link($phone, array $data = array()) {
 function ucg_queue_whatsapp_link($link) {
     $link = (string) $link;
     if ($link !== '') {
-        if (function_exists('ucg_events_safe_url')) {
-            $link = ucg_events_safe_url($link);
+        if (function_exists('mms_events_safe_url')) {
+            $link = mms_events_safe_url($link);
         } else {
             try {
                 $link = esc_url_raw($link);
@@ -815,7 +804,7 @@ function ucg_output_queued_whatsapp_link() {
 
     delete_transient('ucg_whatsapp_link_' . $key);
 
-    $safe_link = function_exists('ucg_events_safe_url') ? ucg_events_safe_url($link) : $link;
+    $safe_link = function_exists('mms_events_safe_url') ? mms_events_safe_url($link) : $link;
     if ($safe_link === '') {
         return;
     }

@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
 }
 
 function ucg_render_coupon_sets_table() {
-    $coupon_sets = get_option('ucc_coupon_sets', array());
+    $coupon_sets = get_option('mms_coupon_sets', array());
 
     ?>
     <h2><?php esc_html_e('Set di Coupon', 'unique-coupon-generator'); ?></h2>

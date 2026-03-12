@@ -21,7 +21,7 @@ class UCG_Fidelity_Admin {
         }
 
         global $wpdb;
-        $sets_option = get_option('ucc_coupon_sets',[]);
+        $sets_option = get_option('mms_coupon_sets',[]);
         $notice = array();
 
         if(isset($_POST['ucg_save_fidelity']) && check_admin_referer('ucg_save_fidelity')){
@@ -36,7 +36,7 @@ class UCG_Fidelity_Admin {
                     $sets_option[$sid]['fidelity']['signup_points']=max(0,intval($_POST['signup_points'][$sid]));
                 }
             }
-            update_option('ucc_coupon_sets',$sets_option);
+            update_option('mms_coupon_sets',$sets_option);
             $notice = array(
                 'type'    => 'success',
                 'message' => __('Impostazioni fidelity salvate con successo.', 'unique-coupon-generator'),
@@ -58,7 +58,7 @@ class UCG_Fidelity_Admin {
         }
 
         if(!$identifier){
-            $table = $wpdb->prefix.'ucg_fidelity_points';
+            $table = $wpdb->prefix.'mms_fidelity_points';
             $users_list = $wpdb->get_results("SELECT user_id, SUM(points) AS balance, SUM(CASE WHEN points>0 THEN points ELSE 0 END) AS earned, SUM(CASE WHEN points<0 THEN -points ELSE 0 END) AS used, SUM(amount_spent) AS spent FROM $table GROUP BY user_id");
         }
 

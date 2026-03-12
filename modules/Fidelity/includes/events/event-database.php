@@ -11,13 +11,13 @@ if (!defined('ABSPATH')) {
 /**
  * Create database tables required for the event manager.
  */
-function ucg_events_create_tables() {
+function mms_events_create_tables() {
     global $wpdb;
 
     $charset = $wpdb->get_charset_collate();
-    $events_table = $wpdb->prefix . 'eventi';
-    $pr_table = $wpdb->prefix . 'eventi_pr';
-    $tickets_table = $wpdb->prefix . 'eventi_tickets';
+    $events_table = $wpdb->prefix . 'mms_events';
+    $pr_table = $wpdb->prefix . 'mms_prs';
+    $tickets_table = $wpdb->prefix . 'mms_tickets';
 
     require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
@@ -99,33 +99,33 @@ function ucg_events_create_tables() {
 /**
  * Ensure the event tables exist at runtime.
  */
-function ucg_events_ensure_tables() {
+function mms_events_ensure_tables() {
     global $wpdb;
     $tables = array(
-        $wpdb->prefix . 'eventi',
-        $wpdb->prefix . 'eventi_pr',
-        $wpdb->prefix . 'eventi_tickets',
+        $wpdb->prefix . 'mms_events',
+        $wpdb->prefix . 'mms_prs',
+        $wpdb->prefix . 'mms_tickets',
     );
 
     foreach ($tables as $table) {
         $exists = $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $table));
         if ($exists !== $table) {
-            ucg_events_create_tables();
+            mms_events_create_tables();
             break;
         }
     }
 
-    $events_table = $wpdb->prefix . 'eventi';
+    $events_table = $wpdb->prefix . 'mms_events';
     $required_columns = array('email_subject_confirm', 'email_sender', 'page_id', 'mostra_whatsapp', 'mostra_download_png', 'mostra_download_pdf', 'pagamento_wc_gateways', 'whatsapp_message');
     foreach ($required_columns as $column_name) {
         $column = $wpdb->get_var($wpdb->prepare('SHOW COLUMNS FROM ' . $events_table . ' LIKE %s', $column_name));
         if ($column === null) {
-            ucg_events_create_tables();
+            mms_events_create_tables();
             break;
         }
     }
 
-    if (function_exists('ucg_events_sync_ticket_status_alias')) {
-        ucg_events_sync_ticket_status_alias();
+    if (function_exists('mms_events_sync_ticket_status_alias')) {
+        mms_events_sync_ticket_status_alias();
     }
 }

@@ -190,7 +190,7 @@ function coupon_user_registration_form($base_coupon_code) {
                     }
 
                     if (class_exists('UCG_FidelityManager')) {
-                        $sets = get_option('ucc_coupon_sets', array());
+                        $sets = get_option('mms_coupon_sets', array());
                         $signup = intval($sets[$base_coupon_code]['fidelity']['signup_points'] ?? 0);
                         if ($signup > 0) {
                             UCG_FidelityManager::add_points($user_id, $base_coupon_code, $signup, 'aggiunta', 'iscrizione');

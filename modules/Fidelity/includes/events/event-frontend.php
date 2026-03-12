@@ -8,9 +8,9 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-add_shortcode('richiedi_ticket', 'ucg_events_render_ticket_form');
-add_shortcode('verifica_ticket', 'ucg_events_render_checkin_form');
-add_shortcode('ticket_pr', 'ucg_events_render_ticket_pr_form');
+add_shortcode('richiedi_ticket', 'mms_events_render_ticket_form');
+add_shortcode('verifica_ticket', 'mms_events_render_checkin_form');
+add_shortcode('ticket_pr', 'mms_events_render_ticket_pr_form');
 
 /**
  * Detect shortcode usage inside the current post content or metadata.
@@ -26,7 +26,7 @@ add_shortcode('ticket_pr', 'ucg_events_render_ticket_pr_form');
  * @param array        $shortcodes List of shortcode tags to detect.
  * @return array<string,bool>      Map indicating which shortcodes were found.
  */
-function ucg_events_detect_shortcodes_in_post($post, $shortcodes) {
+function mms_events_detect_shortcodes_in_post($post, $shortcodes) {
     $detected = array();
     foreach ($shortcodes as $tag) {
         $detected[$tag] = false;
@@ -78,30 +78,30 @@ function ucg_events_detect_shortcodes_in_post($post, $shortcodes) {
     return $detected;
 }
 
-add_action('template_redirect', 'ucg_events_handle_ticket_form_submission');
-add_action('template_redirect', 'ucg_events_handle_checkin_submission');
-add_action('template_redirect', 'ucg_events_handle_ticket_pr_submission');
-add_action('template_redirect', 'ucg_events_maybe_redirect_order_received', 20);
-add_action('wp_enqueue_scripts', 'ucg_events_enqueue_front_assets');
-add_action('wp_ajax_ucg_events_validate_ticket_step', 'ucg_events_ajax_validate_ticket_step');
-add_action('wp_ajax_nopriv_ucg_events_validate_ticket_step', 'ucg_events_ajax_validate_ticket_step');
-add_action('wp_ajax_ucg_events_process_ticket_order', 'ucg_events_ajax_process_ticket_order');
-add_action('wp_ajax_nopriv_ucg_events_process_ticket_order', 'ucg_events_ajax_process_ticket_order');
-add_action('wp_ajax_ucg_events_fetch_order_summary', 'ucg_events_ajax_fetch_order_summary');
-add_action('wp_ajax_nopriv_ucg_events_fetch_order_summary', 'ucg_events_ajax_fetch_order_summary');
+add_action('template_redirect', 'mms_events_handle_ticket_form_submission');
+add_action('template_redirect', 'mms_events_handle_checkin_submission');
+add_action('template_redirect', 'mms_events_handle_ticket_pr_submission');
+add_action('template_redirect', 'mms_events_maybe_redirect_order_received', 20);
+add_action('wp_enqueue_scripts', 'mms_events_enqueue_front_assets');
+add_action('wp_ajax_mms_events_validate_ticket_step', 'mms_events_ajax_validate_ticket_step');
+add_action('wp_ajax_nopriv_mms_events_validate_ticket_step', 'mms_events_ajax_validate_ticket_step');
+add_action('wp_ajax_mms_events_process_ticket_order', 'mms_events_ajax_process_ticket_order');
+add_action('wp_ajax_nopriv_mms_events_process_ticket_order', 'mms_events_ajax_process_ticket_order');
+add_action('wp_ajax_mms_events_fetch_order_summary', 'mms_events_ajax_fetch_order_summary');
+add_action('wp_ajax_nopriv_mms_events_fetch_order_summary', 'mms_events_ajax_fetch_order_summary');
 
 if (function_exists('add_action')) {
-    add_action('woocommerce_checkout_create_order_line_item', 'ucg_events_checkout_item_meta', 10, 4);
-    add_action('woocommerce_payment_complete', 'ucg_events_handle_completed_order');
-    add_action('woocommerce_order_status_processing', 'ucg_events_handle_completed_order');
-    add_action('woocommerce_order_status_completed', 'ucg_events_handle_completed_order');
-    add_action('woocommerce_thankyou', 'ucg_events_output_wc_redirect');
+    add_action('woocommerce_checkout_create_order_line_item', 'mms_events_checkout_item_meta', 10, 4);
+    add_action('woocommerce_payment_complete', 'mms_events_handle_completed_order');
+    add_action('woocommerce_order_status_processing', 'mms_events_handle_completed_order');
+    add_action('woocommerce_order_status_completed', 'mms_events_handle_completed_order');
+    add_action('woocommerce_thankyou', 'mms_events_output_wc_redirect');
 }
 
 /**
  * Enqueue frontend assets when needed.
  */
-function ucg_events_enqueue_front_assets() {
+function mms_events_enqueue_front_assets() {
     if (!is_singular()) {
         return;
     }
@@ -112,7 +112,7 @@ function ucg_events_enqueue_front_assets() {
     }
 
     $shortcodes = array('richiedi_ticket', 'verifica_ticket', 'ticket_pr');
-    $detected = ucg_events_detect_shortcodes_in_post($post, $shortcodes);
+    $detected = mms_events_detect_shortcodes_in_post($post, $shortcodes);
 
     $has_request = !empty($detected['richiedi_ticket']);
     $has_checkin = !empty($detected['verifica_ticket']);
@@ -206,7 +206,7 @@ function ucg_events_enqueue_front_assets() {
 /**
  * Render the ticket request form.
  */
-function ucg_events_render_ticket_form($atts) {
+function mms_events_render_ticket_form($atts) {
     $atts = shortcode_atts(array('base' => 0), $atts, 'richiedi_ticket');
     $event_id = absint($atts['base']);
 
@@ -214,7 +214,7 @@ function ucg_events_render_ticket_form($atts) {
         return '<div class="ucg-event-notice error">' . esc_html__('Evento non trovato.', 'unique-coupon-generator') . '</div>';
     }
 
-    $event = ucg_events_get_event($event_id);
+    $event = mms_events_get_event($event_id);
     if (!$event) {
         return '<div class="ucg-event-notice error">' . esc_html__('Evento non disponibile.', 'unique-coupon-generator') . '</div>';
     }
@@ -236,7 +236,7 @@ function ucg_events_render_ticket_form($atts) {
         $gateway_controller = WC()->payment_gateways();
         if ($gateway_controller && method_exists($gateway_controller, 'get_available_payment_gateways')) {
             $available_map = $gateway_controller->get_available_payment_gateways();
-            $available_map = ucg_events_filter_gateway_map_for_event($event, $available_map);
+            $available_map = mms_events_filter_gateway_map_for_event($event, $available_map);
             if (empty($available_map)) {
                 $allow_wc = false;
             }
@@ -248,7 +248,7 @@ function ucg_events_render_ticket_form($atts) {
         $blocked = current_time('timestamp') > strtotime($event->blocco_ticket);
     }
 
-    $global_remaining = ucg_events_get_global_remaining($event);
+    $global_remaining = mms_events_get_global_remaining($event);
     $tickets = $event->tipi_ticket;
     if (!is_array($tickets)) {
         $tickets = array();
@@ -284,7 +284,7 @@ function ucg_events_render_ticket_form($atts) {
 
     $tickets = $normalized_tickets;
 
-    $notice = ucg_events_get_front_notice();
+    $notice = mms_events_get_front_notice();
 
     $output = '<div class="ucg-event-wrapper">';
     if ($notice) {
@@ -305,7 +305,7 @@ function ucg_events_render_ticket_form($atts) {
 
     if ($event->mostra_contenuto) {
         $output .= '<div class="ucg-event-header">';
-        $event_image = ucg_events_safe_url($event->immagine ?? '');
+        $event_image = mms_events_safe_url($event->immagine ?? '');
         if ($event_image !== '') {
             $output .= '<div class="ucg-event-image"><img src="' . esc_url($event_image) . '" alt="' . esc_attr($event->titolo) . '"></div>';
         }
@@ -330,7 +330,7 @@ function ucg_events_render_ticket_form($atts) {
     $available_ticket = false;
     $ticket_options = '';
     foreach ($tickets as $ticket) {
-        $remaining = ucg_events_get_ticket_remaining($event, $ticket);
+        $remaining = mms_events_get_ticket_remaining($event, $ticket);
         $label = $ticket['name'];
         if (!empty($ticket['price'])) {
             $price = function_exists('wc_price') ? wc_price($ticket['price']) : number_format_i18n($ticket['price'], 2);
@@ -354,10 +354,10 @@ function ucg_events_render_ticket_form($atts) {
     $pr_blocked = false;
     $pr_options = '';
     if ($event->gestione_pr) {
-        $prs = ucg_events_get_pr_list($event->id);
+        $prs = mms_events_get_pr_list($event->id);
         if (!empty($prs)) {
             foreach ($prs as $pr) {
-                $remaining = ucg_events_get_pr_remaining($event->id, $pr);
+                $remaining = mms_events_get_pr_remaining($event->id, $pr);
                 if ($remaining === 0) {
                     continue;
                 }
@@ -373,12 +373,12 @@ function ucg_events_render_ticket_form($atts) {
     if ($request_uri !== '') {
         $request_uri = remove_query_arg(array('ucg_order_key', 'ucg_wizard_token'), $request_uri);
     }
-    $wizard_return_url = $request_uri !== '' ? ucg_events_safe_url(home_url($request_uri)) : '';
+    $wizard_return_url = $request_uri !== '' ? mms_events_safe_url(home_url($request_uri)) : '';
     if (!$wizard_return_url && function_exists('get_permalink')) {
-        $wizard_return_url = ucg_events_safe_url(get_permalink());
+        $wizard_return_url = mms_events_safe_url(get_permalink());
     }
     if (!$wizard_return_url) {
-        $wizard_return_url = ucg_events_safe_url(home_url('/'));
+        $wizard_return_url = mms_events_safe_url(home_url('/'));
     }
 
     $config = array(
@@ -455,7 +455,7 @@ function ucg_events_render_ticket_form($atts) {
     }
 
     if ($event->mostra_privacy && $event->privacy_page_id) {
-        $privacy_url = ucg_events_safe_url(get_permalink($event->privacy_page_id));
+        $privacy_url = mms_events_safe_url(get_permalink($event->privacy_page_id));
         $output .= '<div class="ucg-form-field ucg-form-checkbox">';
         $output .= '<label><input type="checkbox" name="privacy_accept" value="1" required> ' . sprintf(wp_kses(__('Ho letto e accetto la <a href="%s" target="_blank">privacy policy</a>.', 'unique-coupon-generator'), array('a' => array('href' => array(), 'target' => array()))), esc_url($privacy_url)) . '</label>';
         $output .= '</div>';
@@ -514,7 +514,7 @@ function ucg_events_render_ticket_form($atts) {
         $gateways = WC()->payment_gateways();
         if ($gateways && method_exists($gateways, 'get_available_payment_gateways')) {
             $available_gateways = $gateways->get_available_payment_gateways();
-            $available_gateways = ucg_events_filter_gateway_map_for_event($event, $available_gateways);
+            $available_gateways = mms_events_filter_gateway_map_for_event($event, $available_gateways);
         }
     }
 
@@ -586,7 +586,7 @@ function ucg_events_render_ticket_form($atts) {
 /**
  * Validate and store the first step of the ticket wizard via AJAX.
  */
-function ucg_events_ajax_validate_ticket_step() {
+function mms_events_ajax_validate_ticket_step() {
     check_ajax_referer('ucg_ticket_wizard', 'nonce');
 
     $event_id = isset($_POST['event_id']) ? absint(wp_unslash($_POST['event_id'])) : 0;
@@ -594,7 +594,7 @@ function ucg_events_ajax_validate_ticket_step() {
         wp_send_json_error(array('message' => esc_html__('Evento non valido.', 'unique-coupon-generator')));
     }
 
-    $event = ucg_events_get_event($event_id);
+    $event = mms_events_get_event($event_id);
     if (!$event) {
         wp_send_json_error(array('message' => esc_html__('Evento non disponibile.', 'unique-coupon-generator')));
     }
@@ -617,7 +617,7 @@ function ucg_events_ajax_validate_ticket_step() {
         }
     }
 
-    $validation = ucg_events_prepare_wizard_request($event, $form_data, array('validate_payment' => false));
+    $validation = mms_events_prepare_wizard_request($event, $form_data, array('validate_payment' => false));
     if (is_wp_error($validation)) {
         wp_send_json_error(array('message' => $validation->get_error_message()));
     }
@@ -636,7 +636,7 @@ function ucg_events_ajax_validate_ticket_step() {
     $payment_mode = isset($validation['payment_mode']) ? sanitize_key($validation['payment_mode']) : '';
     if ($payment_mode === 'loco' || $payment_mode === 'manual') {
         $manual_mode = ($payment_mode === 'manual') ? 'manual' : 'loco';
-        $manual_result = ucg_events_generate_manual_ticket_response($event, $validation, $manual_mode);
+        $manual_result = mms_events_generate_manual_ticket_response($event, $validation, $manual_mode);
 
         if (is_wp_error($manual_result)) {
             wp_send_json_error(array('message' => $manual_result->get_error_message()));
@@ -645,8 +645,8 @@ function ucg_events_ajax_validate_ticket_step() {
         wp_send_json_success($manual_result);
     }
 
-    $token = ucg_events_generate_wizard_token();
-    ucg_events_store_wizard_data($token, $validation);
+    $token = mms_events_generate_wizard_token();
+    mms_events_store_wizard_data($token, $validation);
 
     $response = array(
         'token'         => $token,
@@ -671,32 +671,32 @@ function ucg_events_ajax_validate_ticket_step() {
 /**
  * Handle the wizard confirmation step: process payments or generate offline tickets.
  */
-function ucg_events_ajax_process_ticket_order() {
+function mms_events_ajax_process_ticket_order() {
     check_ajax_referer('ucg_ticket_wizard', 'nonce');
 
     $event_id = isset($_POST['event_id']) ? absint(wp_unslash($_POST['event_id'])) : 0;
     $token = isset($_POST['token']) ? sanitize_text_field(wp_unslash($_POST['token'])) : '';
     $payment_method = isset($_POST['payment_method']) ? sanitize_text_field(wp_unslash($_POST['payment_method'])) : '';
     $requested_mode = isset($_POST['payment_mode']) ? sanitize_key(wp_unslash($_POST['payment_mode'])) : '';
-    $return_url = isset($_POST['return_url']) ? ucg_events_safe_url(wp_unslash($_POST['return_url'])) : '';
+    $return_url = isset($_POST['return_url']) ? mms_events_safe_url(wp_unslash($_POST['return_url'])) : '';
 
     if (!$event_id || $token === '') {
         wp_send_json_error(array('message' => esc_html__('Richiesta non valida.', 'unique-coupon-generator')));
     }
 
-    $event = ucg_events_get_event($event_id);
+    $event = mms_events_get_event($event_id);
     if (!$event) {
         wp_send_json_error(array('message' => esc_html__('Evento non disponibile.', 'unique-coupon-generator')));
     }
 
-    $stored_data = ucg_events_get_wizard_data($token);
+    $stored_data = mms_events_get_wizard_data($token);
     if (empty($stored_data) || !is_array($stored_data)) {
         wp_send_json_error(array('message' => esc_html__('Sessione scaduta, ricomincia la procedura.', 'unique-coupon-generator')));
     }
 
-    $validation = ucg_events_prepare_wizard_request($event, $stored_data, array('validate_payment' => false));
+    $validation = mms_events_prepare_wizard_request($event, $stored_data, array('validate_payment' => false));
     if (is_wp_error($validation)) {
-        ucg_events_delete_wizard_data($token);
+        mms_events_delete_wizard_data($token);
         wp_send_json_error(array('message' => $validation->get_error_message()));
     }
 
@@ -724,12 +724,12 @@ function ucg_events_ajax_process_ticket_order() {
         }
 
         $manual_mode = $is_manual_mode ? 'manual' : 'loco';
-        $manual_result = ucg_events_generate_manual_ticket_response($event, $validation, $manual_mode);
+        $manual_result = mms_events_generate_manual_ticket_response($event, $validation, $manual_mode);
         if (is_wp_error($manual_result)) {
             wp_send_json_error(array('message' => $manual_result->get_error_message()));
         }
 
-        ucg_events_delete_wizard_data($token);
+        mms_events_delete_wizard_data($token);
 
         wp_send_json_success($manual_result);
     }
@@ -740,10 +740,10 @@ function ucg_events_ajax_process_ticket_order() {
 
     $gateways = WC()->payment_gateways();
     $available_gateways = ($gateways && method_exists($gateways, 'get_available_payment_gateways')) ? $gateways->get_available_payment_gateways() : array();
-    $available_gateways = ucg_events_filter_gateway_map_for_event($event, $available_gateways);
+    $available_gateways = mms_events_filter_gateway_map_for_event($event, $available_gateways);
 
     if (empty($available_gateways)) {
-        ucg_events_delete_wizard_data($token);
+        mms_events_delete_wizard_data($token);
         wp_send_json_error(array('message' => esc_html__('Il pagamento online non è disponibile al momento.', 'unique-coupon-generator')));
     }
 
@@ -761,7 +761,7 @@ function ucg_events_ajax_process_ticket_order() {
         }
     }
 
-    $order_result = ucg_events_create_order_for_ticket($event, $validation['ticket'], $validation, $gateway, $return_url);
+    $order_result = mms_events_create_order_for_ticket($event, $validation['ticket'], $validation, $gateway, $return_url);
     if (is_wp_error($order_result)) {
         wp_send_json_error(array('message' => $order_result->get_error_message()));
     }
@@ -770,7 +770,7 @@ function ucg_events_ajax_process_ticket_order() {
     $wizard_token = $order_result['wizard_token'];
     $order_id = $order->get_id();
 
-    $clean_payload = ucg_events_sanitize_gateway_data($gateway_payload);
+    $clean_payload = mms_events_sanitize_gateway_data($gateway_payload);
     $original_post = $_POST;
     foreach ($clean_payload as $key => $value) {
         $_POST[$key] = $value;
@@ -842,17 +842,17 @@ function ucg_events_ajax_process_ticket_order() {
     $_POST = $original_post;
 
     if (!is_array($payment_result) || ($payment_result['result'] ?? '') !== 'success') {
-        ucg_events_delete_wizard_data($token);
+        mms_events_delete_wizard_data($token);
         $message = !empty($payment_result['message']) ? wp_strip_all_tags($payment_result['message']) : esc_html__('Pagamento non riuscito. Riprova o seleziona un altro metodo.', 'unique-coupon-generator');
         wp_send_json_error(array('message' => $message));
     }
 
-    ucg_events_delete_wizard_data($token);
+    mms_events_delete_wizard_data($token);
 
     if (!empty($payment_result['redirect'])) {
         wp_send_json_success(array(
             'status'       => 'redirect',
-            'redirect_url' => ucg_events_safe_url($payment_result['redirect']),
+            'redirect_url' => mms_events_safe_url($payment_result['redirect']),
             'order_key'    => $order->get_order_key(),
             'wizard_token' => $wizard_token,
             'message'      => esc_html__('Reindirizzamento al pagamento…', 'unique-coupon-generator'),
@@ -865,7 +865,7 @@ function ucg_events_ajax_process_ticket_order() {
     }
 
     $order_gateway = $order->get_payment_method();
-    $allow_pending = ucg_events_is_offline_gateway($order_gateway);
+    $allow_pending = mms_events_is_offline_gateway($order_gateway);
 
     $handler_args = array();
     if ($allow_pending) {
@@ -875,13 +875,13 @@ function ucg_events_ajax_process_ticket_order() {
         );
     }
 
-    ucg_events_handle_completed_order($order_id, $handler_args);
+    mms_events_handle_completed_order($order_id, $handler_args);
     $order = wc_get_order($order_id);
     if (!$order) {
         wp_send_json_error(array('message' => esc_html__('Ordine non trovato dopo il pagamento.', 'unique-coupon-generator')));
     }
 
-    $paid_statuses = apply_filters('ucg_events_paid_statuses', array('processing', 'completed'));
+    $paid_statuses = apply_filters('mms_events_paid_statuses', array('processing', 'completed'));
     $has_paid_status = !empty($paid_statuses) ? $order->has_status($paid_statuses) : false;
 
     if (!$has_paid_status && !$order->is_paid() && !$allow_pending) {
@@ -892,11 +892,11 @@ function ucg_events_ajax_process_ticket_order() {
     if ($allow_pending && !$order->is_paid()) {
         $response_args = array(
             'mode'    => 'in_loco',
-            'message' => ucg_events_get_pending_gateway_message($order_gateway),
+            'message' => mms_events_get_pending_gateway_message($order_gateway),
         );
     }
 
-    $response = ucg_events_build_order_ticket_response($order, $validation, $wizard_token, $response_args);
+    $response = mms_events_build_order_ticket_response($order, $validation, $wizard_token, $response_args);
     wp_send_json_success($response);
 }
 
@@ -909,7 +909,7 @@ function ucg_events_ajax_process_ticket_order() {
  *
  * @return array|WP_Error Response payload for the wizard.
  */
-function ucg_events_generate_manual_ticket_response($event, $validation, $mode = 'loco') {
+function mms_events_generate_manual_ticket_response($event, $validation, $mode = 'loco') {
     $mode = ($mode === 'manual') ? 'manual' : 'loco';
 
     $whatsapp_enabled = !isset($event->mostra_whatsapp) || (int) $event->mostra_whatsapp !== 0;
@@ -917,7 +917,7 @@ function ucg_events_generate_manual_ticket_response($event, $validation, $mode =
     $allow_pdf = !empty($event->mostra_download_pdf);
 
     $ticket_status = ($mode === 'manual') ? 'pagato' : 'da pagare';
-    $status_label = ucg_events_get_ticket_status_label($ticket_status);
+    $status_label = mms_events_get_ticket_status_label($ticket_status);
 
     $send_whatsapp = $whatsapp_enabled && !empty($validation['whatsapp_opt_in']);
     $download_png = $allow_png && !empty($validation['download_png']);
@@ -929,11 +929,11 @@ function ucg_events_generate_manual_ticket_response($event, $validation, $mode =
         $download_pdf = $allow_pdf ? true : false;
     }
 
-    $ticket_code = ucg_events_generate_ticket_code($event->id);
-    $qr_url = ucg_events_generate_qr_code($ticket_code);
+    $ticket_code = mms_events_generate_ticket_code($event->id);
+    $qr_url = mms_events_generate_qr_code($ticket_code);
     $phone_for_ticket = $validation['telefono'] !== '' ? $validation['telefono'] : ($validation['phone_full'] ?? '');
 
-    $ticket_id = ucg_events_insert_ticket($event->id, array(
+    $ticket_id = mms_events_insert_ticket($event->id, array(
         'utente_nome'     => $validation['full_name'],
         'utente_email'    => $validation['email'],
         'utente_telefono' => $phone_for_ticket,
@@ -949,14 +949,14 @@ function ucg_events_generate_manual_ticket_response($event, $validation, $mode =
         return new WP_Error('ucg_ticket_generation_failed', esc_html__('Impossibile generare il ticket. Riprova più tardi.', 'unique-coupon-generator'));
     }
 
-    $ticket_row = ucg_events_get_ticket_by_code($ticket_code);
+    $ticket_row = mms_events_get_ticket_by_code($ticket_code);
     if ($ticket_row) {
-        ucg_events_send_ticket_email($event, $ticket_row, 'confirmation');
+        mms_events_send_ticket_email($event, $ticket_row, 'confirmation');
     }
 
-    ucg_events_refresh_wc_stock($event->id);
+    mms_events_refresh_wc_stock($event->id);
 
-    $pdf_url = ucg_events_generate_ticket_pdf($event, $ticket_code, $qr_url, $validation['full_name'], $validation['email'], $phone_for_ticket);
+    $pdf_url = mms_events_generate_ticket_pdf($event, $ticket_code, $qr_url, $validation['full_name'], $validation['email'], $phone_for_ticket);
 
     $ticket_entry = array(
         'code'         => $ticket_code,
@@ -1001,12 +1001,12 @@ function ucg_events_generate_manual_ticket_response($event, $validation, $mode =
                     'qr_link'     => $ticket_url_for_whatsapp,
                     'coupon_code' => $ticket_code,
                     'user_name'   => $validation['full_name'],
-                    'template'    => ucg_events_get_whatsapp_template($event),
+                    'template'    => mms_events_get_whatsapp_template($event),
                 )
             );
 
             if ($whatsapp_link_raw) {
-                $whatsapp_link = ucg_events_safe_url($whatsapp_link_raw);
+                $whatsapp_link = mms_events_safe_url($whatsapp_link_raw);
             }
         }
     }
@@ -1027,7 +1027,7 @@ function ucg_events_generate_manual_ticket_response($event, $validation, $mode =
 /**
  * Retrieve ticket data for a completed order after redirecting from the payment gateway.
  */
-function ucg_events_ajax_fetch_order_summary() {
+function mms_events_ajax_fetch_order_summary() {
     check_ajax_referer('ucg_ticket_wizard', 'nonce');
 
     $order_key = isset($_POST['order_key']) ? sanitize_text_field(wp_unslash($_POST['order_key'])) : '';
@@ -1057,7 +1057,7 @@ function ucg_events_ajax_fetch_order_summary() {
     }
 
     $order_gateway = $order->get_payment_method();
-    $allow_pending = ucg_events_is_offline_gateway($order_gateway);
+    $allow_pending = mms_events_is_offline_gateway($order_gateway);
 
     $handler_args = array();
     if ($allow_pending) {
@@ -1067,13 +1067,13 @@ function ucg_events_ajax_fetch_order_summary() {
         );
     }
 
-    ucg_events_handle_completed_order($order_id, $handler_args);
+    mms_events_handle_completed_order($order_id, $handler_args);
     $order = wc_get_order($order_id);
     if (!$order) {
         wp_send_json_error(array('message' => esc_html__('Ordine non disponibile.', 'unique-coupon-generator')));
     }
 
-    $paid_statuses = apply_filters('ucg_events_paid_statuses', array('processing', 'completed'));
+    $paid_statuses = apply_filters('mms_events_paid_statuses', array('processing', 'completed'));
     $has_paid_status = !empty($paid_statuses) ? $order->has_status($paid_statuses) : false;
     if (!$has_paid_status && !$order->is_paid() && !$allow_pending) {
         wp_send_json_error(array('message' => esc_html__('Pagamento non ancora completato.', 'unique-coupon-generator')));
@@ -1095,11 +1095,11 @@ function ucg_events_ajax_fetch_order_summary() {
     if ($allow_pending && !$order->is_paid()) {
         $response_args = array(
             'mode'    => 'in_loco',
-            'message' => ucg_events_get_pending_gateway_message($order_gateway),
+            'message' => mms_events_get_pending_gateway_message($order_gateway),
         );
     }
 
-    $response = ucg_events_build_order_ticket_response($order, $reference_data, $wizard_token, $response_args);
+    $response = mms_events_build_order_ticket_response($order, $reference_data, $wizard_token, $response_args);
     wp_send_json_success($response);
 }
 
@@ -1112,7 +1112,7 @@ function ucg_events_ajax_fetch_order_summary() {
  *
  * @return array|WP_Error
  */
-function ucg_events_prepare_wizard_request($event, $params, $options = array()) {
+function mms_events_prepare_wizard_request($event, $params, $options = array()) {
     $options = wp_parse_args($options, array(
         'validate_payment' => true,
     ));
@@ -1192,8 +1192,8 @@ function ucg_events_prepare_wizard_request($event, $params, $options = array()) 
         return new WP_Error('ucg_ticket_invalid', __('Tipologia di ticket non valida.', 'unique-coupon-generator'));
     }
 
-    $remaining_global = ucg_events_get_global_remaining($event);
-    $remaining_ticket = ucg_events_get_ticket_remaining($event, $selected_ticket);
+    $remaining_global = mms_events_get_global_remaining($event);
+    $remaining_ticket = mms_events_get_ticket_remaining($event, $selected_ticket);
     if (($remaining_global !== -1 && $remaining_global <= 0) || $remaining_ticket === 0) {
         return new WP_Error('ucg_ticket_unavailable', __('I ticket selezionati non sono più disponibili.', 'unique-coupon-generator'));
     }
@@ -1203,7 +1203,7 @@ function ucg_events_prepare_wizard_request($event, $params, $options = array()) 
             return new WP_Error('ucg_pr_required', __('Seleziona il PR di riferimento.', 'unique-coupon-generator'));
         }
         $valid_pr = null;
-        $prs = ucg_events_get_pr_list($event->id);
+        $prs = mms_events_get_pr_list($event->id);
         foreach ($prs as $pr) {
             if ((int) $pr->id === $pr_id) {
                 $valid_pr = $pr;
@@ -1213,7 +1213,7 @@ function ucg_events_prepare_wizard_request($event, $params, $options = array()) 
         if (!$valid_pr) {
             return new WP_Error('ucg_pr_invalid', __('PR selezionato non valido.', 'unique-coupon-generator'));
         }
-        $pr_remaining = ucg_events_get_pr_remaining($event->id, $valid_pr);
+        $pr_remaining = mms_events_get_pr_remaining($event->id, $valid_pr);
         if ($pr_remaining === 0) {
             return new WP_Error('ucg_pr_empty', __('Il PR selezionato ha esaurito i ticket disponibili.', 'unique-coupon-generator'));
         }
@@ -1258,7 +1258,7 @@ function ucg_events_prepare_wizard_request($event, $params, $options = array()) 
     $payment_mode = $requested_payment_mode;
 
     $contact_digits = $phone_digits !== '' ? $phone_digits : preg_replace('/\D+/', '', $phone_full);
-    if ($contact_digits !== '' && ucg_events_ticket_exists_for_contact($event->id, $email, $contact_digits)) {
+    if ($contact_digits !== '' && mms_events_ticket_exists_for_contact($event->id, $email, $contact_digits)) {
         return new WP_Error('ucg_ticket_exists', __('Hai già richiesto un ticket per questo evento con i contatti forniti.', 'unique-coupon-generator'));
     }
 
@@ -1288,14 +1288,14 @@ function ucg_events_prepare_wizard_request($event, $params, $options = array()) 
 /**
  * Generate a short-lived token for the wizard session.
  */
-function ucg_events_generate_wizard_token() {
+function mms_events_generate_wizard_token() {
     return wp_generate_password(16, false, false);
 }
 
 /**
  * Store wizard data in the WooCommerce session or transients.
  */
-function ucg_events_store_wizard_data($token, $data) {
+function mms_events_store_wizard_data($token, $data) {
     if ($token === '' || empty($data) || !is_array($data)) {
         return false;
     }
@@ -1312,7 +1312,7 @@ function ucg_events_store_wizard_data($token, $data) {
 /**
  * Retrieve wizard data from session storage.
  */
-function ucg_events_get_wizard_data($token) {
+function mms_events_get_wizard_data($token) {
     if ($token === '') {
         return array();
     }
@@ -1331,7 +1331,7 @@ function ucg_events_get_wizard_data($token) {
 /**
  * Delete wizard data from storage.
  */
-function ucg_events_delete_wizard_data($token) {
+function mms_events_delete_wizard_data($token) {
     if ($token === '') {
         return;
     }
@@ -1346,7 +1346,7 @@ function ucg_events_delete_wizard_data($token) {
 /**
  * Sanitize gateway payload arrays before passing them to process_payment.
  */
-function ucg_events_sanitize_gateway_data($data) {
+function mms_events_sanitize_gateway_data($data) {
     if (!is_array($data)) {
         return array();
     }
@@ -1355,7 +1355,7 @@ function ucg_events_sanitize_gateway_data($data) {
     foreach ($data as $key => $value) {
         $normalized_key = is_string($key) ? $key : (string) $key;
         if (is_array($value)) {
-            $clean[$normalized_key] = ucg_events_sanitize_gateway_data($value);
+            $clean[$normalized_key] = mms_events_sanitize_gateway_data($value);
         } else {
             $clean[$normalized_key] = function_exists('wc_clean') ? wc_clean($value) : sanitize_text_field($value);
         }
@@ -1375,13 +1375,13 @@ function ucg_events_sanitize_gateway_data($data) {
  *
  * @return array|WP_Error
  */
-function ucg_events_create_order_for_ticket($event, $ticket, $form_data, $gateway, $return_url) {
+function mms_events_create_order_for_ticket($event, $ticket, $form_data, $gateway, $return_url) {
     if (!function_exists('wc_create_order')) {
         return new WP_Error('ucg_wc_missing', __('WooCommerce non è disponibile.', 'unique-coupon-generator'));
     }
 
     if (empty($ticket['product_id'])) {
-        $synced = ucg_events_sync_wc_products($event->id, $event->titolo, $event->tipi_ticket, $event->stato, $event->numero_ticket);
+        $synced = mms_events_sync_wc_products($event->id, $event->titolo, $event->tipi_ticket, $event->stato, $event->numero_ticket);
         foreach ($synced as $candidate) {
             if ($candidate['id'] === $ticket['id']) {
                 $ticket['product_id'] = $candidate['product_id'];
@@ -1445,10 +1445,10 @@ function ucg_events_create_order_for_ticket($event, $ticket, $form_data, $gatewa
     $order->calculate_taxes();
     $order->calculate_totals();
 
-    $wizard_token = ucg_events_generate_wizard_token();
+    $wizard_token = mms_events_generate_wizard_token();
     $order->update_meta_data('_ucg_wizard_token', $wizard_token);
     if ($return_url) {
-        $order->update_meta_data('_ucg_wizard_return_url', ucg_events_safe_url($return_url));
+        $order->update_meta_data('_ucg_wizard_return_url', mms_events_safe_url($return_url));
     }
 
     $order->save();
@@ -1462,7 +1462,7 @@ function ucg_events_create_order_for_ticket($event, $ticket, $form_data, $gatewa
 /**
  * Build the response payload with ticket download links for an order.
  */
-function ucg_events_build_order_ticket_response($order, $reference_data, $wizard_token, $args = array()) {
+function mms_events_build_order_ticket_response($order, $reference_data, $wizard_token, $args = array()) {
     if (!is_array($args)) {
         $args = array();
     }
@@ -1487,16 +1487,16 @@ function ucg_events_build_order_ticket_response($order, $reference_data, $wizard
 
     $pdf_urls = array();
     if (is_array($pdf_meta)) {
-        $pdf_urls = array_map('ucg_events_safe_url', array_filter($pdf_meta));
+        $pdf_urls = array_map('mms_events_safe_url', array_filter($pdf_meta));
     } elseif (is_string($pdf_meta) && $pdf_meta !== '') {
-        $pdf_urls = array(ucg_events_safe_url($pdf_meta));
+        $pdf_urls = array(mms_events_safe_url($pdf_meta));
     }
 
     $png_urls = array();
     if (is_array($png_meta)) {
-        $png_urls = array_map('ucg_events_safe_url', array_filter($png_meta));
+        $png_urls = array_map('mms_events_safe_url', array_filter($png_meta));
     } elseif (is_string($png_meta) && $png_meta !== '') {
-        $png_urls = array(ucg_events_safe_url($png_meta));
+        $png_urls = array(mms_events_safe_url($png_meta));
     }
 
     $tickets = array();
@@ -1539,10 +1539,10 @@ function ucg_events_build_order_ticket_response($order, $reference_data, $wizard
     }
 
     $event_template = '';
-    if ($event_id && function_exists('ucg_events_get_event')) {
-        $event_object = ucg_events_get_event($event_id);
+    if ($event_id && function_exists('mms_events_get_event')) {
+        $event_object = mms_events_get_event($event_id);
         if ($event_object) {
-            $event_template = ucg_events_get_whatsapp_template($event_object);
+            $event_template = mms_events_get_whatsapp_template($event_object);
         }
     }
 
@@ -1553,13 +1553,13 @@ function ucg_events_build_order_ticket_response($order, $reference_data, $wizard
 
     $whatsapp_link = '';
     if ($primary_pdf !== '') {
-        $whatsapp_link = ucg_events_build_whatsapp_link($phone_reference, $primary_pdf, array(
+        $whatsapp_link = mms_events_build_whatsapp_link($phone_reference, $primary_pdf, array(
             'user_name' => $customer_name,
             'coupon_code' => '',
             'template' => $event_template,
         ));
         if ($whatsapp_link !== '') {
-            $whatsapp_link = ucg_events_safe_url($whatsapp_link);
+            $whatsapp_link = mms_events_safe_url($whatsapp_link);
         }
     }
 
@@ -1586,8 +1586,8 @@ function ucg_events_build_order_ticket_response($order, $reference_data, $wizard
 /**
  * Build a WhatsApp deeplink for the provided phone number and ticket URL.
  */
-function ucg_events_build_whatsapp_link($phone_full, $ticket_url, $placeholders = array()) {
-    $ticket_url = ucg_events_safe_url($ticket_url);
+function mms_events_build_whatsapp_link($phone_full, $ticket_url, $placeholders = array()) {
+    $ticket_url = mms_events_safe_url($ticket_url);
     if ($ticket_url === '') {
         return '';
     }
@@ -1612,7 +1612,7 @@ function ucg_events_build_whatsapp_link($phone_full, $ticket_url, $placeholders 
 /**
  * Handle ticket form submissions.
  */
-function ucg_events_handle_ticket_form_submission() {
+function mms_events_handle_ticket_form_submission() {
     if (empty($_POST['ucg_event_request'])) {
         return;
     }
@@ -1623,19 +1623,19 @@ function ucg_events_handle_ticket_form_submission() {
     }
 
     $event_id = isset($_POST['ucg_event_id']) ? absint(wp_unslash($_POST['ucg_event_id'])) : 0;
-    $event = ucg_events_get_event($event_id);
+    $event = mms_events_get_event($event_id);
     if (!$event) {
-        ucg_events_redirect_with_notice(__('Evento non valido.', 'unique-coupon-generator'), 'error');
+        mms_events_redirect_with_notice(__('Evento non valido.', 'unique-coupon-generator'), 'error');
         return;
     }
 
     if ($event->stato !== 'pubblicato') {
-        ucg_events_redirect_with_notice(__('L’evento non è attualmente disponibile.', 'unique-coupon-generator'), 'error');
+        mms_events_redirect_with_notice(__('L’evento non è attualmente disponibile.', 'unique-coupon-generator'), 'error');
         return;
     }
 
     if (!empty($event->blocco_ticket) && current_time('timestamp') > strtotime($event->blocco_ticket)) {
-        ucg_events_redirect_with_notice(__('Il tempo di emissione dei ticket è esaurito o i ticket non sono più disponibili. Contatta l’assistenza o l’organizzatore dell’evento.', 'unique-coupon-generator'), 'error');
+        mms_events_redirect_with_notice(__('Il tempo di emissione dei ticket è esaurito o i ticket non sono più disponibili. Contatta l’assistenza o l’organizzatore dell’evento.', 'unique-coupon-generator'), 'error');
         return;
     }
 
@@ -1658,22 +1658,22 @@ function ucg_events_handle_ticket_form_submission() {
     $available_delivery = ($show_whatsapp_opt_in ? 1 : 0) + ($allow_png_download ? 1 : 0) + ($allow_pdf_download ? 1 : 0);
     $selected_delivery = ($send_whatsapp ? 1 : 0) + ($download_png ? 1 : 0) + ($download_pdf ? 1 : 0);
     if ($available_delivery > 0 && $selected_delivery !== 1) {
-        ucg_events_redirect_with_notice(__('Seleziona una sola modalità di ricezione per il QR code.', 'unique-coupon-generator'), 'error');
+        mms_events_redirect_with_notice(__('Seleziona una sola modalità di ricezione per il QR code.', 'unique-coupon-generator'), 'error');
         return;
     }
 
     if (empty($normalized_phone['is_valid'])) {
-        ucg_events_redirect_with_notice(__('Il numero di telefono deve iniziare con +39 e contenere 10 cifre.', 'unique-coupon-generator'), 'error');
+        mms_events_redirect_with_notice(__('Il numero di telefono deve iniziare con +39 e contenere 10 cifre.', 'unique-coupon-generator'), 'error');
         return;
     }
 
     if (empty($full_name) || empty($email) || empty($ticket_slug)) {
-        ucg_events_redirect_with_notice(__('Compila tutti i campi obbligatori.', 'unique-coupon-generator'), 'error');
+        mms_events_redirect_with_notice(__('Compila tutti i campi obbligatori.', 'unique-coupon-generator'), 'error');
         return;
     }
 
     if ($event->mostra_privacy && $event->privacy_page_id && empty($_POST['privacy_accept'])) {
-        ucg_events_redirect_with_notice(__('Devi accettare la privacy policy per proseguire.', 'unique-coupon-generator'), 'error');
+        mms_events_redirect_with_notice(__('Devi accettare la privacy policy per proseguire.', 'unique-coupon-generator'), 'error');
         return;
     }
 
@@ -1687,30 +1687,30 @@ function ucg_events_handle_ticket_form_submission() {
     }
 
     if (!$selected_ticket) {
-        ucg_events_redirect_with_notice(__('Tipologia di ticket non valida.', 'unique-coupon-generator'), 'error');
+        mms_events_redirect_with_notice(__('Tipologia di ticket non valida.', 'unique-coupon-generator'), 'error');
         return;
     }
 
     $contact_phone_digits = $normalized_phone['digits'];
-    if (ucg_events_ticket_exists_for_contact($event->id, $email, $contact_phone_digits)) {
-        ucg_events_redirect_with_notice(__('Hai già richiesto un ticket per questo evento con i contatti forniti.', 'unique-coupon-generator'), 'error');
+    if (mms_events_ticket_exists_for_contact($event->id, $email, $contact_phone_digits)) {
+        mms_events_redirect_with_notice(__('Hai già richiesto un ticket per questo evento con i contatti forniti.', 'unique-coupon-generator'), 'error');
         return;
     }
 
-    $remaining_global = ucg_events_get_global_remaining($event);
-    $remaining_ticket = ucg_events_get_ticket_remaining($event, $selected_ticket);
+    $remaining_global = mms_events_get_global_remaining($event);
+    $remaining_ticket = mms_events_get_ticket_remaining($event, $selected_ticket);
 
     if (($remaining_global !== -1 && $remaining_global <= 0) || $remaining_ticket === 0) {
-        ucg_events_redirect_with_notice(__('I ticket selezionati non sono più disponibili.', 'unique-coupon-generator'), 'error');
+        mms_events_redirect_with_notice(__('I ticket selezionati non sono più disponibili.', 'unique-coupon-generator'), 'error');
         return;
     }
 
     if ($event->gestione_pr) {
         if (!$pr_id) {
-            ucg_events_redirect_with_notice(__('Seleziona il PR di riferimento.', 'unique-coupon-generator'), 'error');
+            mms_events_redirect_with_notice(__('Seleziona il PR di riferimento.', 'unique-coupon-generator'), 'error');
             return;
         }
-        $pr_rows = ucg_events_get_pr_list($event->id);
+        $pr_rows = mms_events_get_pr_list($event->id);
         $valid_pr = null;
         foreach ($pr_rows as $pr) {
             if ((int) $pr->id === $pr_id) {
@@ -1719,12 +1719,12 @@ function ucg_events_handle_ticket_form_submission() {
             }
         }
         if (!$valid_pr) {
-            ucg_events_redirect_with_notice(__('PR selezionato non valido.', 'unique-coupon-generator'), 'error');
+            mms_events_redirect_with_notice(__('PR selezionato non valido.', 'unique-coupon-generator'), 'error');
             return;
         }
-        $pr_remaining = ucg_events_get_pr_remaining($event->id, $valid_pr);
+        $pr_remaining = mms_events_get_pr_remaining($event->id, $valid_pr);
         if ($pr_remaining === 0) {
-            ucg_events_redirect_with_notice(__('Il PR selezionato ha esaurito i ticket disponibili.', 'unique-coupon-generator'), 'error');
+            mms_events_redirect_with_notice(__('Il PR selezionato ha esaurito i ticket disponibili.', 'unique-coupon-generator'), 'error');
             return;
         }
     }
@@ -1738,28 +1738,28 @@ function ucg_events_handle_ticket_form_submission() {
     }
 
     if ($payment_mode === 'online' && !$allow_wc) {
-        ucg_events_redirect_with_notice(__('Il metodo di pagamento selezionato non è disponibile.', 'unique-coupon-generator'), 'error');
+        mms_events_redirect_with_notice(__('Il metodo di pagamento selezionato non è disponibile.', 'unique-coupon-generator'), 'error');
         return;
     }
 
     if ($payment_mode === 'loco' && !$allow_in_loco) {
-        ucg_events_redirect_with_notice(__('Il metodo di pagamento selezionato non è disponibile.', 'unique-coupon-generator'), 'error');
+        mms_events_redirect_with_notice(__('Il metodo di pagamento selezionato non è disponibile.', 'unique-coupon-generator'), 'error');
         return;
     }
 
     if ($payment_mode === 'manual' && ($allow_wc || $allow_in_loco)) {
-        ucg_events_redirect_with_notice(__('Metodo di pagamento non valido.', 'unique-coupon-generator'), 'error');
+        mms_events_redirect_with_notice(__('Metodo di pagamento non valido.', 'unique-coupon-generator'), 'error');
         return;
     }
 
     if (!in_array($payment_mode, array('online', 'loco', 'manual'), true)) {
-        ucg_events_redirect_with_notice(__('Metodo di pagamento non valido.', 'unique-coupon-generator'), 'error');
+        mms_events_redirect_with_notice(__('Metodo di pagamento non valido.', 'unique-coupon-generator'), 'error');
         return;
     }
 
     if ($payment_mode === 'online') {
         if (function_exists('WC')) {
-            ucg_events_process_woocommerce_checkout($event, $selected_ticket, array(
+            mms_events_process_woocommerce_checkout($event, $selected_ticket, array(
                 'nome' => $nome,
                 'cognome' => $cognome,
                 'full_name' => $full_name,
@@ -1775,15 +1775,15 @@ function ucg_events_handle_ticket_form_submission() {
             return;
         }
 
-        ucg_events_redirect_with_notice(__('WooCommerce non è attivo, impossibile completare il pagamento.', 'unique-coupon-generator'), 'error');
+        mms_events_redirect_with_notice(__('WooCommerce non è attivo, impossibile completare il pagamento.', 'unique-coupon-generator'), 'error');
         return;
     }
 
     $status = $payment_mode === 'loco' ? 'da pagare' : 'pagato';
-    $ticket_code = ucg_events_generate_ticket_code($event->id);
-    $qr_url = ucg_events_generate_qr_code($ticket_code);
+    $ticket_code = mms_events_generate_ticket_code($event->id);
+    $qr_url = mms_events_generate_qr_code($ticket_code);
 
-    $ticket_id = ucg_events_insert_ticket($event->id, array(
+    $ticket_id = mms_events_insert_ticket($event->id, array(
         'utente_nome' => $full_name,
         'utente_email' => $email,
         'utente_telefono' => $telefono_display !== '' ? $telefono_display : $normalized_phone['full'],
@@ -1796,9 +1796,9 @@ function ucg_events_handle_ticket_form_submission() {
     ));
 
     if ($ticket_id) {
-        $ticket = ucg_events_get_ticket_by_code($ticket_code);
-        ucg_events_send_ticket_email($event, $ticket, 'confirmation');
-        ucg_events_refresh_wc_stock($event->id);
+        $ticket = mms_events_get_ticket_by_code($ticket_code);
+        mms_events_send_ticket_email($event, $ticket, 'confirmation');
+        mms_events_refresh_wc_stock($event->id);
     }
 
     $whatsapp_key = '';
@@ -1809,7 +1809,7 @@ function ucg_events_handle_ticket_form_submission() {
                 'qr_link'     => $qr_url,
                 'coupon_code' => $ticket_code,
                 'user_name'   => $full_name,
-                'template'    => ucg_events_get_whatsapp_template($event),
+                'template'    => mms_events_get_whatsapp_template($event),
             )
         );
 
@@ -1822,27 +1822,27 @@ function ucg_events_handle_ticket_form_submission() {
         ? __('Richiesta ricevuta! Riceverai una email con il tuo ticket da pagare in loco.', 'unique-coupon-generator')
         : __('Ticket generato con successo! Controlla la tua email per i dettagli.', 'unique-coupon-generator');
 
-    $redirect = ucg_events_get_thankyou_redirect($event);
+    $redirect = mms_events_get_thankyou_redirect($event);
     if ($whatsapp_key) {
         $redirect = add_query_arg('ucg_whatsapp', $whatsapp_key, $redirect);
     } elseif ($download_png && !empty($qr_url)) {
         $redirect = $qr_url;
     } elseif ($download_pdf) {
         $pdf_phone = $telefono_display !== '' ? $telefono_display : $normalized_phone['full'];
-        $pdf_url = ucg_events_generate_ticket_pdf($event, $ticket_code, $qr_url, $full_name, $email, $pdf_phone);
+        $pdf_url = mms_events_generate_ticket_pdf($event, $ticket_code, $qr_url, $full_name, $email, $pdf_phone);
         if ($pdf_url) {
             $redirect = $pdf_url;
         }
     }
-    ucg_events_redirect_with_notice($message, 'success', $redirect);
+    mms_events_redirect_with_notice($message, 'success', $redirect);
 }
 
 /**
  * Process WooCommerce checkout redirection.
  */
-function ucg_events_process_woocommerce_checkout($event, $ticket, $user_data) {
+function mms_events_process_woocommerce_checkout($event, $ticket, $user_data) {
     if (!function_exists('WC')) {
-        ucg_events_redirect_with_notice(__('WooCommerce non è attivo.', 'unique-coupon-generator'), 'error');
+        mms_events_redirect_with_notice(__('WooCommerce non è attivo.', 'unique-coupon-generator'), 'error');
         return;
     }
 
@@ -1853,7 +1853,7 @@ function ucg_events_process_woocommerce_checkout($event, $ticket, $user_data) {
     }
 
     if (empty($ticket['product_id'])) {
-        $tickets = ucg_events_sync_wc_products($event->id, $event->titolo, $event->tipi_ticket, $event->stato, $event->numero_ticket);
+        $tickets = mms_events_sync_wc_products($event->id, $event->titolo, $event->tipi_ticket, $event->stato, $event->numero_ticket);
         foreach ($tickets as $t) {
             if ($t['id'] === $ticket['id']) {
                 $ticket['product_id'] = $t['product_id'];
@@ -1861,14 +1861,14 @@ function ucg_events_process_woocommerce_checkout($event, $ticket, $user_data) {
             }
         }
         if (empty($ticket['product_id'])) {
-            ucg_events_redirect_with_notice(__('Prodotto WooCommerce non disponibile per questo ticket.', 'unique-coupon-generator'), 'error');
+            mms_events_redirect_with_notice(__('Prodotto WooCommerce non disponibile per questo ticket.', 'unique-coupon-generator'), 'error');
             return;
         }
     }
 
     $cart = WC()->cart;
     if (!$cart) {
-        ucg_events_redirect_with_notice(__('Impossibile accedere al carrello WooCommerce.', 'unique-coupon-generator'), 'error');
+        mms_events_redirect_with_notice(__('Impossibile accedere al carrello WooCommerce.', 'unique-coupon-generator'), 'error');
         return;
     }
 
@@ -1889,7 +1889,7 @@ function ucg_events_process_woocommerce_checkout($event, $ticket, $user_data) {
 /**
  * Add metadata to WooCommerce order items.
  */
-function ucg_events_checkout_item_meta($item, $cart_item_key, $values, $order) {
+function mms_events_checkout_item_meta($item, $cart_item_key, $values, $order) {
     if (empty($values['ucg_event_id'])) {
         return;
     }
@@ -1904,7 +1904,7 @@ function ucg_events_checkout_item_meta($item, $cart_item_key, $values, $order) {
 /**
  * Generate tickets once the WooCommerce order is completed.
  */
-function ucg_events_handle_completed_order($order_id, $args = array()) {
+function mms_events_handle_completed_order($order_id, $args = array()) {
     if (!function_exists('wc_get_order')) {
         return;
     }
@@ -1923,7 +1923,7 @@ function ucg_events_handle_completed_order($order_id, $args = array()) {
         return;
     }
 
-    $paid_statuses = apply_filters('ucg_events_paid_statuses', array('processing', 'completed'));
+    $paid_statuses = apply_filters('mms_events_paid_statuses', array('processing', 'completed'));
     $has_paid_status = !empty($paid_statuses) ? $order->has_status($paid_statuses) : false;
 
     if (!$has_paid_status && !$order->is_paid()) {
@@ -1947,16 +1947,16 @@ function ucg_events_handle_completed_order($order_id, $args = array()) {
     $existing_png_meta = $order->get_meta('_ucg_ticket_png', true);
     $pdf_links = array();
     if (is_array($existing_pdf_meta)) {
-        $pdf_links = array_map('ucg_events_safe_url', array_filter($existing_pdf_meta));
+        $pdf_links = array_map('mms_events_safe_url', array_filter($existing_pdf_meta));
     } elseif (is_string($existing_pdf_meta) && $existing_pdf_meta !== '') {
-        $pdf_links[] = ucg_events_safe_url($existing_pdf_meta);
+        $pdf_links[] = mms_events_safe_url($existing_pdf_meta);
     }
 
     $png_links = array();
     if (is_array($existing_png_meta)) {
-        $png_links = array_map('ucg_events_safe_url', array_filter($existing_png_meta));
+        $png_links = array_map('mms_events_safe_url', array_filter($existing_png_meta));
     } elseif (is_string($existing_png_meta) && $existing_png_meta !== '') {
-        $png_links[] = ucg_events_safe_url($existing_png_meta);
+        $png_links[] = mms_events_safe_url($existing_png_meta);
     }
 
     foreach ($order->get_items() as $item_id => $item) {
@@ -1972,7 +1972,7 @@ function ucg_events_handle_completed_order($order_id, $args = array()) {
             continue;
         }
 
-        $event = ucg_events_get_event($event_id);
+        $event = mms_events_get_event($event_id);
         if (!$event) {
             continue;
         }
@@ -2022,14 +2022,14 @@ function ucg_events_handle_completed_order($order_id, $args = array()) {
 
         $quantity = max(1, (int) $item->get_quantity());
         for ($i = 0; $i < $quantity; $i++) {
-            $ticket_code = ucg_events_generate_ticket_code($event->id);
-            $qr_url = ucg_events_generate_qr_code($ticket_code);
-            $png_links[] = ucg_events_safe_url($qr_url);
-            $pdf_url = ucg_events_generate_ticket_pdf($event, $ticket_code, $qr_url, $full_name, $email, $telefono);
+            $ticket_code = mms_events_generate_ticket_code($event->id);
+            $qr_url = mms_events_generate_qr_code($ticket_code);
+            $png_links[] = mms_events_safe_url($qr_url);
+            $pdf_url = mms_events_generate_ticket_pdf($event, $ticket_code, $qr_url, $full_name, $email, $telefono);
             if ($pdf_url) {
-                $pdf_links[] = ucg_events_safe_url($pdf_url);
+                $pdf_links[] = mms_events_safe_url($pdf_url);
             }
-            $ticket_id = ucg_events_insert_ticket($event->id, array(
+            $ticket_id = mms_events_insert_ticket($event->id, array(
                 'utente_nome' => $full_name,
                 'utente_email' => $email,
                 'utente_telefono' => $telefono,
@@ -2044,8 +2044,8 @@ function ucg_events_handle_completed_order($order_id, $args = array()) {
             ));
 
             if ($ticket_id) {
-                $ticket_row = ucg_events_get_ticket_by_code($ticket_code);
-                ucg_events_send_ticket_email($event, $ticket_row, 'confirmation');
+                $ticket_row = mms_events_get_ticket_by_code($ticket_code);
+                mms_events_send_ticket_email($event, $ticket_row, 'confirmation');
                 $generated_tickets = true;
             }
 
@@ -2059,7 +2059,7 @@ function ucg_events_handle_completed_order($order_id, $args = array()) {
                             'qr_link'     => $qr_url,
                             'coupon_code' => $ticket_code,
                             'user_name'   => $full_name,
-                            'template'    => ucg_events_get_whatsapp_template($event),
+                            'template'    => mms_events_get_whatsapp_template($event),
                         ));
                         if ($whatsapp_link) {
                             $redirect_payload = array('type' => 'whatsapp', 'target' => $whatsapp_link);
@@ -2080,7 +2080,7 @@ function ucg_events_handle_completed_order($order_id, $args = array()) {
 
         $item->add_meta_data('_ucg_ticket_generated', 1, true);
         $item->save();
-        ucg_events_refresh_wc_stock($event->id);
+        mms_events_refresh_wc_stock($event->id);
     }
 
     if (!empty($pdf_links)) {
@@ -2108,7 +2108,7 @@ function ucg_events_handle_completed_order($order_id, $args = array()) {
  * @param int $order_id WooCommerce order identifier.
  * @return array Array containing the order object, redirect data array, and whether event items exist.
  */
-function ucg_events_resolve_wc_order_redirect($order_id) {
+function mms_events_resolve_wc_order_redirect($order_id) {
     if (empty($order_id) || !function_exists('wc_get_order')) {
         return array(null, array(), false);
     }
@@ -2130,14 +2130,14 @@ function ucg_events_resolve_wc_order_redirect($order_id) {
     if (!is_array($redirect_data) || empty($redirect_data['target'])) {
         if ($has_event_items) {
             $handler_args = array();
-            if (ucg_events_is_offline_gateway($order->get_payment_method())) {
+            if (mms_events_is_offline_gateway($order->get_payment_method())) {
                 $handler_args = array(
                     'allow_pending' => true,
                     'pending_state' => 'da pagare',
                 );
             }
 
-            ucg_events_handle_completed_order($order_id, $handler_args);
+            mms_events_handle_completed_order($order_id, $handler_args);
             $order = wc_get_order($order_id);
             if (!$order) {
                 return array(null, array(), true);
@@ -2158,7 +2158,7 @@ function ucg_events_resolve_wc_order_redirect($order_id) {
 /**
  * Perform an immediate redirect on the thank you page when tickets are present in the order.
  */
-function ucg_events_maybe_redirect_order_received() {
+function mms_events_maybe_redirect_order_received() {
     if (is_admin()) {
         return;
     }
@@ -2225,12 +2225,12 @@ function ucg_events_maybe_redirect_order_received() {
         }
     }
 
-    list($order, $redirect_data) = ucg_events_resolve_wc_order_redirect($order_id);
+    list($order, $redirect_data) = mms_events_resolve_wc_order_redirect($order_id);
     if (!$order || empty($redirect_data) || empty($redirect_data['target'])) {
         return;
     }
 
-    $target_url = ucg_events_safe_url($redirect_data['target']);
+    $target_url = mms_events_safe_url($redirect_data['target']);
     if ($target_url === '') {
         return;
     }
@@ -2258,13 +2258,13 @@ function ucg_events_maybe_redirect_order_received() {
 /**
  * Redirect users on the WooCommerce thank you page based on their preferences.
  */
-function ucg_events_output_wc_redirect($order_id) {
-    list($order, $redirect_data) = ucg_events_resolve_wc_order_redirect($order_id);
+function mms_events_output_wc_redirect($order_id) {
+    list($order, $redirect_data) = mms_events_resolve_wc_order_redirect($order_id);
     if (!$order || empty($redirect_data) || empty($redirect_data['target'])) {
         return;
     }
 
-    $target = ucg_events_safe_url($redirect_data['target']);
+    $target = mms_events_safe_url($redirect_data['target']);
     if ($target === '') {
         return;
     }
@@ -2283,17 +2283,17 @@ function ucg_events_output_wc_redirect($order_id) {
 /**
  * Render the check-in form.
  */
-function ucg_events_render_checkin_form($atts) {
-    $notice = ucg_events_get_front_notice();
+function mms_events_render_checkin_form($atts) {
+    $notice = mms_events_get_front_notice();
     $code_prefill = isset($_GET['ticket_code']) ? sanitize_text_field(wp_unslash($_GET['ticket_code'])) : '';
 
     $ticket = null;
     $event = null;
     $ticket_error = '';
     if ($code_prefill !== '') {
-        $ticket = ucg_events_get_ticket_by_code($code_prefill);
+        $ticket = mms_events_get_ticket_by_code($code_prefill);
         if ($ticket) {
-            $event = ucg_events_get_event($ticket->evento_id);
+            $event = mms_events_get_event($ticket->evento_id);
         } else {
             $ticket_error = '<div class="ucg-event-notice error">' . esc_html__('Ticket non trovato.', 'unique-coupon-generator') . '</div>';
         }
@@ -2322,15 +2322,15 @@ function ucg_events_render_checkin_form($atts) {
     $output .= '</form>';
 
     if ($ticket) {
-        $status_label = ucg_events_get_ticket_status_label($ticket->stato);
+        $status_label = mms_events_get_ticket_status_label($ticket->stato);
         $status_class = 'ucg-status-' . sanitize_title($ticket->stato);
 
         $payment_done = in_array(strtolower($ticket->stato ?? ''), array('pagato', 'usato'), true);
         $payment_label = $payment_done ? __('Pagato', 'unique-coupon-generator') : __('Da pagare', 'unique-coupon-generator');
         $payment_class = $payment_done ? 'paid' : 'pending';
 
-        $ticket_type = $event ? ucg_events_get_ticket_label($event, $ticket->tipo_ticket) : $ticket->tipo_ticket;
-        $pr_name = $ticket->pr_id ? ucg_events_get_pr_name($ticket->pr_id) : '';
+        $ticket_type = $event ? mms_events_get_ticket_label($event, $ticket->tipo_ticket) : $ticket->tipo_ticket;
+        $pr_name = $ticket->pr_id ? mms_events_get_pr_name($ticket->pr_id) : '';
 
         $event_title = $event ? $event->titolo : '';
         $event_date = '';
@@ -2341,7 +2341,7 @@ function ucg_events_render_checkin_form($atts) {
             }
         }
         $event_location = $event && !empty($event->luogo) ? $event->luogo : '';
-        $event_link = ($event && !empty($event->page_id)) ? ucg_events_safe_url(get_permalink($event->page_id)) : '';
+        $event_link = ($event && !empty($event->page_id)) ? mms_events_safe_url(get_permalink($event->page_id)) : '';
 
         $price_display = '';
         $price_value = isset($ticket->prezzo) ? (float) $ticket->prezzo : 0;
@@ -2432,8 +2432,8 @@ function ucg_events_render_checkin_form($atts) {
 /**
  * Render the PR ticket payment management form.
  */
-function ucg_events_render_ticket_pr_form($atts) {
-    $notice = ucg_events_get_front_notice();
+function mms_events_render_ticket_pr_form($atts) {
+    $notice = mms_events_get_front_notice();
     $code_prefill = isset($_GET['ticket_code']) ? sanitize_text_field(wp_unslash($_GET['ticket_code'])) : '';
 
     $redirect = '';
@@ -2460,7 +2460,7 @@ function ucg_events_render_ticket_pr_form($atts) {
         $output .= '<p class="ucg-pr-login-hint">' . esc_html__('Inserisci le tue credenziali di accesso per continuare.', 'unique-coupon-generator') . '</p>';
         $output .= wp_login_form(array(
             'echo' => false,
-            'redirect' => ucg_events_safe_url($redirect),
+            'redirect' => mms_events_safe_url($redirect),
             'label_username' => esc_html__('Nome utente', 'unique-coupon-generator'),
             'label_password' => esc_html__('Password', 'unique-coupon-generator'),
             'label_remember' => esc_html__('Ricordami', 'unique-coupon-generator'),
@@ -2487,9 +2487,9 @@ function ucg_events_render_ticket_pr_form($atts) {
     $event = null;
     $ticket_error = '';
     if ($code_prefill !== '') {
-        $ticket = ucg_events_get_ticket_by_code($code_prefill);
+        $ticket = mms_events_get_ticket_by_code($code_prefill);
         if ($ticket) {
-            $event = ucg_events_get_event($ticket->evento_id);
+            $event = mms_events_get_event($ticket->evento_id);
         } else {
             $ticket_error = '<div class="ucg-event-notice error">' . esc_html__('Ticket non trovato.', 'unique-coupon-generator') . '</div>';
         }
@@ -2518,7 +2518,7 @@ function ucg_events_render_ticket_pr_form($atts) {
     $output .= '</form>';
 
     if ($ticket) {
-        $status_label = ucg_events_get_ticket_status_label($ticket->stato);
+        $status_label = mms_events_get_ticket_status_label($ticket->stato);
         $status_class = 'ucg-status-' . sanitize_title($ticket->stato);
 
         $payment_done = in_array(strtolower($ticket->stato ?? ''), array('pagato', 'usato'), true);
@@ -2526,8 +2526,8 @@ function ucg_events_render_ticket_pr_form($atts) {
         $payment_toggle = $payment_done ? __('Pagato? Sì', 'unique-coupon-generator') : __('Pagato? No', 'unique-coupon-generator');
         $payment_class = $payment_done ? 'paid' : 'pending';
 
-        $ticket_type = $event ? ucg_events_get_ticket_label($event, $ticket->tipo_ticket) : $ticket->tipo_ticket;
-        $pr_name = $ticket->pr_id ? ucg_events_get_pr_name($ticket->pr_id) : '';
+        $ticket_type = $event ? mms_events_get_ticket_label($event, $ticket->tipo_ticket) : $ticket->tipo_ticket;
+        $pr_name = $ticket->pr_id ? mms_events_get_pr_name($ticket->pr_id) : '';
 
         $event_title = $event ? $event->titolo : '';
         $event_date = '';
@@ -2538,7 +2538,7 @@ function ucg_events_render_ticket_pr_form($atts) {
             }
         }
         $event_location = $event && !empty($event->luogo) ? $event->luogo : '';
-        $event_link = ($event && !empty($event->page_id)) ? ucg_events_safe_url(get_permalink($event->page_id)) : '';
+        $event_link = ($event && !empty($event->page_id)) ? mms_events_safe_url(get_permalink($event->page_id)) : '';
 
         $price_display = '';
         $price_value = isset($ticket->prezzo) ? (float) $ticket->prezzo : 0;
@@ -2636,7 +2636,7 @@ function ucg_events_render_ticket_pr_form($atts) {
 /**
  * Handle PR ticket payment submissions.
  */
-function ucg_events_handle_ticket_pr_submission() {
+function mms_events_handle_ticket_pr_submission() {
     if (empty($_POST['ucg_pr_ticket'])) {
         return;
     }
@@ -2646,7 +2646,7 @@ function ucg_events_handle_ticket_pr_submission() {
         return;
     }
 
-    $base_redirect = ucg_events_get_safe_redirect();
+    $base_redirect = mms_events_get_safe_redirect();
     $base_redirect = remove_query_arg(array('ticket_code', 'ucg_event_notice'), $base_redirect);
 
     if (!is_user_logged_in()) {
@@ -2655,7 +2655,7 @@ function ucg_events_handle_ticket_pr_submission() {
     }
 
     if (!current_user_can('manage_woocommerce')) {
-        ucg_events_redirect_with_notice(__('Non hai i permessi necessari per eseguire questa operazione.', 'unique-coupon-generator'), 'error', $base_redirect);
+        mms_events_redirect_with_notice(__('Non hai i permessi necessari per eseguire questa operazione.', 'unique-coupon-generator'), 'error', $base_redirect);
         return;
     }
 
@@ -2663,13 +2663,13 @@ function ucg_events_handle_ticket_pr_submission() {
     $code = sanitize_text_field(wp_unslash($_POST['ticket_code'] ?? ''));
 
     if ($code === '') {
-        ucg_events_redirect_with_notice(__('Inserisci un codice ticket valido.', 'unique-coupon-generator'), 'error', $base_redirect);
+        mms_events_redirect_with_notice(__('Inserisci un codice ticket valido.', 'unique-coupon-generator'), 'error', $base_redirect);
         return;
     }
 
-    $ticket = ucg_events_get_ticket_by_code($code);
+    $ticket = mms_events_get_ticket_by_code($code);
     if (!$ticket) {
-        ucg_events_redirect_with_notice(__('Ticket non trovato.', 'unique-coupon-generator'), 'error', $base_redirect);
+        mms_events_redirect_with_notice(__('Ticket non trovato.', 'unique-coupon-generator'), 'error', $base_redirect);
         return;
     }
 
@@ -2678,28 +2678,28 @@ function ucg_events_handle_ticket_pr_submission() {
     if ($action === 'pay') {
         $current_status = strtolower($ticket->stato ?? '');
         if ($current_status === 'pagato') {
-            ucg_events_redirect_with_notice(__('Il ticket risulta già pagato.', 'unique-coupon-generator'), 'warning', $redirect_with_code);
+            mms_events_redirect_with_notice(__('Il ticket risulta già pagato.', 'unique-coupon-generator'), 'warning', $redirect_with_code);
             return;
         }
 
         if ($current_status === 'usato') {
-            ucg_events_redirect_with_notice(__('Il ticket è già stato utilizzato: impossibile modificarne il pagamento.', 'unique-coupon-generator'), 'warning', $redirect_with_code);
+            mms_events_redirect_with_notice(__('Il ticket è già stato utilizzato: impossibile modificarne il pagamento.', 'unique-coupon-generator'), 'warning', $redirect_with_code);
             return;
         }
 
-        ucg_events_update_ticket_status($ticket->id, 'pagato');
+        mms_events_update_ticket_status($ticket->id, 'pagato');
         $message = __('Lo stato di pagamento del ticket è stato aggiornato con successo - Ticket PAGATO', 'unique-coupon-generator');
-        ucg_events_redirect_with_notice($message, 'success', $redirect_with_code);
+        mms_events_redirect_with_notice($message, 'success', $redirect_with_code);
         return;
     }
 
-    ucg_events_redirect_with_notice(__('Ticket trovato! Controlla i dettagli qui sotto.', 'unique-coupon-generator'), 'success', $redirect_with_code);
+    mms_events_redirect_with_notice(__('Ticket trovato! Controlla i dettagli qui sotto.', 'unique-coupon-generator'), 'success', $redirect_with_code);
 }
 
 /**
  * Handle check-in submissions.
  */
-function ucg_events_handle_checkin_submission() {
+function mms_events_handle_checkin_submission() {
     if (empty($_POST['ucg_check_ticket'])) {
         return;
     }
@@ -2713,16 +2713,16 @@ function ucg_events_handle_checkin_submission() {
     $code = sanitize_text_field(wp_unslash($_POST['ticket_code'] ?? ''));
 
     if ($code === '') {
-        ucg_events_redirect_with_notice(__('Inserisci un codice ticket valido.', 'unique-coupon-generator'), 'error');
+        mms_events_redirect_with_notice(__('Inserisci un codice ticket valido.', 'unique-coupon-generator'), 'error');
         return;
     }
 
-    $base_redirect = ucg_events_get_safe_redirect();
+    $base_redirect = mms_events_get_safe_redirect();
     $base_redirect = remove_query_arg(array('ticket_code', 'ucg_event_notice'), $base_redirect);
 
-    $ticket = ucg_events_get_ticket_by_code($code);
+    $ticket = mms_events_get_ticket_by_code($code);
     if (!$ticket) {
-        ucg_events_redirect_with_notice(__('Ticket non trovato.', 'unique-coupon-generator'), 'error', $base_redirect);
+        mms_events_redirect_with_notice(__('Ticket non trovato.', 'unique-coupon-generator'), 'error', $base_redirect);
         return;
     }
 
@@ -2731,29 +2731,29 @@ function ucg_events_handle_checkin_submission() {
     if ($action === 'use') {
         if ($ticket->stato === 'usato') {
             $message = sprintf(__('Il ticket %s risulta già utilizzato.', 'unique-coupon-generator'), esc_html($ticket->ticket_code));
-            ucg_events_redirect_with_notice($message, 'warning', $redirect_with_code);
+            mms_events_redirect_with_notice($message, 'warning', $redirect_with_code);
             return;
         }
 
-        ucg_events_update_ticket_status($ticket->id, 'usato');
-        $event = ucg_events_get_event($ticket->evento_id);
+        mms_events_update_ticket_status($ticket->id, 'usato');
+        $event = mms_events_get_event($ticket->evento_id);
         $event_title = $event ? $event->titolo : '';
         $message = sprintf(__('Ticket %1$s segnato come USATO per %2$s.', 'unique-coupon-generator'), esc_html($ticket->ticket_code), esc_html($event_title));
-        ucg_events_redirect_with_notice($message, 'success', $redirect_with_code);
+        mms_events_redirect_with_notice($message, 'success', $redirect_with_code);
         return;
     }
 
-    ucg_events_redirect_with_notice(__('Ticket trovato! Controlla i dettagli qui sotto.', 'unique-coupon-generator'), 'success', $redirect_with_code);
+    mms_events_redirect_with_notice(__('Ticket trovato! Controlla i dettagli qui sotto.', 'unique-coupon-generator'), 'success', $redirect_with_code);
 }
 
 /**
  * Store front-end notices and redirect.
  */
-function ucg_events_redirect_with_notice($message, $type = 'success', $redirect = '') {
+function mms_events_redirect_with_notice($message, $type = 'success', $redirect = '') {
     $key = wp_generate_password(10, false, false);
     set_transient('ucg_event_notice_' . $key, array('message' => $message, 'type' => $type), 120);
 
-    $redirect = ucg_events_get_safe_redirect($redirect);
+    $redirect = mms_events_get_safe_redirect($redirect);
     $redirect = remove_query_arg('ucg_event_notice', $redirect);
     $redirect = add_query_arg('ucg_event_notice', $key, $redirect);
     wp_safe_redirect($redirect);
@@ -2763,7 +2763,7 @@ function ucg_events_redirect_with_notice($message, $type = 'success', $redirect 
 /**
  * Retrieve front-end notices if present.
  */
-function ucg_events_get_front_notice() {
+function mms_events_get_front_notice() {
     if (empty($_GET['ucg_event_notice'])) {
         return '';
     }
@@ -2784,7 +2784,7 @@ function ucg_events_get_front_notice() {
 /**
  * Determine the thank-you redirect URL.
  */
-function ucg_events_get_thankyou_redirect($event) {
+function mms_events_get_thankyou_redirect($event) {
     if ($event && !empty($event->thankyou_page_id)) {
         $url = get_permalink($event->thankyou_page_id);
         if ($url) {
