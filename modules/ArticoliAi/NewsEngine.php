@@ -174,7 +174,6 @@ class NewsEngine {
 
         if ( ($ai_engine === 'gemini' && empty($gemini_key)) || ($ai_engine === 'deepseek' && empty($deepseek_key)) || ($image_provider === 'pexels' && empty($pexels_key)) || ($image_provider === 'pixabay' && empty($pixabay_key)) ) {
             echo '<div class="mpe-card"><p style="color:red; font-weight:bold;">Inserisci le chiavi API per sbloccare la rotativa (AI e Immagini richiesti)</p></div>';
-            return;
         }
 
         echo '<div class="mpe-grid-2">
