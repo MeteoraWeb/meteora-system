@@ -89,7 +89,7 @@ class MeteoraLicense {
         $table_name = $wpdb->prefix . self::TABLE_NAME;
 
         if (empty($license_key)) {
-            $wpdb->query("TRUNCATE TABLE {$table_name}");
+            $wpdb->query("DELETE FROM {$table_name}");
             return;
         }
 
@@ -105,7 +105,7 @@ class MeteoraLicense {
             $allowed_modules = json_encode(['all']);
         }
 
-        $wpdb->query("TRUNCATE TABLE {$table_name}");
+        $wpdb->query("DELETE FROM {$table_name}");
         $wpdb->insert(
             $table_name,
             [
