@@ -107,7 +107,7 @@ function invia_email_remind() {
     // Recuperiamo tutte le impostazioni email
     $all_settings = get_option('ucc_email_settings', array());
     // Recuperiamo i set di coupon disponibili
-    $coupon_sets = get_option('ucc_coupon_sets', array());
+    $coupon_sets = get_option('mms_coupon_sets', array());
 
     foreach ($coupon_sets as $set_name => $set_info) {
         // **Se il set non ha impostazioni, lo saltiamo**

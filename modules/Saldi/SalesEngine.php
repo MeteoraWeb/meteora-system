@@ -148,7 +148,7 @@ class SalesEngine {
 
         // --- LOGS ---
         global $wpdb;
-        $l = $wpdb->get_results("SELECT batch_id,COUNT(*)c,date FROM {$wpdb->prefix}mpe_price_logs GROUP BY batch_id ORDER BY date DESC LIMIT 5");
+        $l = $wpdb->get_results("SELECT batch_id,COUNT(*)c,date FROM {$wpdb->prefix}mms_price_logs GROUP BY batch_id ORDER BY date DESC LIMIT 5");
         echo "<div class='mpe-card' style='border-left: 4px solid #64748b;'><h3>Log Modifiche Prezzi (Rollback)</h3>";
         if($l) {
             echo "<table class='mpe-table'><thead><tr><th>Date</th><th>Items</th><th>Undo</th></tr></thead><tbody>";
@@ -180,7 +180,7 @@ class SalesEngine {
 
     private function saveLog($b,$p,$r,$s){
         global $wpdb;
-        $wpdb->insert($wpdb->prefix.'mpe_price_logs',['batch_id'=>$b,'product_id'=>$p,'old_regular'=>$r,'old_sale'=>$s,'date'=>current_time('mysql')]);
+        $wpdb->insert($wpdb->prefix.'mms_price_logs',['batch_id'=>$b,'product_id'=>$p,'old_regular'=>$r,'old_sale'=>$s,'date'=>current_time('mysql')]);
     }
 
     public function goldEngine($gold_price, $cat_id, $clear_sales, $should_round, $is_run) {
@@ -319,11 +319,11 @@ class SalesEngine {
 
     public function rollbackLogs($rb_id) {
         global $wpdb;
-        $i=$wpdb->get_results($wpdb->prepare("SELECT * FROM {$wpdb->prefix}mpe_price_logs WHERE batch_id=%s", $rb_id));
+        $i=$wpdb->get_results($wpdb->prepare("SELECT * FROM {$wpdb->prefix}mms_price_logs WHERE batch_id=%s", $rb_id));
         foreach($i as $x) {
             $this->updateProduct($x->product_id,$x->old_regular,$x->old_sale,false);
         }
-        $wpdb->delete($wpdb->prefix.'mpe_price_logs',['batch_id'=>$rb_id]);
+        $wpdb->delete($wpdb->prefix.'mms_price_logs',['batch_id'=>$rb_id]);
         $this->hardSync();
         echo "<div class='updated'><p>Rollback eseguito per il batch " . esc_html($rb_id) . ".</p></div>";
     }

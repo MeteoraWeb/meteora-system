@@ -8,17 +8,17 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-add_action('admin_menu', 'ucg_events_register_menu', 30);
-add_action('admin_enqueue_scripts', 'ucg_events_admin_assets');
-add_action('admin_post_ucg_save_event', 'ucg_events_handle_save_event');
-add_action('admin_post_ucg_change_event_status', 'ucg_events_handle_change_status');
-add_action('admin_post_ucg_delete_ticket', 'ucg_events_handle_delete_ticket');
-add_action('admin_post_ucg_delete_event', 'ucg_events_handle_delete_event');
+add_action('admin_menu', 'mms_events_register_menu', 30);
+add_action('admin_enqueue_scripts', 'mms_events_admin_assets');
+add_action('admin_post_ucg_save_event', 'mms_events_handle_save_event');
+add_action('admin_post_ucg_change_event_status', 'mms_events_handle_change_status');
+add_action('admin_post_ucg_delete_ticket', 'mms_events_handle_delete_ticket');
+add_action('admin_post_ucg_delete_event', 'mms_events_handle_delete_event');
 
 /**
  * Register the admin menu for the event manager.
  */
-function ucg_events_register_menu() {
+function mms_events_register_menu() {
     $parent_slug = 'ucc-gestione-coupon';
 
     ucg_safe_add_submenu_page(
@@ -27,7 +27,7 @@ function ucg_events_register_menu() {
         __('Gestione Eventi', 'unique-coupon-generator'),
         'manage_options',
         'ucg-eventi',
-        'ucg_events_render_admin_page'
+        'mms_events_render_admin_page'
     );
 
     ucg_safe_add_submenu_page(
@@ -36,7 +36,7 @@ function ucg_events_register_menu() {
         __('Visualizza Ticket', 'unique-coupon-generator'),
         'manage_options',
         'ucg-eventi-ticket',
-        'ucg_events_render_tickets_page'
+        'mms_events_render_tickets_page'
     );
 
     ucg_safe_add_submenu_page(
@@ -45,14 +45,14 @@ function ucg_events_register_menu() {
         __('Report PR', 'unique-coupon-generator'),
         'manage_options',
         'ucg-eventi-report-pr',
-        'ucg_events_render_pr_report_page'
+        'mms_events_render_pr_report_page'
     );
 }
 
 /**
  * Enqueue admin assets for the event pages.
  */
-function ucg_events_admin_assets($hook) {
+function mms_events_admin_assets($hook) {
     if (strpos($hook ?? '', 'ucg-eventi') === false && strpos($hook ?? '', 'ucg-admin-events') === false) {
         return;
     }
@@ -73,7 +73,7 @@ function ucg_events_admin_assets($hook) {
 /**
  * Build a plugin admin URL supporting optional tab arguments.
  */
-function ucg_events_admin_url($slug, $tab = '', $args = array()) {
+function mms_events_admin_url($slug, $tab = '', $args = array()) {
     $slug = is_string($slug) ? preg_replace('/[^a-z0-9_-]/i', '', $slug) : '';
     if ('' === $slug) {
         return admin_url('admin.php');
@@ -97,10 +97,10 @@ function ucg_events_admin_url($slug, $tab = '', $args = array()) {
 /**
  * Ensure the redirect URL is safe and fallbacks to the legacy page when needed.
  */
-function ucg_events_capture_redirect($redirect, $fallback_slug = 'ucg-eventi', $fallback_tab = '') {
+function mms_events_capture_redirect($redirect, $fallback_slug = 'ucg-eventi', $fallback_tab = '') {
     $redirect = is_string($redirect) ? esc_url_raw($redirect) : '';
     if ('' === $redirect) {
-        $redirect = ucg_events_admin_url($fallback_slug, $fallback_tab);
+        $redirect = mms_events_admin_url($fallback_slug, $fallback_tab);
     }
 
     return $redirect;
@@ -109,7 +109,7 @@ function ucg_events_capture_redirect($redirect, $fallback_slug = 'ucg-eventi', $
 /**
  * Append the event information to a redirect URL preserving the current tab.
  */
-function ucg_events_append_event_to_redirect($redirect, $event_id = 0) {
+function mms_events_append_event_to_redirect($redirect, $event_id = 0) {
     if ('' === $redirect) {
         return $redirect;
     }
@@ -131,7 +131,7 @@ function ucg_events_append_event_to_redirect($redirect, $event_id = 0) {
 /**
  * Handle the save event action.
  */
-function ucg_events_handle_save_event() {
+function mms_events_handle_save_event() {
     if (!current_user_can('manage_options')) {
         wp_die(__('Non hai i permessi sufficienti per eseguire questa azione.', 'unique-coupon-generator'));
     }
@@ -139,10 +139,10 @@ function ucg_events_handle_save_event() {
     check_admin_referer('ucg_save_event');
 
     $redirect_param = isset($_POST['ucg_redirect']) ? wp_unslash($_POST['ucg_redirect']) : '';
-    $redirect_base  = ucg_events_capture_redirect($redirect_param);
+    $redirect_base  = mms_events_capture_redirect($redirect_param);
 
     $event_id = isset($_POST['event_id']) ? absint(wp_unslash($_POST['event_id'])) : 0;
-    $current_event = $event_id ? ucg_events_get_event($event_id) : null;
+    $current_event = $event_id ? mms_events_get_event($event_id) : null;
 
     $titolo = sanitize_text_field(wp_unslash($_POST['titolo_evento'] ?? ''));
     $descrizione = wp_kses_post(wp_unslash($_POST['descrizione_evento'] ?? ''));
@@ -193,22 +193,22 @@ function ucg_events_handle_save_event() {
         }
     }
 
-    $tickets = ucg_events_parse_ticket_types($_POST);
+    $tickets = mms_events_parse_ticket_types($_POST);
     if (empty($tickets)) {
-        ucg_events_add_admin_notice(__('Devi inserire almeno un tipo di ticket.', 'unique-coupon-generator'), 'error');
-        wp_safe_redirect(ucg_events_append_event_to_redirect($redirect_base, $event_id));
+        mms_events_add_admin_notice(__('Devi inserire almeno un tipo di ticket.', 'unique-coupon-generator'), 'error');
+        wp_safe_redirect(mms_events_append_event_to_redirect($redirect_base, $event_id));
         exit;
     }
 
     if ($numero_ticket <= 0) {
-        ucg_events_add_admin_notice(__('Il numero massimo di ticket deve essere maggiore di zero.', 'unique-coupon-generator'), 'error');
-        wp_safe_redirect(ucg_events_append_event_to_redirect($redirect_base, $event_id));
+        mms_events_add_admin_notice(__('Il numero massimo di ticket deve essere maggiore di zero.', 'unique-coupon-generator'), 'error');
+        wp_safe_redirect(mms_events_append_event_to_redirect($redirect_base, $event_id));
         exit;
     }
 
     if ($email_sender_raw !== '' && $email_sender === '') {
-        ucg_events_add_admin_notice(__('L\'indirizzo email del mittente non è valido.', 'unique-coupon-generator'), 'error');
-        wp_safe_redirect(ucg_events_append_event_to_redirect($redirect_base, $event_id));
+        mms_events_add_admin_notice(__('L\'indirizzo email del mittente non è valido.', 'unique-coupon-generator'), 'error');
+        wp_safe_redirect(mms_events_append_event_to_redirect($redirect_base, $event_id));
         exit;
     }
 
@@ -220,7 +220,7 @@ function ucg_events_handle_save_event() {
         'ora_evento' => $ora_evento,
         'luogo' => $luogo,
         'numero_ticket' => $numero_ticket,
-        'tipi_ticket' => ucg_events_encode_ticket_types($tickets),
+        'tipi_ticket' => mms_events_encode_ticket_types($tickets),
         'pagamento_woocommerce' => $pagamento_wc,
         'pagamento_wc_gateways' => wp_json_encode($gateway_selection),
         'pagamento_in_loco' => $pagamento_in_loco,
@@ -245,28 +245,28 @@ function ucg_events_handle_save_event() {
     );
 
     if (empty($data_evento)) {
-        ucg_events_add_admin_notice(__('Devi specificare la data dell\'evento.', 'unique-coupon-generator'), 'error');
-        wp_safe_redirect(ucg_events_append_event_to_redirect($redirect_base, $event_id));
+        mms_events_add_admin_notice(__('Devi specificare la data dell\'evento.', 'unique-coupon-generator'), 'error');
+        wp_safe_redirect(mms_events_append_event_to_redirect($redirect_base, $event_id));
         exit;
     }
 
-    $event_id = ucg_events_upsert_event($event_id, $event_data, $tickets, $current_event);
+    $event_id = mms_events_upsert_event($event_id, $event_data, $tickets, $current_event);
 
     if ($gestione_pr) {
-        ucg_events_sync_pr_entries($event_id, $_POST);
+        mms_events_sync_pr_entries($event_id, $_POST);
     } else {
-        ucg_events_sync_pr_entries($event_id, array());
+        mms_events_sync_pr_entries($event_id, array());
     }
 
-    ucg_events_add_admin_notice(__('Evento salvato correttamente.', 'unique-coupon-generator'));
-    wp_safe_redirect(ucg_events_append_event_to_redirect($redirect_base, $event_id));
+    mms_events_add_admin_notice(__('Evento salvato correttamente.', 'unique-coupon-generator'));
+    wp_safe_redirect(mms_events_append_event_to_redirect($redirect_base, $event_id));
     exit;
 }
 
 /**
  * Parse ticket types from the request.
  */
-function ucg_events_parse_ticket_types($request) {
+function mms_events_parse_ticket_types($request) {
     $names = isset($request['ticket_name']) ? (array) wp_unslash($request['ticket_name']) : array();
     $prices = isset($request['ticket_price']) ? (array) wp_unslash($request['ticket_price']) : array();
     $max = isset($request['ticket_max']) ? (array) wp_unslash($request['ticket_max']) : array();
@@ -281,7 +281,7 @@ function ucg_events_parse_ticket_types($request) {
             continue;
         }
 
-        $id = isset($ids[$index]) && $ids[$index] ? sanitize_title($ids[$index]) : ucg_events_normalize_ticket_slug($name, $index);
+        $id = isset($ids[$index]) && $ids[$index] ? sanitize_title($ids[$index]) : mms_events_normalize_ticket_slug($name, $index);
         $price = isset($prices[$index]) ? ucg_parse_float($prices[$index]) : 0;
         $max_count = isset($max[$index]) ? max(0, intval($max[$index])) : 0;
         $product_id = isset($product_ids[$index]) ? absint($product_ids[$index]) : 0;
@@ -301,9 +301,9 @@ function ucg_events_parse_ticket_types($request) {
 /**
  * Insert or update an event in the database.
  */
-function ucg_events_upsert_event($event_id, $data, $tickets, $existing_event = null) {
+function mms_events_upsert_event($event_id, $data, $tickets, $existing_event = null) {
     global $wpdb;
-    $table = ucg_events_table('events');
+    $table = mms_events_table('events');
 
     $now = current_time('mysql');
 
@@ -378,17 +378,17 @@ function ucg_events_upsert_event($event_id, $data, $tickets, $existing_event = n
     }
 
     if ($event_id && !empty($data['pagamento_woocommerce'])) {
-        $tickets = ucg_events_sync_wc_products($event_id, $data['titolo'], $tickets, $data['stato'], $data['numero_ticket']);
+        $tickets = mms_events_sync_wc_products($event_id, $data['titolo'], $tickets, $data['stato'], $data['numero_ticket']);
         $wpdb->update(
             $table,
-            array('tipi_ticket' => ucg_events_encode_ticket_types($tickets), 'updated_at' => current_time('mysql')),
+            array('tipi_ticket' => mms_events_encode_ticket_types($tickets), 'updated_at' => current_time('mysql')),
             array('id' => $event_id),
             array('%s', '%s'),
             array('%d')
         );
     }
 
-    if ($event_id && function_exists('ucg_events_sync_event_page')) {
+    if ($event_id && function_exists('mms_events_sync_event_page')) {
         $page_payload = array(
             'titolo' => $data['titolo'],
             'descrizione' => $data['descrizione'],
@@ -402,7 +402,7 @@ function ucg_events_upsert_event($event_id, $data, $tickets, $existing_event = n
             'stato' => $data['stato'],
         );
 
-        $synced_page_id = ucg_events_sync_event_page($event_id, $page_payload, $existing_event);
+        $synced_page_id = mms_events_sync_event_page($event_id, $page_payload, $existing_event);
         if ($synced_page_id) {
             if ($synced_page_id !== $page_id) {
                 $wpdb->update(
@@ -423,9 +423,9 @@ function ucg_events_upsert_event($event_id, $data, $tickets, $existing_event = n
 /**
  * Synchronise PR entries for an event.
  */
-function ucg_events_sync_pr_entries($event_id, $request) {
+function mms_events_sync_pr_entries($event_id, $request) {
     global $wpdb;
-    $table = ucg_events_table('pr');
+    $table = mms_events_table('pr');
     $event_id = absint($event_id);
     if (!$event_id) {
         return;
@@ -462,7 +462,7 @@ function ucg_events_sync_pr_entries($event_id, $request) {
 /**
  * Synchronise WooCommerce products for ticket types.
  */
-function ucg_events_sync_wc_products($event_id, $event_title, $tickets, $event_status, $event_capacity = 0) {
+function mms_events_sync_wc_products($event_id, $event_title, $tickets, $event_status, $event_capacity = 0) {
     if (!function_exists('wc_get_product')) {
         return $tickets;
     }
@@ -519,7 +519,7 @@ function ucg_events_sync_wc_products($event_id, $event_title, $tickets, $event_s
         $tickets[$index]['product_id'] = (int) $product_id;
     }
 
-    ucg_events_refresh_wc_stock($event_id);
+    mms_events_refresh_wc_stock($event_id);
 
     return $tickets;
 }
@@ -527,33 +527,33 @@ function ucg_events_sync_wc_products($event_id, $event_title, $tickets, $event_s
 /**
  * Render the admin notices stored in transient.
  */
-function ucg_events_render_notices() {
-    $notices = get_transient('ucg_events_notices');
+function mms_events_render_notices() {
+    $notices = get_transient('mms_events_notices');
     if (!empty($notices) && is_array($notices)) {
         foreach ($notices as $notice) {
             $type = !empty($notice['type']) ? $notice['type'] : 'updated';
             printf('<div class="notice notice-%1$s"><p>%2$s</p></div>', esc_attr($type), wp_kses_post($notice['message']));
         }
-        delete_transient('ucg_events_notices');
+        delete_transient('mms_events_notices');
     }
 }
 
 /**
  * Store an admin notice in a transient to display later.
  */
-function ucg_events_add_admin_notice($message, $type = 'updated') {
-    $notices = get_transient('ucg_events_notices');
+function mms_events_add_admin_notice($message, $type = 'updated') {
+    $notices = get_transient('mms_events_notices');
     if (!is_array($notices)) {
         $notices = array();
     }
     $notices[] = array('message' => $message, 'type' => $type);
-    set_transient('ucg_events_notices', $notices, 30);
+    set_transient('mms_events_notices', $notices, 30);
 }
 
 /**
  * Render the main event admin page.
  */
-function ucg_events_render_admin_page($context = array()) {
+function mms_events_render_admin_page($context = array()) {
     if (!current_user_can('manage_options')) {
         return;
     }
@@ -578,17 +578,17 @@ function ucg_events_render_admin_page($context = array()) {
     $report_tab   = $context['report_tab'];
 
     global $wpdb;
-    $table = ucg_events_table('events');
+    $table = mms_events_table('events');
 
     $current_event_id = isset($_GET['event']) ? absint(wp_unslash($_GET['event'])) : 0;
     $current_action = isset($_GET['action']) ? sanitize_text_field(wp_unslash($_GET['action'])) : '';
-    $current_event = $current_event_id ? ucg_events_get_event($current_event_id) : null;
+    $current_event = $current_event_id ? mms_events_get_event($current_event_id) : null;
 
     $events = $wpdb->get_results("SELECT * FROM {$table} ORDER BY data_evento DESC, created_at DESC");
 
     $pages = get_pages(array('post_status' => array('publish')));
 
-    $base_url        = ucg_events_admin_url($page_slug, $page_tab);
+    $base_url        = mms_events_admin_url($page_slug, $page_tab);
     $current_view_url = $base_url;
     if ($current_action !== '') {
         $current_view_url = add_query_arg('action', $current_action, $current_view_url);
@@ -606,7 +606,7 @@ function ucg_events_render_admin_page($context = array()) {
         echo '<h1>' . esc_html__('Gestione Eventi', 'unique-coupon-generator') . '</h1>';
     }
 
-    ucg_events_render_notices();
+    mms_events_render_notices();
 
     if ($current_event) {
         echo '<h2>' . esc_html(sprintf(__('Modifica evento: %s', 'unique-coupon-generator'), $current_event->titolo)) . '</h2>';
@@ -619,7 +619,7 @@ function ucg_events_render_admin_page($context = array()) {
     wp_nonce_field('ucg_save_event');
     echo '<input type="hidden" name="action" value="ucg_save_event">';
     echo '<input type="hidden" name="event_id" value="' . esc_attr($current_event ? $current_event->id : 0) . '">';
-    $redirect_target = $current_event ? ucg_events_admin_url($page_slug, $page_tab, array('action' => 'edit', 'event' => $current_event->id)) : $base_url;
+    $redirect_target = $current_event ? mms_events_admin_url($page_slug, $page_tab, array('action' => 'edit', 'event' => $current_event->id)) : $base_url;
     echo '<input type="hidden" name="ucg_redirect" value="' . esc_url($redirect_target) . '">';
 
     $titolo = $current_event ? $current_event->titolo : '';
@@ -631,7 +631,7 @@ function ucg_events_render_admin_page($context = array()) {
     $numero_ticket = $current_event ? $current_event->numero_ticket : '';
     $pagamento_wc = $current_event ? (int) $current_event->pagamento_woocommerce : 0;
     $pagamento_in_loco = $current_event ? (int) $current_event->pagamento_in_loco : 0;
-    $pagamento_wc_gateways = $current_event ? ucg_events_get_event_gateways($current_event) : array();
+    $pagamento_wc_gateways = $current_event ? mms_events_get_event_gateways($current_event) : array();
     $wc_gateway_options = array();
     if (function_exists('WC')) {
         $gateways_controller = WC()->payment_gateways();
@@ -868,7 +868,7 @@ function ucg_events_render_admin_page($context = array()) {
 
     $pr_rows = array();
     if ($current_event && $gestione_pr) {
-        $pr_rows = ucg_events_get_pr_list($current_event->id);
+        $pr_rows = mms_events_get_pr_list($current_event->id);
     }
     if (empty($pr_rows)) {
         $pr_rows = array((object) array('nome_pr' => '', 'max_ticket' => ''));
@@ -910,7 +910,7 @@ function ucg_events_render_admin_page($context = array()) {
     echo '<p class="description">' . esc_html__('Indirizzo email utilizzato come mittente delle comunicazioni dell’evento. Lascia vuoto per usare l’indirizzo predefinito.', 'unique-coupon-generator') . '</p>';
     echo '</td></tr>';
 
-    $placeholder_help = ucg_events_get_email_placeholder_descriptions();
+    $placeholder_help = mms_events_get_email_placeholder_descriptions();
     echo '<tr><th>' . esc_html__('Template email', 'unique-coupon-generator') . '</th><td>';
     echo '<p class="description">' . esc_html__('Personalizza oggetto e contenuto delle email inviate dopo la richiesta del ticket e prima dell’evento. Lascia vuoto per usare il testo predefinito.', 'unique-coupon-generator') . '</p>';
     if (!empty($placeholder_help)) {
@@ -985,7 +985,7 @@ function ucg_events_render_admin_page($context = array()) {
         echo '<th>' . esc_html__('Azioni', 'unique-coupon-generator') . '</th>';
         echo '</tr></thead><tbody>';
         foreach ($events as $event) {
-            $count = ucg_events_count_tickets($event->id);
+            $count = mms_events_count_tickets($event->id);
             $status_label = $stati[$event->stato] ?? $event->stato;
             echo '<tr>';
             echo '<td>' . esc_html($event->id) . '</td>';
@@ -994,13 +994,13 @@ function ucg_events_render_admin_page($context = array()) {
             echo '<td><span class="ucg-status ucg-status-' . esc_attr($event->stato) . '">' . esc_html($status_label) . '</span></td>';
             echo '<td>' . esc_html($count) . ' / ' . esc_html($event->numero_ticket) . '</td>';
             echo '<td><code>[richiedi_ticket base="' . esc_attr($event->id) . '"]</code></td>';
-            $edit_url = ucg_events_admin_url($page_slug, $page_tab, array('action' => 'edit', 'event' => $event->id));
+            $edit_url = mms_events_admin_url($page_slug, $page_tab, array('action' => 'edit', 'event' => $event->id));
             $status_actions = array();
             foreach ($stati as $value => $label) {
                 if ($value === $event->stato) {
                     continue;
                 }
-                $status_redirect = ucg_events_admin_url($page_slug, $page_tab, array('action' => 'edit', 'event' => $event->id));
+                $status_redirect = mms_events_admin_url($page_slug, $page_tab, array('action' => 'edit', 'event' => $event->id));
                 $status_url = wp_nonce_url(
                     add_query_arg(
                         array(
@@ -1015,7 +1015,7 @@ function ucg_events_render_admin_page($context = array()) {
                 );
                 $status_actions[] = '<a href="' . esc_url($status_url) . '">' . esc_html($label) . '</a>';
             }
-            $ticket_url = ucg_events_admin_url($tickets_slug, $tickets_tab, array('evento_id' => $event->id));
+            $ticket_url = mms_events_admin_url($tickets_slug, $tickets_tab, array('evento_id' => $event->id));
             $delete_form  = '<form method="post" action="' . esc_url(admin_url('admin-post.php')) . '" class="ucg-inline-form ucg-event-delete-form">';
             $delete_form .= wp_nonce_field('ucg_delete_event_' . $event->id, '_wpnonce', true, false);
             $delete_form .= '<input type="hidden" name="action" value="ucg_delete_event">';
@@ -1046,7 +1046,7 @@ function ucg_events_render_admin_page($context = array()) {
 /**
  * Handle status change requests.
  */
-function ucg_events_handle_change_status() {
+function mms_events_handle_change_status() {
     if (!current_user_can('manage_options')) {
         wp_die(__('Permesso negato.', 'unique-coupon-generator'));
     }
@@ -1054,18 +1054,18 @@ function ucg_events_handle_change_status() {
     $event_id = isset($_GET['event_id']) ? absint(wp_unslash($_GET['event_id'])) : 0;
     $new_status = isset($_GET['new_status']) ? sanitize_text_field(wp_unslash($_GET['new_status'])) : '';
     $redirect_param = isset($_GET['redirect']) ? wp_unslash($_GET['redirect']) : '';
-    $redirect_base  = ucg_events_capture_redirect($redirect_param);
+    $redirect_base  = mms_events_capture_redirect($redirect_param);
 
     check_admin_referer('ucg_change_event_status_' . $event_id);
 
     if (!$event_id || !in_array($new_status, array('bozza', 'pubblicato', 'chiuso'), true)) {
-        ucg_events_add_admin_notice(__('Stato non valido.', 'unique-coupon-generator'), 'error');
-        wp_safe_redirect(ucg_events_append_event_to_redirect($redirect_base, $event_id));
+        mms_events_add_admin_notice(__('Stato non valido.', 'unique-coupon-generator'), 'error');
+        wp_safe_redirect(mms_events_append_event_to_redirect($redirect_base, $event_id));
         exit;
     }
 
     global $wpdb;
-    $table = ucg_events_table('events');
+    $table = mms_events_table('events');
 
     $wpdb->update(
         $table,
@@ -1075,36 +1075,36 @@ function ucg_events_handle_change_status() {
         array('%d')
     );
 
-    ucg_events_add_admin_notice(__('Stato evento aggiornato.', 'unique-coupon-generator'));
-    wp_safe_redirect(ucg_events_append_event_to_redirect($redirect_base, $event_id));
+    mms_events_add_admin_notice(__('Stato evento aggiornato.', 'unique-coupon-generator'));
+    wp_safe_redirect(mms_events_append_event_to_redirect($redirect_base, $event_id));
     exit;
 }
 
 /**
  * Handle ticket deletion requests.
  */
-function ucg_events_handle_delete_ticket() {
+function mms_events_handle_delete_ticket() {
     if (!current_user_can('manage_options')) {
         wp_die(__('Permesso negato.', 'unique-coupon-generator'));
     }
 
     $ticket_id = isset($_POST['ticket_id']) ? absint(wp_unslash($_POST['ticket_id'])) : 0;
     $redirect_param = isset($_POST['redirect']) ? wp_unslash($_POST['redirect']) : '';
-    $redirect_base = ucg_events_capture_redirect($redirect_param, 'ucg-eventi-ticket');
+    $redirect_base = mms_events_capture_redirect($redirect_param, 'ucg-eventi-ticket');
 
     check_admin_referer('ucg_delete_ticket_' . $ticket_id);
 
     if (!$ticket_id) {
-        ucg_events_add_admin_notice(__('Ticket non valido.', 'unique-coupon-generator'), 'error');
+        mms_events_add_admin_notice(__('Ticket non valido.', 'unique-coupon-generator'), 'error');
         wp_safe_redirect($redirect_base);
         exit;
     }
 
-    $deleted = ucg_events_delete_ticket($ticket_id);
+    $deleted = mms_events_delete_ticket($ticket_id);
     if ($deleted) {
-        ucg_events_add_admin_notice(__('Ticket eliminato correttamente.', 'unique-coupon-generator'));
+        mms_events_add_admin_notice(__('Ticket eliminato correttamente.', 'unique-coupon-generator'));
     } else {
-        ucg_events_add_admin_notice(__('Impossibile eliminare il ticket selezionato.', 'unique-coupon-generator'), 'error');
+        mms_events_add_admin_notice(__('Impossibile eliminare il ticket selezionato.', 'unique-coupon-generator'), 'error');
     }
 
     wp_safe_redirect($redirect_base);
@@ -1114,28 +1114,28 @@ function ucg_events_handle_delete_ticket() {
 /**
  * Handle event deletion requests.
  */
-function ucg_events_handle_delete_event() {
+function mms_events_handle_delete_event() {
     if (!current_user_can('manage_options')) {
         wp_die(__('Permesso negato.', 'unique-coupon-generator'));
     }
 
     $event_id = isset($_POST['event_id']) ? absint(wp_unslash($_POST['event_id'])) : 0;
     $redirect_param = isset($_POST['redirect']) ? wp_unslash($_POST['redirect']) : '';
-    $redirect_base = ucg_events_capture_redirect($redirect_param, 'ucg-eventi');
+    $redirect_base = mms_events_capture_redirect($redirect_param, 'ucg-eventi');
 
     check_admin_referer('ucg_delete_event_' . $event_id);
 
     if (!$event_id) {
-        ucg_events_add_admin_notice(__('Evento non valido.', 'unique-coupon-generator'), 'error');
+        mms_events_add_admin_notice(__('Evento non valido.', 'unique-coupon-generator'), 'error');
         wp_safe_redirect($redirect_base);
         exit;
     }
 
-    $deleted = ucg_events_delete_event($event_id);
+    $deleted = mms_events_delete_event($event_id);
     if ($deleted) {
-        ucg_events_add_admin_notice(__('Evento eliminato correttamente.', 'unique-coupon-generator'));
+        mms_events_add_admin_notice(__('Evento eliminato correttamente.', 'unique-coupon-generator'));
     } else {
-        ucg_events_add_admin_notice(__('Impossibile eliminare l’evento selezionato.', 'unique-coupon-generator'), 'error');
+        mms_events_add_admin_notice(__('Impossibile eliminare l’evento selezionato.', 'unique-coupon-generator'), 'error');
     }
 
     wp_safe_redirect($redirect_base);
@@ -1145,7 +1145,7 @@ function ucg_events_handle_delete_event() {
 /**
  * Render the ticket listing page.
  */
-function ucg_events_render_tickets_page($context = array()) {
+function mms_events_render_tickets_page($context = array()) {
     if (!current_user_can('manage_options')) {
         return;
     }
@@ -1162,20 +1162,20 @@ function ucg_events_render_tickets_page($context = array()) {
     $page_tab  = $context['tab'];
 
     global $wpdb;
-    $events_table = ucg_events_table('events');
-    $tickets_table = ucg_events_table('tickets');
-    $pr_table = ucg_events_table('pr');
+    $events_table = mms_events_table('events');
+    $tickets_table = mms_events_table('tickets');
+    $pr_table = mms_events_table('pr');
 
     $events = $wpdb->get_results("SELECT id, titolo FROM {$events_table} ORDER BY data_evento DESC");
     $evento_id = isset($_GET['evento_id']) ? absint(wp_unslash($_GET['evento_id'])) : 0;
 
     if (isset($_GET['export']) && $evento_id) {
         check_admin_referer('ucg_export_tickets_' . $evento_id);
-        ucg_events_export_tickets_csv($evento_id);
+        mms_events_export_tickets_csv($evento_id);
     }
 
-    $base_url = ucg_events_admin_url($page_slug, $page_tab);
-    $current_list_url = ucg_events_admin_url($page_slug, $page_tab, $evento_id ? array('evento_id' => $evento_id) : array());
+    $base_url = mms_events_admin_url($page_slug, $page_tab);
+    $current_list_url = mms_events_admin_url($page_slug, $page_tab, $evento_id ? array('evento_id' => $evento_id) : array());
 
     if ($embedded) {
         echo '<div class="ucg-events-admin ucg-events-admin--embedded">';
@@ -1184,7 +1184,7 @@ function ucg_events_render_tickets_page($context = array()) {
         echo '<div class="wrap">';
         echo '<h1>' . esc_html__('Ticket generati', 'unique-coupon-generator') . '</h1>';
     }
-    ucg_events_render_notices();
+    mms_events_render_notices();
 
     echo '<form method="get" class="ucg-filter-form">';
     echo '<input type="hidden" name="page" value="' . esc_attr($page_slug) . '">';
@@ -1199,7 +1199,7 @@ function ucg_events_render_tickets_page($context = array()) {
     echo '</select></label> ';
     submit_button(__('Filtra', 'unique-coupon-generator'), 'secondary', '', false);
     if ($evento_id) {
-        $export_url = ucg_events_admin_url($page_slug, $page_tab, array('evento_id' => $evento_id, 'export' => 1));
+        $export_url = mms_events_admin_url($page_slug, $page_tab, array('evento_id' => $evento_id, 'export' => 1));
         $export_url = wp_nonce_url($export_url, 'ucg_export_tickets_' . $evento_id);
         echo ' <a class="button" href="' . esc_url($export_url) . '">' . esc_html__('Esporta CSV', 'unique-coupon-generator') . '</a>';
     }
@@ -1274,15 +1274,15 @@ function ucg_events_render_tickets_page($context = array()) {
 /**
  * Export tickets in CSV format.
  */
-function ucg_events_export_tickets_csv($evento_id) {
+function mms_events_export_tickets_csv($evento_id) {
     if (!current_user_can('manage_options')) {
         return;
     }
 
     global $wpdb;
-    $events_table = ucg_events_table('events');
-    $tickets_table = ucg_events_table('tickets');
-    $pr_table = ucg_events_table('pr');
+    $events_table = mms_events_table('events');
+    $tickets_table = mms_events_table('tickets');
+    $pr_table = mms_events_table('pr');
 
     $sql = "SELECT t.*, e.titolo, pr.nome_pr FROM {$tickets_table} t
             LEFT JOIN {$events_table} e ON e.id = t.evento_id
@@ -1326,8 +1326,8 @@ function ucg_events_export_tickets_csv($evento_id) {
 /**
  * Render the PR report page.
  */
-function ucg_events_render_pr_report_page($context = array()) {
-    if (!ucg_events_user_can_manage_pr_reports()) {
+function mms_events_render_pr_report_page($context = array()) {
+    if (!mms_events_user_can_manage_pr_reports()) {
         return;
     }
 
@@ -1343,18 +1343,18 @@ function ucg_events_render_pr_report_page($context = array()) {
     $page_tab  = $context['tab'];
 
     global $wpdb;
-    $events_table = ucg_events_table('events');
-    $pr_table = ucg_events_table('pr');
+    $events_table = mms_events_table('events');
+    $pr_table = mms_events_table('pr');
 
     $events = $wpdb->get_results("SELECT id, titolo, gestione_pr FROM {$events_table} ORDER BY data_evento DESC");
     $evento_id = isset($_GET['evento_id']) ? absint(wp_unslash($_GET['evento_id'])) : 0;
 
     if (isset($_GET['export']) && $evento_id) {
         check_admin_referer('ucg_export_pr_' . $evento_id);
-        ucg_events_export_pr_report_csv($evento_id);
+        mms_events_export_pr_report_csv($evento_id);
     }
 
-    $base_url = ucg_events_admin_url($page_slug, $page_tab);
+    $base_url = mms_events_admin_url($page_slug, $page_tab);
 
     if ($embedded) {
         echo '<div class="ucg-events-admin ucg-events-admin--embedded">';
@@ -1363,7 +1363,7 @@ function ucg_events_render_pr_report_page($context = array()) {
         echo '<div class="wrap">';
         echo '<h1>' . esc_html__('Report PR', 'unique-coupon-generator') . '</h1>';
     }
-    ucg_events_render_notices();
+    mms_events_render_notices();
 
     echo '<form method="get" class="ucg-filter-form">';
     echo '<input type="hidden" name="page" value="' . esc_attr($page_slug) . '">';
@@ -1378,7 +1378,7 @@ function ucg_events_render_pr_report_page($context = array()) {
     echo '</select></label> ';
     submit_button(__('Filtra', 'unique-coupon-generator'), 'secondary', '', false);
     if ($evento_id) {
-        $export_url = ucg_events_admin_url($page_slug, $page_tab, array('evento_id' => $evento_id, 'export' => 1));
+        $export_url = mms_events_admin_url($page_slug, $page_tab, array('evento_id' => $evento_id, 'export' => 1));
         $export_url = wp_nonce_url($export_url, 'ucg_export_pr_' . $evento_id);
         echo ' <a class="button" href="' . esc_url($export_url) . '">' . esc_html__('Esporta CSV', 'unique-coupon-generator') . '</a>';
     }
@@ -1390,14 +1390,14 @@ function ucg_events_render_pr_report_page($context = array()) {
         return;
     }
 
-    $event = ucg_events_get_event($evento_id);
+    $event = mms_events_get_event($evento_id);
     if (!$event || !$event->gestione_pr) {
         echo '<p>' . esc_html__('La gestione PR non è attiva per questo evento.', 'unique-coupon-generator') . '</p>';
         echo '</div>';
         return;
     }
 
-    $prs = ucg_events_get_pr_list($evento_id);
+    $prs = mms_events_get_pr_list($evento_id);
     if (empty($prs)) {
         echo '<p>' . esc_html__('Nessun PR configurato per questo evento.', 'unique-coupon-generator') . '</p>';
         echo '</div>';
@@ -1407,7 +1407,7 @@ function ucg_events_render_pr_report_page($context = array()) {
     $counts = array();
     $max_count = 0;
     foreach ($prs as $pr) {
-        $count = ucg_events_count_tickets_by_pr($evento_id, $pr->id);
+        $count = mms_events_count_tickets_by_pr($evento_id, $pr->id);
         $counts[$pr->id] = $count;
         if ($count > $max_count) {
             $max_count = $count;
@@ -1437,17 +1437,17 @@ function ucg_events_render_pr_report_page($context = array()) {
 /**
  * Export PR report in CSV.
  */
-function ucg_events_export_pr_report_csv($evento_id) {
-    if (!ucg_events_user_can_manage_pr_reports()) {
+function mms_events_export_pr_report_csv($evento_id) {
+    if (!mms_events_user_can_manage_pr_reports()) {
         return;
     }
 
-    $event = ucg_events_get_event($evento_id);
+    $event = mms_events_get_event($evento_id);
     if (!$event) {
         return;
     }
 
-    $prs = ucg_events_get_pr_list($evento_id);
+    $prs = mms_events_get_pr_list($evento_id);
 
     if (headers_sent()) {
         return;
@@ -1461,7 +1461,7 @@ function ucg_events_export_pr_report_csv($evento_id) {
     fputcsv($output, array('PR', 'Ticket assegnati', 'Limite'));
 
     foreach ($prs as $pr) {
-        $count = ucg_events_count_tickets_by_pr($evento_id, $pr->id);
+        $count = mms_events_count_tickets_by_pr($evento_id, $pr->id);
         fputcsv($output, array($pr->nome_pr, $count, $pr->max_ticket));
     }
 
@@ -1481,7 +1481,7 @@ function ucg_render_tab_events_manage($context = array()) {
     $context = wp_parse_args($context, $defaults);
     $context['embedded'] = true;
 
-    ucg_events_render_admin_page($context);
+    mms_events_render_admin_page($context);
 }
 
 function ucg_render_tab_events_tickets($context = array()) {
@@ -1492,7 +1492,7 @@ function ucg_render_tab_events_tickets($context = array()) {
     $context = wp_parse_args($context, $defaults);
     $context['embedded'] = true;
 
-    ucg_events_render_tickets_page($context);
+    mms_events_render_tickets_page($context);
 }
 
 function ucg_render_tab_events_pr($context = array()) {
@@ -1503,11 +1503,11 @@ function ucg_render_tab_events_pr($context = array()) {
     $context = wp_parse_args($context, $defaults);
     $context['embedded'] = true;
 
-    ucg_events_render_pr_report_page($context);
+    mms_events_render_pr_report_page($context);
 }
 
 function ucg_render_tab_events_pages($context = array()) {
-    if (!function_exists('ucg_events_table')) {
+    if (!function_exists('mms_events_table')) {
         echo '<p>' . esc_html__('La gestione eventi non è disponibile.', 'unique-coupon-generator') . '</p>';
         return;
     }
@@ -1521,7 +1521,7 @@ function ucg_render_tab_events_pages($context = array()) {
     );
     $context = wp_parse_args($context, $defaults);
 
-    $events_table = ucg_events_table('events');
+    $events_table = mms_events_table('events');
     if (!$events_table) {
         echo '<p>' . esc_html__('Nessun evento disponibile.', 'unique-coupon-generator') . '</p>';
         return;
@@ -1646,7 +1646,7 @@ function ucg_render_tab_events_pages($context = array()) {
             $shortcode = '[richiedi_ticket base="' . $event->id . '"]';
             $page = $event->page_id ? get_post($event->page_id) : null;
             $page_label = $page ? get_the_title($page) : __('Pagina non generata', 'unique-coupon-generator');
-            $manage_url = ucg_events_admin_url($context['manage_slug'], $context['manage_tab'], array('action' => 'edit', 'event' => $event->id));
+            $manage_url = mms_events_admin_url($context['manage_slug'], $context['manage_tab'], array('action' => 'edit', 'event' => $event->id));
 
             echo '<tr>';
             echo '<td>' . esc_html($event->titolo) . '</td>';
@@ -1712,7 +1712,7 @@ function ucg_render_tab_events_verify($context = array()) {
             $notice       = __('Inserisci un codice ticket valido.', 'unique-coupon-generator');
             $notice_class = 'error';
         } else {
-            $ticket = ucg_events_get_ticket_by_code($code);
+            $ticket = mms_events_get_ticket_by_code($code);
             if (!$ticket) {
                 $notice       = __('Ticket non trovato.', 'unique-coupon-generator');
                 $notice_class = 'error';
@@ -1726,10 +1726,10 @@ function ucg_render_tab_events_verify($context = array()) {
                         $notice       = __('Il ticket è già stato utilizzato: impossibile modificarne il pagamento.', 'unique-coupon-generator');
                         $notice_class = 'warning';
                     } else {
-                        ucg_events_update_ticket_status($ticket->id, 'pagato');
+                        mms_events_update_ticket_status($ticket->id, 'pagato');
                         $notice       = __('Lo stato di pagamento del ticket è stato aggiornato con successo - Ticket PAGATO', 'unique-coupon-generator');
                         $notice_class = 'success';
-                        $ticket       = ucg_events_get_ticket_by_code($code);
+                        $ticket       = mms_events_get_ticket_by_code($code);
                     }
                 } elseif ($action === 'mark_used') {
                     if ($current_status === 'usato') {
@@ -1737,13 +1737,13 @@ function ucg_render_tab_events_verify($context = array()) {
                         $notice       = sprintf(__('Il ticket %s risulta già utilizzato.', 'unique-coupon-generator'), $code_label);
                         $notice_class = 'warning';
                     } else {
-                        ucg_events_update_ticket_status($ticket->id, 'usato');
-                        $event        = ucg_events_get_event($ticket->evento_id);
+                        mms_events_update_ticket_status($ticket->id, 'usato');
+                        $event        = mms_events_get_event($ticket->evento_id);
                         $event_title  = $event ? sanitize_text_field($event->titolo) : '';
                         $code_label   = sanitize_text_field($ticket->ticket_code);
                         $notice       = sprintf(__('Ticket %1$s segnato come USATO per %2$s.', 'unique-coupon-generator'), $code_label, $event_title);
                         $notice_class = 'success';
-                        $ticket       = ucg_events_get_ticket_by_code($code);
+                        $ticket       = mms_events_get_ticket_by_code($code);
                     }
                 } else {
                     $notice       = __('Ticket trovato! Controlla i dettagli qui sotto.', 'unique-coupon-generator');
@@ -1754,13 +1754,13 @@ function ucg_render_tab_events_verify($context = array()) {
     }
 
     if ($ticket && !$event) {
-        $event = ucg_events_get_event($ticket->evento_id);
+        $event = mms_events_get_event($ticket->evento_id);
     }
 
     if (!$ticket && $code !== '' && empty($action)) {
-        $ticket = ucg_events_get_ticket_by_code($code);
+        $ticket = mms_events_get_ticket_by_code($code);
         if ($ticket) {
-            $event = ucg_events_get_event($ticket->evento_id);
+            $event = mms_events_get_event($ticket->evento_id);
         }
     }
 

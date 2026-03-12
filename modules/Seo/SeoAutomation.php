@@ -22,7 +22,7 @@ class SeoAutomation {
     }
 
     private function __construct() {
-        MenuManager::instance()->registerTab('tab-seo-hub', 'SEO Automation', 'dashicons-format-aside', [$this, 'renderSeoHub']);
+        MenuManager::instance()->registerTab('tab-seo-hub', 'SEO Automation', 'dashicons-format-aside', [$this, 'renderSeoHub'], 'meteora-system', 'SEO');
 
         add_action('admin_init', [$this, 'handlePostRequests']);
         add_action('wp_ajax_mpe_seo_get_products', [$this, 'getProductsAjax']);
@@ -44,6 +44,11 @@ class SeoAutomation {
     }
 
     public function renderSeoHub() {
+        if (class_exists('\Meteora\Core\License\MeteoraLicense') && !\Meteora\Core\License\MeteoraLicense::is_module_allowed('seo')) {
+            echo '<div class="mpe-card"><p style="color:red; font-weight:bold;">Modulo SEO Engine non abilitato. Inserisci una licenza valida nel pannello Impostazioni per sbloccare questa funzionalità.</p></div>';
+            return;
+        }
+
         if (!class_exists('WooCommerce')) { echo '<p>WooCommerce non rilevato.</p>'; return; }
 
         echo '<div style="max-width: 900px;">';
@@ -266,7 +271,7 @@ class SeoAutomation {
         if (!class_exists('WooCommerce')) { return; }
 
         global $wpdb;
-        $table_name = $wpdb->prefix . 'mpe_seo_logs';
+        $table_name = $wpdb->prefix . 'mms_seo_logs';
 
         // Contiamo quanti log ci sono in totale
         $total_logs = $wpdb->get_var("SELECT COUNT(*) FROM $table_name");
@@ -410,7 +415,7 @@ class SeoAutomation {
         $exclude_oos = intval($_POST['exclude_oos']);
         $exclude_modified = intval($_POST['exclude_modified']);
         $title_filter = sanitize_text_field($_POST['title_filter']);
-        $table_logs = $wpdb->prefix . 'mpe_seo_logs';
+        $table_logs = $wpdb->prefix . 'mms_seo_logs';
 
         $sql = "SELECT DISTINCT p.ID FROM {$wpdb->posts} p ";
 
@@ -472,7 +477,7 @@ class SeoAutomation {
         $brand_name = (!is_wp_error($brand_terms) && !empty($brand_terms)) ? $brand_terms[0] : "Gioiello Artigianale";
 
         // BACKUP E LOG
-        $wpdb->insert($wpdb->prefix . 'mpe_seo_logs', [
+        $wpdb->insert($wpdb->prefix . 'mms_seo_logs', [
             'post_id'       => $pid,
             'old_title'     => $product->post_title,
             'old_short'     => $product->post_excerpt,
@@ -548,7 +553,7 @@ class SeoAutomation {
         }
 
         global $wpdb;
-        $table_name = $wpdb->prefix . 'mpe_seo_logs';
+        $table_name = $wpdb->prefix . 'mms_seo_logs';
         $results = $wpdb->get_results("SELECT id as log_id, post_id FROM $table_name ORDER BY id ASC", ARRAY_A);
         wp_send_json_success($results);
     }
@@ -562,7 +567,7 @@ class SeoAutomation {
         global $wpdb;
         $log_id = intval($_POST['log_id']);
         $post_id = intval($_POST['post_id']);
-        $table_name = $wpdb->prefix . 'mpe_seo_logs';
+        $table_name = $wpdb->prefix . 'mms_seo_logs';
 
         $log = $wpdb->get_row($wpdb->prepare("SELECT * FROM $table_name WHERE id = %d AND post_id = %d", $log_id, $post_id));
         if (!$log) {

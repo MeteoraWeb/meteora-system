@@ -13,16 +13,16 @@ require_once UCG_CLASSES . 'qr-code-functions.php';
 /**
  * Return the database table names for the event manager.
  */
-function ucg_events_table($type) {
+function mms_events_table($type) {
     global $wpdb;
 
     switch ($type) {
         case 'events':
-            return $wpdb->prefix . 'eventi';
+            return $wpdb->prefix . 'mms_events';
         case 'pr':
-            return $wpdb->prefix . 'eventi_pr';
+            return $wpdb->prefix . 'mms_prs';
         case 'tickets':
-            return $wpdb->prefix . 'eventi_tickets';
+            return $wpdb->prefix . 'mms_tickets';
         default:
             return '';
     }
@@ -34,7 +34,7 @@ function ucg_events_table($type) {
  * @param bool $force_refresh Whether to refresh the cached value.
  * @return array
  */
-function ucg_events_get_ticket_columns($force_refresh = false) {
+function mms_events_get_ticket_columns($force_refresh = false) {
     static $columns = null;
 
     if ($force_refresh) {
@@ -47,7 +47,7 @@ function ucg_events_get_ticket_columns($force_refresh = false) {
 
     global $wpdb;
     $columns = array();
-    $table   = ucg_events_table('tickets');
+    $table   = mms_events_table('tickets');
 
     if (empty($table)) {
         return $columns;
@@ -72,8 +72,8 @@ function ucg_events_get_ticket_columns($force_refresh = false) {
  * @param bool   $force_refresh Force a cache refresh.
  * @return bool
  */
-function ucg_events_ticket_column_exists($column, $force_refresh = false) {
-    $columns = ucg_events_get_ticket_columns($force_refresh);
+function mms_events_ticket_column_exists($column, $force_refresh = false) {
+    $columns = mms_events_get_ticket_columns($force_refresh);
     return in_array($column, $columns, true);
 }
 
@@ -83,7 +83,7 @@ function ucg_events_ticket_column_exists($column, $force_refresh = false) {
  * @param bool $force_refresh Force a cache refresh.
  * @return string
  */
-function ucg_events_get_ticket_status_field($force_refresh = false) {
+function mms_events_get_ticket_status_field($force_refresh = false) {
     static $field = null;
 
     if ($force_refresh) {
@@ -91,23 +91,23 @@ function ucg_events_get_ticket_status_field($force_refresh = false) {
     }
 
     if ($field !== null) {
-        if (ucg_events_ticket_column_exists($field)) {
+        if (mms_events_ticket_column_exists($field)) {
             return $field;
         }
 
-        if (!ucg_events_ticket_column_exists($field, true)) {
+        if (!mms_events_ticket_column_exists($field, true)) {
             $field = null;
         } else {
             return $field;
         }
     }
 
-    if (ucg_events_ticket_column_exists('stato', $force_refresh)) {
+    if (mms_events_ticket_column_exists('stato', $force_refresh)) {
         $field = 'stato';
         return $field;
     }
 
-    if (ucg_events_ticket_column_exists('status', $force_refresh)) {
+    if (mms_events_ticket_column_exists('status', $force_refresh)) {
         $field = 'status';
         return $field;
     }
@@ -119,16 +119,16 @@ function ucg_events_get_ticket_status_field($force_refresh = false) {
 /**
  * Ensure the ticket table provides a backwards-compatible status column.
  */
-function ucg_events_sync_ticket_status_alias() {
+function mms_events_sync_ticket_status_alias() {
     global $wpdb;
 
-    $table = ucg_events_table('tickets');
+    $table = mms_events_table('tickets');
     if (empty($table)) {
         return;
     }
 
-    $has_stato  = ucg_events_ticket_column_exists('stato');
-    $has_status = ucg_events_ticket_column_exists('status');
+    $has_stato  = mms_events_ticket_column_exists('stato');
+    $has_status = mms_events_ticket_column_exists('status');
 
     $previous_suppression = $wpdb->suppress_errors();
     $wpdb->suppress_errors(true);
@@ -136,9 +136,9 @@ function ucg_events_sync_ticket_status_alias() {
     if (!$has_stato && $has_status) {
         $result = $wpdb->query("ALTER TABLE {$table} CHANGE COLUMN status stato varchar(20) NOT NULL DEFAULT 'da pagare'");
         if ($result !== false) {
-            ucg_events_get_ticket_columns(true);
+            mms_events_get_ticket_columns(true);
             $has_stato  = true;
-            $has_status = ucg_events_ticket_column_exists('status');
+            $has_status = mms_events_ticket_column_exists('status');
         } elseif (!empty($wpdb->last_error) && function_exists('ucg_log_error')) {
             ucg_log_error('Ticket status column rename failed', array('error' => $wpdb->last_error));
         }
@@ -148,7 +148,7 @@ function ucg_events_sync_ticket_status_alias() {
         $result = $wpdb->query("ALTER TABLE {$table} ADD COLUMN status varchar(20) NOT NULL DEFAULT 'da pagare'");
         if ($result !== false) {
             $wpdb->query("UPDATE {$table} SET status = stato");
-            ucg_events_get_ticket_columns(true);
+            mms_events_get_ticket_columns(true);
         } elseif (!empty($wpdb->last_error) && function_exists('ucg_log_error')) {
             ucg_log_error('Ticket status alias creation failed', array('error' => $wpdb->last_error));
         }
@@ -158,7 +158,7 @@ function ucg_events_sync_ticket_status_alias() {
 
     $wpdb->suppress_errors($previous_suppression);
 
-    ucg_events_get_ticket_status_field(true);
+    mms_events_get_ticket_status_field(true);
 }
 
 /**
@@ -167,7 +167,7 @@ function ucg_events_sync_ticket_status_alias() {
  * @param string $status Raw status string.
  * @return string
  */
-function ucg_events_normalize_ticket_status_value($status) {
+function mms_events_normalize_ticket_status_value($status) {
     $status = strtolower(trim((string) $status));
 
     $map = array(
@@ -192,7 +192,7 @@ function ucg_events_normalize_ticket_status_value($status) {
 /**
  * Determine if the current user can manage PR reports.
  */
-function ucg_events_user_can_manage_pr_reports() {
+function mms_events_user_can_manage_pr_reports() {
     $can_manage = current_user_can('manage_options');
 
     if (!$can_manage && current_user_can('manage_woocommerce')) {
@@ -204,13 +204,13 @@ function ucg_events_user_can_manage_pr_reports() {
      *
      * @param bool $can_manage Current capability state.
      */
-    return apply_filters('ucg_events_user_can_manage_pr_reports', $can_manage);
+    return apply_filters('mms_events_user_can_manage_pr_reports', $can_manage);
 }
 
 /**
  * Normalize a redirect URL so it always points to the current site.
  */
-function ucg_events_normalize_redirect_url($url) {
+function mms_events_normalize_redirect_url($url) {
     if (empty($url) || is_array($url)) {
         return '';
     }
@@ -246,7 +246,7 @@ function ucg_events_normalize_redirect_url($url) {
 /**
  * Resolve a safe redirect destination for front-end flows.
  */
-function ucg_events_get_safe_redirect($preferred = '') {
+function mms_events_get_safe_redirect($preferred = '') {
     $candidates = array();
 
     if (!empty($preferred)) {
@@ -284,7 +284,7 @@ function ucg_events_get_safe_redirect($preferred = '') {
     $allowed_hosts = array_filter(array_unique(array($site_host, $site_alt)));
 
     foreach ($candidates as $candidate) {
-        $normalized = ucg_events_normalize_redirect_url($candidate);
+        $normalized = mms_events_normalize_redirect_url($candidate);
         if (!$normalized) {
             continue;
         }
@@ -309,7 +309,7 @@ function ucg_events_get_safe_redirect($preferred = '') {
  * @param mixed $url Potential URL value.
  * @return string Sanitized URL or empty string when invalid.
  */
-function ucg_events_safe_url($url) {
+function mms_events_safe_url($url) {
     if (empty($url) || is_array($url) || is_object($url)) {
         return '';
     }
@@ -377,17 +377,17 @@ function ucg_events_safe_url($url) {
 /**
  * Retrieve a single event.
  */
-function ucg_events_get_event($event_id) {
+function mms_events_get_event($event_id) {
     global $wpdb;
     $event_id = absint($event_id);
     if (!$event_id) {
         return null;
     }
 
-    $table = ucg_events_table('events');
+    $table = mms_events_table('events');
     $event = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$table} WHERE id = %d", $event_id));
     if ($event) {
-        $event->tipi_ticket = ucg_events_decode_ticket_types($event->tipi_ticket);
+        $event->tipi_ticket = mms_events_decode_ticket_types($event->tipi_ticket);
         if (!isset($event->mostra_whatsapp)) {
             $event->mostra_whatsapp = 1;
         }
@@ -404,11 +404,11 @@ function ucg_events_get_event($event_id) {
         if (!isset($event->pagamento_wc_gateways)) {
             $event->pagamento_wc_gateways = array();
         } else {
-            $event->pagamento_wc_gateways = ucg_events_normalize_gateway_list($event->pagamento_wc_gateways);
+            $event->pagamento_wc_gateways = mms_events_normalize_gateway_list($event->pagamento_wc_gateways);
         }
 
         $needs_page = empty($event->page_id) || !get_post($event->page_id);
-        if ($needs_page && function_exists('ucg_events_sync_event_page')) {
+        if ($needs_page && function_exists('mms_events_sync_event_page')) {
             $event_data = array(
                 'titolo' => $event->titolo,
                 'descrizione' => $event->descrizione,
@@ -422,11 +422,11 @@ function ucg_events_get_event($event_id) {
                 'stato' => $event->stato,
             );
 
-            $page_id = ucg_events_sync_event_page($event->id, $event_data, $event);
+            $page_id = mms_events_sync_event_page($event->id, $event_data, $event);
             if ($page_id) {
                 $page_id = (int) $page_id;
                 if ((int) $event->page_id !== $page_id) {
-                    $events_table = ucg_events_table('events');
+                    $events_table = mms_events_table('events');
                     if (!empty($event->id) && $events_table) {
                         $wpdb->update(
                             $events_table,
@@ -455,7 +455,7 @@ function ucg_events_get_event($event_id) {
  * @param mixed $value Raw value from the database or runtime context.
  * @return array
  */
-function ucg_events_normalize_gateway_list($value) {
+function mms_events_normalize_gateway_list($value) {
     if (is_array($value)) {
         $list = $value;
     } elseif (is_object($value)) {
@@ -492,7 +492,7 @@ function ucg_events_normalize_gateway_list($value) {
  * @param object|null $event Event configuration object.
  * @return string
  */
-function ucg_events_get_whatsapp_template($event) {
+function mms_events_get_whatsapp_template($event) {
     if (!$event || !is_object($event)) {
         return '';
     }
@@ -511,13 +511,13 @@ function ucg_events_get_whatsapp_template($event) {
  * @param object|array $event Event configuration.
  * @return array
  */
-function ucg_events_get_event_gateways($event) {
+function mms_events_get_event_gateways($event) {
     if (is_object($event) && isset($event->pagamento_wc_gateways)) {
-        return ucg_events_normalize_gateway_list($event->pagamento_wc_gateways);
+        return mms_events_normalize_gateway_list($event->pagamento_wc_gateways);
     }
 
     if (is_array($event) && isset($event['pagamento_wc_gateways'])) {
-        return ucg_events_normalize_gateway_list($event['pagamento_wc_gateways']);
+        return mms_events_normalize_gateway_list($event['pagamento_wc_gateways']);
     }
 
     return array();
@@ -530,14 +530,14 @@ function ucg_events_get_event_gateways($event) {
  * @param array<string,WC_Payment_Gateway> $gateways Available gateways.
  * @return array<string,WC_Payment_Gateway>
  */
-function ucg_events_filter_gateway_map_for_event($event, $gateways) {
+function mms_events_filter_gateway_map_for_event($event, $gateways) {
     if (empty($gateways) || !is_array($gateways)) {
         return array();
     }
 
     $filtered = $gateways;
 
-    $allowed = ucg_events_get_event_gateways($event);
+    $allowed = mms_events_get_event_gateways($event);
     if (!empty($allowed)) {
         $filtered = array_intersect_key($filtered, array_flip($allowed));
     }
@@ -553,7 +553,7 @@ function ucg_events_filter_gateway_map_for_event($event, $gateways) {
 
     if ($supports_manual_in_loco) {
         foreach ($filtered as $gateway_id => $gateway_obj) {
-            if (ucg_events_is_offline_gateway($gateway_id)) {
+            if (mms_events_is_offline_gateway($gateway_id)) {
                 unset($filtered[$gateway_id]);
             }
         }
@@ -567,9 +567,9 @@ function ucg_events_filter_gateway_map_for_event($event, $gateways) {
  *
  * @return array
  */
-function ucg_events_get_offline_gateway_ids() {
+function mms_events_get_offline_gateway_ids() {
     $defaults = array('cod', 'bacs', 'cheque', 'ucg_in_loco');
-    $gateways = apply_filters('ucg_events_offline_gateways', $defaults);
+    $gateways = apply_filters('mms_events_offline_gateways', $defaults);
 
     if (!is_array($gateways)) {
         $gateways = (array) $gateways;
@@ -592,7 +592,7 @@ function ucg_events_get_offline_gateway_ids() {
  * @param string|WC_Payment_Gateway $gateway Payment gateway identifier or instance.
  * @return bool
  */
-function ucg_events_is_offline_gateway($gateway) {
+function mms_events_is_offline_gateway($gateway) {
     if (is_object($gateway) && method_exists($gateway, 'get_id')) {
         $gateway = $gateway->get_id();
     }
@@ -602,7 +602,7 @@ function ucg_events_is_offline_gateway($gateway) {
         return false;
     }
 
-    return in_array($gateway, ucg_events_get_offline_gateway_ids(), true);
+    return in_array($gateway, mms_events_get_offline_gateway_ids(), true);
 }
 
 /**
@@ -611,7 +611,7 @@ function ucg_events_is_offline_gateway($gateway) {
  * @param string $gateway_id Gateway identifier.
  * @return string
  */
-function ucg_events_get_pending_gateway_message($gateway_id) {
+function mms_events_get_pending_gateway_message($gateway_id) {
     $gateway_id = sanitize_key((string) $gateway_id);
 
     $messages = array(
@@ -622,13 +622,13 @@ function ucg_events_get_pending_gateway_message($gateway_id) {
     $default = __('Ordine ricevuto! Segui le istruzioni del metodo di pagamento per completare l’acquisto.', 'unique-coupon-generator');
     $message = $messages[$gateway_id] ?? $default;
 
-    return apply_filters('ucg_events_pending_gateway_message', $message, $gateway_id);
+    return apply_filters('mms_events_pending_gateway_message', $message, $gateway_id);
 }
 
 /**
  * Create or update the public page that hosts the event form.
  */
-function ucg_events_sync_event_page($event_id, $data, $existing_event = null) {
+function mms_events_sync_event_page($event_id, $data, $existing_event = null) {
     if (!function_exists('wp_insert_post')) {
         return 0;
     }
@@ -761,7 +761,7 @@ function ucg_events_sync_event_page($event_id, $data, $existing_event = null) {
 /**
  * Decode the JSON ticket structure.
  */
-function ucg_events_decode_ticket_types($ticket_json) {
+function mms_events_decode_ticket_types($ticket_json) {
     if (empty($ticket_json)) {
         return array();
     }
@@ -788,7 +788,7 @@ function ucg_events_decode_ticket_types($ticket_json) {
 /**
  * Encode ticket types for storage.
  */
-function ucg_events_encode_ticket_types($tickets) {
+function mms_events_encode_ticket_types($tickets) {
     if (empty($tickets)) {
         return '';
     }
@@ -799,7 +799,7 @@ function ucg_events_encode_ticket_types($tickets) {
 /**
  * Generate a normalized slug for the ticket type.
  */
-function ucg_events_normalize_ticket_slug($name, $index = 0) {
+function mms_events_normalize_ticket_slug($name, $index = 0) {
     $slug = sanitize_title($name);
     if (empty($slug)) {
         $slug = 'ticket-' . (int) $index;
@@ -810,7 +810,7 @@ function ucg_events_normalize_ticket_slug($name, $index = 0) {
 /**
  * Retrieve the full configuration array for a ticket type.
  */
-function ucg_events_get_ticket_config($event, $ticket_slug) {
+function mms_events_get_ticket_config($event, $ticket_slug) {
     if (!$event || empty($ticket_slug)) {
         return null;
     }
@@ -830,8 +830,8 @@ function ucg_events_get_ticket_config($event, $ticket_slug) {
 /**
  * Return the human readable label for a ticket type.
  */
-function ucg_events_get_ticket_label($event, $ticket_slug) {
-    $config = ucg_events_get_ticket_config($event, $ticket_slug);
+function mms_events_get_ticket_label($event, $ticket_slug) {
+    $config = mms_events_get_ticket_config($event, $ticket_slug);
     if ($config && !empty($config['name'])) {
         return $config['name'];
     }
@@ -842,7 +842,7 @@ function ucg_events_get_ticket_label($event, $ticket_slug) {
 /**
  * Return a translated label for a stored ticket status.
  */
-function ucg_events_get_ticket_status_label($status) {
+function mms_events_get_ticket_status_label($status) {
     $status = is_string($status) ? strtolower($status) : '';
 
     switch ($status) {
@@ -860,7 +860,7 @@ function ucg_events_get_ticket_status_label($status) {
 /**
  * Provide the list of supported email placeholders and their meaning.
  */
-function ucg_events_get_email_placeholder_descriptions() {
+function mms_events_get_email_placeholder_descriptions() {
     return array(
         '{customer_name}' => __('Nome completo del partecipante', 'unique-coupon-generator'),
         '{customer_email}' => __('Email del partecipante', 'unique-coupon-generator'),
@@ -881,9 +881,9 @@ function ucg_events_get_email_placeholder_descriptions() {
 /**
  * Count generated tickets for an event.
  */
-function ucg_events_count_tickets($event_id, $status = array()) {
+function mms_events_count_tickets($event_id, $status = array()) {
     global $wpdb;
-    $table = ucg_events_table('tickets');
+    $table = mms_events_table('tickets');
     $event_id = absint($event_id);
     if (!$event_id) {
         return 0;
@@ -893,8 +893,8 @@ function ucg_events_count_tickets($event_id, $status = array()) {
     $params = array($event_id);
 
     if (!empty($status)) {
-        $status_field  = sanitize_key(ucg_events_get_ticket_status_field());
-        $normalized    = array_map('ucg_events_normalize_ticket_status_value', $status);
+        $status_field  = sanitize_key(mms_events_get_ticket_status_field());
+        $normalized    = array_map('mms_events_normalize_ticket_status_value', $status);
         $placeholders  = implode(',', array_fill(0, count($normalized), '%s'));
         $sql          .= " AND {$status_field} IN ({$placeholders})";
         $params        = array_merge(array($event_id), array_map('sanitize_text_field', $normalized));
@@ -906,9 +906,9 @@ function ucg_events_count_tickets($event_id, $status = array()) {
 /**
  * Count tickets by type.
  */
-function ucg_events_count_tickets_by_type($event_id, $ticket_slug, $status = array()) {
+function mms_events_count_tickets_by_type($event_id, $ticket_slug, $status = array()) {
     global $wpdb;
-    $table = ucg_events_table('tickets');
+    $table = mms_events_table('tickets');
     $event_id = absint($event_id);
     $ticket_slug = sanitize_text_field($ticket_slug);
 
@@ -920,8 +920,8 @@ function ucg_events_count_tickets_by_type($event_id, $ticket_slug, $status = arr
     $params = array($event_id, $ticket_slug);
 
     if (!empty($status)) {
-        $status_field  = sanitize_key(ucg_events_get_ticket_status_field());
-        $normalized    = array_map('ucg_events_normalize_ticket_status_value', $status);
+        $status_field  = sanitize_key(mms_events_get_ticket_status_field());
+        $normalized    = array_map('mms_events_normalize_ticket_status_value', $status);
         $placeholders  = implode(',', array_fill(0, count($normalized), '%s'));
         $sql          .= " AND {$status_field} IN ({$placeholders})";
         $params        = array_merge($params, array_map('sanitize_text_field', $normalized));
@@ -933,9 +933,9 @@ function ucg_events_count_tickets_by_type($event_id, $ticket_slug, $status = arr
 /**
  * Count tickets assigned to a PR.
  */
-function ucg_events_count_tickets_by_pr($event_id, $pr_id) {
+function mms_events_count_tickets_by_pr($event_id, $pr_id) {
     global $wpdb;
-    $table = ucg_events_table('tickets');
+    $table = mms_events_table('tickets');
     $event_id = absint($event_id);
     $pr_id = absint($pr_id);
 
@@ -953,14 +953,14 @@ function ucg_events_count_tickets_by_pr($event_id, $pr_id) {
  * @param int $ticket_id Ticket identifier.
  * @return bool True if deleted.
  */
-function ucg_events_delete_ticket($ticket_id) {
+function mms_events_delete_ticket($ticket_id) {
     global $wpdb;
     $ticket_id = absint($ticket_id);
     if (!$ticket_id) {
         return false;
     }
 
-    $table = ucg_events_table('tickets');
+    $table = mms_events_table('tickets');
     if (!$table) {
         return false;
     }
@@ -976,7 +976,7 @@ function ucg_events_delete_ticket($ticket_id) {
  * @param int $event_id Event identifier.
  * @return bool True on success.
  */
-function ucg_events_delete_event($event_id) {
+function mms_events_delete_event($event_id) {
     global $wpdb;
 
     $event_id = absint($event_id);
@@ -984,7 +984,7 @@ function ucg_events_delete_event($event_id) {
         return false;
     }
 
-    $events_table = ucg_events_table('events');
+    $events_table = mms_events_table('events');
     if (!$events_table) {
         return false;
     }
@@ -994,12 +994,12 @@ function ucg_events_delete_event($event_id) {
         return false;
     }
 
-    $tickets_table = ucg_events_table('tickets');
+    $tickets_table = mms_events_table('tickets');
     if ($tickets_table) {
         $wpdb->delete($tickets_table, array('evento_id' => $event_id), array('%d'));
     }
 
-    $pr_table = ucg_events_table('pr');
+    $pr_table = mms_events_table('pr');
     if ($pr_table) {
         $wpdb->delete($pr_table, array('evento_id' => $event_id), array('%d'));
     }
@@ -1010,13 +1010,13 @@ function ucg_events_delete_event($event_id) {
 /**
  * Generate a unique ticket code.
  */
-function ucg_events_generate_ticket_code($event_id) {
+function mms_events_generate_ticket_code($event_id) {
     $event_id = absint($event_id);
     $prefix = 'EV' . str_pad((string) $event_id, 3, '0', STR_PAD_LEFT);
 
     do {
         $code = $prefix . '-' . wp_generate_password(8, false, false);
-        $exists = ucg_events_get_ticket_by_code($code);
+        $exists = mms_events_get_ticket_by_code($code);
     } while ($exists);
 
     return $code;
@@ -1025,9 +1025,9 @@ function ucg_events_generate_ticket_code($event_id) {
 /**
  * Retrieve a ticket by its code.
  */
-function ucg_events_get_ticket_by_code($code) {
+function mms_events_get_ticket_by_code($code) {
     global $wpdb;
-    $table = ucg_events_table('tickets');
+    $table = mms_events_table('tickets');
     $code = sanitize_text_field($code);
 
     if (empty($code)) {
@@ -1047,9 +1047,9 @@ function ucg_events_get_ticket_by_code($code) {
  * @param string $phone_digits Normalized phone number digits (including prefix).
  * @return bool
  */
-function ucg_events_ticket_exists_for_contact($event_id, $email, $phone_digits) {
+function mms_events_ticket_exists_for_contact($event_id, $email, $phone_digits) {
     global $wpdb;
-    $table = ucg_events_table('tickets');
+    $table = mms_events_table('tickets');
 
     $event_id = absint($event_id);
     if (!$event_id) {
@@ -1089,7 +1089,7 @@ function ucg_events_ticket_exists_for_contact($event_id, $email, $phone_digits) 
 /**
  * Generate a QR code for a ticket.
  */
-function ucg_events_generate_qr_code($ticket_code) {
+function mms_events_generate_qr_code($ticket_code) {
     if (empty($ticket_code)) {
         return '';
     }
@@ -1110,10 +1110,10 @@ function ucg_events_generate_qr_code($ticket_code) {
         return '';
     }
 
-    return ucg_events_safe_url($qr_url);
+    return mms_events_safe_url($qr_url);
 }
 
-if (!function_exists('ucg_events_generate_ticket_pdf')) {
+if (!function_exists('mms_events_generate_ticket_pdf')) {
     /**
      * Generate a PDF summary for a ticket.
      *
@@ -1125,7 +1125,7 @@ if (!function_exists('ucg_events_generate_ticket_pdf')) {
      * @param string $phone       Ticket holder phone.
      * @return string PDF URL or empty string on failure.
      */
-    function ucg_events_generate_ticket_pdf($event, $ticket_code, $qr_url, $full_name, $email, $phone) {
+    function mms_events_generate_ticket_pdf($event, $ticket_code, $qr_url, $full_name, $email, $phone) {
         if (empty($ticket_code)) {
             return '';
         }
@@ -1186,7 +1186,7 @@ if (!function_exists('ucg_events_generate_ticket_pdf')) {
 /**
  * Get remaining tickets for a type respecting global and specific limits.
  */
-function ucg_events_get_global_remaining($event) {
+function mms_events_get_global_remaining($event) {
     if (!$event) {
         return 0;
     }
@@ -1196,24 +1196,24 @@ function ucg_events_get_global_remaining($event) {
         return -1; // Unlimited
     }
 
-    $used = ucg_events_count_tickets($event->id);
+    $used = mms_events_count_tickets($event->id);
 
     return max(0, $global_limit - $used);
 }
 
-function ucg_events_get_ticket_remaining($event, $ticket) {
+function mms_events_get_ticket_remaining($event, $ticket) {
     if (!$event || empty($ticket['id'])) {
         return 0;
     }
 
-    $global_remaining = ucg_events_get_global_remaining($event);
+    $global_remaining = mms_events_get_global_remaining($event);
 
     $type_limit = isset($ticket['max']) ? (int) $ticket['max'] : 0;
     if ($type_limit <= 0) {
         return $global_remaining;
     }
 
-    $type_remaining = max(0, $type_limit - ucg_events_count_tickets_by_type($event->id, $ticket['id']));
+    $type_remaining = max(0, $type_limit - mms_events_count_tickets_by_type($event->id, $ticket['id']));
 
     if ($global_remaining === -1) {
         return $type_remaining;
@@ -1225,9 +1225,9 @@ function ucg_events_get_ticket_remaining($event, $ticket) {
 /**
  * Retrieve PR entries for an event.
  */
-function ucg_events_get_pr_list($event_id) {
+function mms_events_get_pr_list($event_id) {
     global $wpdb;
-    $table = ucg_events_table('pr');
+    $table = mms_events_table('pr');
     $event_id = absint($event_id);
     if (!$event_id) {
         return array();
@@ -1244,9 +1244,9 @@ function ucg_events_get_pr_list($event_id) {
 /**
  * Retrieve a single PR entry.
  */
-function ucg_events_get_pr($pr_id) {
+function mms_events_get_pr($pr_id) {
     global $wpdb;
-    $table = ucg_events_table('pr');
+    $table = mms_events_table('pr');
     $pr_id = absint($pr_id);
     if (!$pr_id) {
         return null;
@@ -1258,8 +1258,8 @@ function ucg_events_get_pr($pr_id) {
 /**
  * Retrieve the name of a PR entry if available.
  */
-function ucg_events_get_pr_name($pr_id) {
-    $pr = ucg_events_get_pr($pr_id);
+function mms_events_get_pr_name($pr_id) {
+    $pr = mms_events_get_pr($pr_id);
     if ($pr && !empty($pr->nome_pr)) {
         return $pr->nome_pr;
     }
@@ -1270,7 +1270,7 @@ function ucg_events_get_pr_name($pr_id) {
 /**
  * Calculate remaining tickets for a PR entry.
  */
-function ucg_events_get_pr_remaining($event_id, $pr) {
+function mms_events_get_pr_remaining($event_id, $pr) {
     if (!$pr) {
         return 0;
     }
@@ -1280,14 +1280,14 @@ function ucg_events_get_pr_remaining($event_id, $pr) {
         return -1; // Unlimited
     }
 
-    $assigned = ucg_events_count_tickets_by_pr($event_id, $pr->id);
+    $assigned = mms_events_count_tickets_by_pr($event_id, $pr->id);
     return max(0, $max - $assigned);
 }
 
 /**
  * Helper to get default email headers from coupon settings.
  */
-function ucg_events_get_email_headers($event = null) {
+function mms_events_get_email_headers($event = null) {
     $settings = get_option('ucc_email_settings', array());
     $first = is_array($settings) ? reset($settings) : array();
 
@@ -1310,7 +1310,7 @@ function ucg_events_get_email_headers($event = null) {
 /**
  * Build the thank you URL for an event.
  */
-function ucg_events_get_thankyou_url($event) {
+function mms_events_get_thankyou_url($event) {
     if (!$event) {
         return home_url('/');
     }
@@ -1328,19 +1328,19 @@ function ucg_events_get_thankyou_url($event) {
 /**
  * Refresh WooCommerce stock after ticket generation.
  */
-function ucg_events_refresh_wc_stock($event_id) {
+function mms_events_refresh_wc_stock($event_id) {
     if (!function_exists('wc_get_product')) {
         return;
     }
 
-    $event = ucg_events_get_event($event_id);
+    $event = mms_events_get_event($event_id);
     if (!$event || empty($event->tipi_ticket)) {
         return;
     }
 
     $global_limit = isset($event->numero_ticket) ? (int) $event->numero_ticket : 0;
     $global_remaining = $global_limit > 0
-        ? max(0, $global_limit - ucg_events_count_tickets($event->id))
+        ? max(0, $global_limit - mms_events_count_tickets($event->id))
         : 0;
 
     foreach ($event->tipi_ticket as $ticket) {
@@ -1355,7 +1355,7 @@ function ucg_events_refresh_wc_stock($event_id) {
 
         $ticket_limit = isset($ticket['max']) ? (int) $ticket['max'] : 0;
         $type_remaining = $ticket_limit > 0
-            ? max(0, $ticket_limit - ucg_events_count_tickets_by_type($event->id, $ticket['id']))
+            ? max(0, $ticket_limit - mms_events_count_tickets_by_type($event->id, $ticket['id']))
             : -1;
 
         if ($global_limit > 0) {
@@ -1388,9 +1388,9 @@ function ucg_events_refresh_wc_stock($event_id) {
 /**
  * Insert a new ticket in the database.
  */
-function ucg_events_insert_ticket($event_id, $data) {
+function mms_events_insert_ticket($event_id, $data) {
     global $wpdb;
-    $table = ucg_events_table('tickets');
+    $table = mms_events_table('tickets');
     $event_id = absint($event_id);
     if (!$event_id) {
         return false;
@@ -1412,7 +1412,7 @@ function ucg_events_insert_ticket($event_id, $data) {
 
     $data = wp_parse_args($data, $defaults);
 
-    $status_value = ucg_events_normalize_ticket_status_value($data['stato']);
+    $status_value = mms_events_normalize_ticket_status_value($data['stato']);
     $status_value = sanitize_text_field($status_value);
 
     $insert = array(
@@ -1423,7 +1423,7 @@ function ucg_events_insert_ticket($event_id, $data) {
         'tipo_ticket' => sanitize_text_field($data['tipo_ticket']),
         'prezzo' => (float) $data['prezzo'],
         'stato' => $status_value,
-        'qr_code' => ucg_events_safe_url($data['qr_code']),
+        'qr_code' => mms_events_safe_url($data['qr_code']),
         'ticket_code' => sanitize_text_field($data['ticket_code']),
         'pr_id' => absint($data['pr_id']),
         'order_id' => absint($data['order_id']),
@@ -1434,7 +1434,7 @@ function ucg_events_insert_ticket($event_id, $data) {
 
     $formats = array('%d', '%s', '%s', '%s', '%s', '%f', '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%s');
 
-    if (ucg_events_ticket_column_exists('status')) {
+    if (mms_events_ticket_column_exists('status')) {
         $insert['status'] = $status_value;
         $formats[]        = '%s';
     }
@@ -1451,20 +1451,20 @@ function ucg_events_insert_ticket($event_id, $data) {
 /**
  * Update the status of a ticket.
  */
-function ucg_events_update_ticket_status($ticket_id, $status) {
+function mms_events_update_ticket_status($ticket_id, $status) {
     global $wpdb;
-    $table = ucg_events_table('tickets');
+    $table = mms_events_table('tickets');
     $ticket_id = absint($ticket_id);
     if (!$ticket_id) {
         return false;
     }
 
-    $normalized = sanitize_text_field(ucg_events_normalize_ticket_status_value($status));
+    $normalized = sanitize_text_field(mms_events_normalize_ticket_status_value($status));
 
     $data    = array('stato' => $normalized);
     $formats = array('%s');
 
-    if (ucg_events_ticket_column_exists('status')) {
+    if (mms_events_ticket_column_exists('status')) {
         $data['status'] = $normalized;
         $formats[]      = '%s';
     }
@@ -1481,9 +1481,9 @@ function ucg_events_update_ticket_status($ticket_id, $status) {
 /**
  * Mark a ticket as having received the reminder email.
  */
-function ucg_events_mark_ticket_reminder_sent($ticket_id) {
+function mms_events_mark_ticket_reminder_sent($ticket_id) {
     global $wpdb;
-    $table = ucg_events_table('tickets');
+    $table = mms_events_table('tickets');
     $ticket_id = absint($ticket_id);
     if (!$ticket_id) {
         return false;

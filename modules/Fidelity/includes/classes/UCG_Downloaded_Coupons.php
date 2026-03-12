@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 
 class UCG_Downloaded_Coupons {
     public static function render_tabs() {
-        $coupon_sets = get_option('ucc_coupon_sets', array());
+        $coupon_sets = get_option('mms_coupon_sets', array());
         if (empty($coupon_sets)) {
             return;
         }

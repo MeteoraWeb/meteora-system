@@ -21,7 +21,7 @@ class UCG_Error_Log_Admin{
     public static function page(){
         if(!current_user_can('manage_options')) return;
         global $wpdb;
-        $table = $wpdb->prefix.'ucg_error_log';
+        $table = $wpdb->prefix.'mms_error_log';
         if(isset($_POST['ucg_clear_errors']) && check_admin_referer('ucg_clear_errors')){
             $wpdb->query("TRUNCATE TABLE $table");
             echo '<div class="updated"><p>Log svuotato.</p></div>';

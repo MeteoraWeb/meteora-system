@@ -37,11 +37,6 @@ class Module {
             define('UCG_CLASSES', UCG_PLUGIN_DIR . 'includes/classes/');
         }
 
-        require_once UCG_CLASSES . 'class-ucg-access-gate.php';
-        if (class_exists('UCG_Access_Gate')) {
-            \UCG_Access_Gate::instance()->init();
-        }
-
         $in_elementor_ctx = function_exists('myplugin_is_elementor_context') ? myplugin_is_elementor_context() : false;
 
         // Since classes are now loaded via Composer classmap, we only need to explicitly

@@ -13,7 +13,7 @@ class UCG_FidelityManager {
         }
 
         global $wpdb;
-        $table=$wpdb->prefix.'ucg_fidelity_points';
+        $table=$wpdb->prefix.'mms_fidelity_points';
         $added=$wpdb->get_var($wpdb->prepare(
             "SELECT COALESCE(SUM(points),0) FROM $table WHERE user_id=%d AND type='aggiunta'",
             $user_id
@@ -31,7 +31,7 @@ class UCG_FidelityManager {
         }
 
         global $wpdb;
-        $table = $wpdb->prefix.'ucg_fidelity_points';
+        $table = $wpdb->prefix.'mms_fidelity_points';
 
         $amount = ucg_parse_float($amount);
 
@@ -61,7 +61,7 @@ class UCG_FidelityManager {
             return [];
         }
 
-        $sets=get_option('ucc_coupon_sets',[]);
+        $sets=get_option('mms_coupon_sets',[]);
         $out=[];
         foreach($sets as $id=>$set){
             if(!empty($set['fidelity']['enabled'])){
@@ -119,7 +119,7 @@ class UCG_FidelityManager {
         }
 
         global $wpdb;
-        $table=$wpdb->prefix.'ucg_fidelity_points';
+        $table=$wpdb->prefix.'mms_fidelity_points';
         return $wpdb->get_results($wpdb->prepare(
             "SELECT * FROM $table WHERE user_id=%d ORDER BY created_at DESC LIMIT %d",
             $user_id,

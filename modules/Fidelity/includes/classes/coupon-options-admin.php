@@ -426,7 +426,7 @@ function ucg_admin_format_metric($value) {
  * @return array
  */
 function ucg_admin_coupon_cards() {
-    $sets      = get_option('ucc_coupon_sets', array());
+    $sets      = get_option('mms_coupon_sets', array());
     $set_count = is_array($sets) ? count($sets) : 0;
 
     global $wpdb;
@@ -480,8 +480,8 @@ function ucg_admin_coupon_cards() {
  */
 function ucg_admin_event_cards() {
     global $wpdb;
-    $events_table = function_exists('ucg_events_table') ? ucg_events_table('events') : '';
-    $tickets_table = function_exists('ucg_events_table') ? ucg_events_table('tickets') : '';
+    $events_table = function_exists('mms_events_table') ? mms_events_table('events') : '';
+    $tickets_table = function_exists('mms_events_table') ? mms_events_table('tickets') : '';
 
     $events_total = 0;
     $tickets_total = 0;
@@ -495,8 +495,8 @@ function ucg_admin_event_cards() {
         $tickets_total = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tickets_table}");
 
         $status_field = 'stato';
-        if (function_exists('ucg_events_get_ticket_status_field')) {
-            $status_field = sanitize_key(ucg_events_get_ticket_status_field());
+        if (function_exists('mms_events_get_ticket_status_field')) {
+            $status_field = sanitize_key(mms_events_get_ticket_status_field());
         }
 
         $tickets_used = (int) $wpdb->get_var(
@@ -543,7 +543,7 @@ function ucg_admin_marketing_cards() {
     $templates_total = is_array($templates) ? count($templates) : 0;
 
     global $wpdb;
-    $log_table = $wpdb->prefix . 'ucg_email_log';
+    $log_table = $wpdb->prefix . 'mms_email_log';
     $last_sent = '';
     if ($wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $log_table)) === $log_table) {
         $last_sent = $wpdb->get_var("SELECT MAX(sent_at) FROM {$log_table}");
@@ -590,7 +590,7 @@ function ucg_admin_settings_cards() {
         ? date_i18n(get_option('date_format'), strtotime($license_status['last_checked']))
         : __('Mai verificata', 'unique-coupon-generator');
 
-    $error_table = $GLOBALS['wpdb']->prefix . 'ucg_error_log';
+    $error_table = $GLOBALS['wpdb']->prefix . 'mms_error_log';
     $has_errors  = 0;
     if ($GLOBALS['wpdb']->get_var($GLOBALS['wpdb']->prepare("SHOW TABLES LIKE %s", $error_table)) === $error_table) {
         $has_errors = (int) $GLOBALS['wpdb']->get_var("SELECT COUNT(*) FROM {$error_table}");
@@ -693,8 +693,8 @@ function ucg_render_tab_error_log($context = array()) {
     global $wpdb;
 
     $page_url   = ucg_admin_page_url('ucg-admin-settings', 'errors');
-    $error_table = $wpdb->prefix . 'ucg_error_log';
-    $email_table = $wpdb->prefix . 'ucg_email_log';
+    $error_table = $wpdb->prefix . 'mms_error_log';
+    $email_table = $wpdb->prefix . 'mms_email_log';
 
     $has_error_table = $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $error_table)) === $error_table;
     $has_email_table = $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $email_table)) === $email_table;

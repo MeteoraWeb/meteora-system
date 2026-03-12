@@ -49,7 +49,7 @@ add_action('admin_init', function () {
     // 🔁 Elimina un set intero di coupon (e pagina)
     if (isset($_GET['delete_coupon_set']) && check_admin_referer('ucc_delete_coupon_set_nonce')) {
         $set_key = sanitize_text_field(wp_unslash($_GET['delete_coupon_set']));
-        $coupon_sets = get_option('ucc_coupon_sets', array());
+        $coupon_sets = get_option('mms_coupon_sets', array());
 
         if (isset($coupon_sets[$set_key])) {
             $set_data   = $coupon_sets[$set_key];
@@ -61,7 +61,7 @@ add_action('admin_init', function () {
             }
 
             unset($coupon_sets[$set_key]);
-            update_option('ucc_coupon_sets', $coupon_sets);
+            update_option('mms_coupon_sets', $coupon_sets);
 
             add_action('admin_notices', function () use ($display_name) {
                 echo '<div class="updated"><p>✅ Set di coupon <strong>' . esc_html($display_name) . '</strong> eliminato con successo.</p></div>';

@@ -20,7 +20,7 @@ class ForceSync {
     }
 
     private function __construct() {
-        MenuManager::instance()->registerTab('tab-gla-sync', 'Resync Google (GLA)', 'dashicons-google', [$this, 'renderAdminPage']);
+        MenuManager::instance()->registerTab('tab-gla-sync', 'Resync Google (GLA)', 'dashicons-google', [$this, 'renderAdminPage'], 'meteora-system', 'Prezzi');
     }
 
     public function renderAdminPage() {

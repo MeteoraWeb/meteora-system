@@ -9,7 +9,7 @@ if (!defined('ABSPATH')) {
 }
 ?>
 <form method="post" class="ucg-points-form" data-ajax="1">
-    <?php wp_nonce_field('ucg_fidelity_points','_wpnonce_ucg_pts'); ?>
+    <?php wp_nonce_field('mms_fidelity_points','_wpnonce_ucg_pts'); ?>
     <p><input type="text" name="fid_identifier" placeholder="<?php echo esc_attr__('Email o Codice QR', 'unique-coupon-generator'); ?>" required></p>
     <p><button type="submit" name="ucg_points_submit"><?php echo esc_html__('Verifica', 'unique-coupon-generator'); ?></button></p>
 </form>

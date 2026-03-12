@@ -7,7 +7,7 @@
 if(!defined('ABSPATH')){exit;}
 
 function ucg_render_tab_coupon_pages($context = array()){
-    $coupon_sets = get_option('ucc_coupon_sets', []);
+    $coupon_sets = get_option('mms_coupon_sets', []);
 
     echo '<section class="ucg-card ucg-card--table">';
     echo '<h2><span class="dashicons dashicons-admin-page" aria-hidden="true"></span> ' . esc_html__('Pagine coupon generate', 'unique-coupon-generator') . '</h2>';

@@ -15,7 +15,7 @@ if (!defined('ABSPATH')) {
  * @param array $context Rendering context.
  */
 function ucg_render_tab_coupon_emails($context = array()) {
-    $coupon_sets    = get_option('ucc_coupon_sets', array());
+    $coupon_sets    = get_option('mms_coupon_sets', array());
     $email_settings = get_option('ucc_email_settings', array());
     $notice         = array();
 

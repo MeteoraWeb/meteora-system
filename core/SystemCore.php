@@ -28,6 +28,9 @@ class SystemCore {
         // Init core managers
         MenuManager::instance();
 
+        // Init core features
+        \Meteora\Core\License\MeteoraLicense::instance();
+
         // Init modules
         \Meteora\Modules\CarrelliPersi\CartSaver::instance();
         \Meteora\Modules\GlaSync\ForceSync::instance();
