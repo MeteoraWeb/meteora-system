@@ -86,11 +86,6 @@ class NewsEngine {
     }
 
     public function renderNewsTab() {
-        if (class_exists('\Meteora\Core\License\MeteoraLicense') && !\Meteora\Core\License\MeteoraLicense::is_module_allowed('news')) {
-            echo '<div class="mpe-card"><p style="color:red; font-weight:bold;">Modulo News Engine non abilitato. Inserisci una licenza valida nel pannello Impostazioni per sbloccare questa funzionalità.</p></div>';
-            return;
-        }
-
         global $wpdb;
         $gemini_key = get_option('mpe_gemini_api_key', '');
         $deepseek_key = get_option('mpe_deepseek_api_key', '');

@@ -99,10 +99,7 @@ if (!function_exists('ucg_enforce_access_point')) {
             $context_key = 'default';
         }
 
-        $access = class_exists('\Meteora\Core\License\MeteoraLicense') ? \Meteora\Core\License\MeteoraLicense::is_module_allowed('fidelity') : false;
-        if ($access) {
-            return true;
-        }
+        return true;
 
         $profiles = ucg_access_guard_profiles();
         $profile  = $profiles[$context_key] ?? $profiles['default'];
