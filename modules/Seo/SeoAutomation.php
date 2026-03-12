@@ -44,11 +44,6 @@ class SeoAutomation {
     }
 
     public function renderSeoHub() {
-        if (class_exists('\Meteora\Core\License\MeteoraLicense') && !\Meteora\Core\License\MeteoraLicense::is_module_allowed('seo')) {
-            echo '<div class="mpe-card"><p style="color:red; font-weight:bold;">Modulo SEO Engine non abilitato. Inserisci una licenza valida nel pannello Impostazioni per sbloccare questa funzionalità.</p></div>';
-            return;
-        }
-
         if (!class_exists('WooCommerce')) { echo '<p>WooCommerce non rilevato.</p>'; return; }
 
         echo '<div style="max-width: 900px;">';

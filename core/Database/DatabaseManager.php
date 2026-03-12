@@ -23,18 +23,6 @@ class DatabaseManager {
         ) $charset_collate;";
         dbDelta( $sql_carts );
 
-        // Table for License
-        $table_name_license = $wpdb->prefix . 'mms_license';
-        $sql_license = "CREATE TABLE IF NOT EXISTS $table_name_license (
-            id bigint(20) NOT NULL AUTO_INCREMENT,
-            license_key varchar(255) NOT NULL,
-            status varchar(50) DEFAULT 'inactive',
-            expires_at datetime DEFAULT NULL,
-            allowed_modules text,
-            PRIMARY KEY  (id)
-        ) $charset_collate;";
-        dbDelta( $sql_license );
-
         // Table for Sales Engine Logs
         $table_name_logs = $wpdb->prefix . 'mms_price_logs';
         $sql_logs = "CREATE TABLE IF NOT EXISTS $table_name_logs (
