@@ -1,8 +1,6 @@
 <?php
 namespace Meteora\Modules\Fidelity;
 
-use Meteora\Core\Menu\MenuManager;
-
 class Module {
     /**
      * @var Module
